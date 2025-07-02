@@ -1,0 +1,25 @@
+.container {
+  padding: 10px;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(10, 50px);
+  grid-template-rows: repeat(10, 50px);
+  gap: 1px;
+}
+
+.cell {
+  background: #59e5ef;
+  border: 1px solid #3e4ab7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+}
+
+.shipPart {
+  background-color: #737798;
+  border: 1px solid #101011;
+}
