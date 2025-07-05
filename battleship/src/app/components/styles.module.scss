@@ -23,3 +23,16 @@
   background-color: #737798;
   border: 1px solid #101011;
 }
+
+.nextToShipCell {
+  background-color: #f36363;
+}
+
+.button {
+  padding: 4px 8px;
+  background-color: #4caf50;
+  cursor: pointer;
+  &:hover {
+    background-color: #125916;
+  }
+}
