@@ -16,12 +16,6 @@ function getRandomInt() {
 
 function fillCellsAroundShip(cell, direction, i, shipSize, newArray) {
   if (direction === horizon) {
-    console.log("====================???");
-    console.log("cell???", cell);
-    console.log("i???", i);
-    console.log("shipSize???", shipSize);
-    console.log("===================???");
-
     //first horizontal field line
     if (cell < 10) {
       if (i === 0 && i < shipSize - 1) {
@@ -50,27 +44,27 @@ function fillCellsAroundShip(cell, direction, i, shipSize, newArray) {
         newArray[cell + 10].nextToShipCell = true;
       }
 
-      if (i === 0 && i === shipSize - 1) {
-        if (cell === 0) {
-          newArray[cell + 10].nextToShipCell = true;
-          newArray[cell + 11].nextToShipCell = true;
-          newArray[cell + 1].nextToShipCell = true;
-        }
+      //if (i === 0 && i === shipSize - 1) {
+      //  if (cell === 0) {
+      //    newArray[cell + 10].nextToShipCell = true;
+      //    newArray[cell + 11].nextToShipCell = true;
+      //    newArray[cell + 1].nextToShipCell = true;
+      //  }
 
-        if (cell > 0 && cell < 9) {
-          newArray[cell - 1].nextToShipCell = true;
-          newArray[cell + 9].nextToShipCell = true;
-          newArray[cell + 10].nextToShipCell = true;
-          newArray[cell + 11].nextToShipCell = true;
-          newArray[cell + 1].nextToShipCell = true;
-        }
+      //  if (cell > 0 && cell < 9) {
+      //    newArray[cell - 1].nextToShipCell = true;
+      //    newArray[cell + 9].nextToShipCell = true;
+      //    newArray[cell + 10].nextToShipCell = true;
+      //    newArray[cell + 11].nextToShipCell = true;
+      //    newArray[cell + 1].nextToShipCell = true;
+      //  }
 
-        if (cell === 9) {
-          newArray[cell - 1].nextToShipCell = true;
-          newArray[cell + 9].nextToShipCell = true;
-          newArray[cell + 10].nextToShipCell = true;
-        }
-      }
+      //  if (cell === 9) {
+      //    newArray[cell - 1].nextToShipCell = true;
+      //    newArray[cell + 9].nextToShipCell = true;
+      //    newArray[cell + 10].nextToShipCell = true;
+      //  }
+      //}
     }
     //middle horizontal field lines
     if (cell > 9 && cell < 90) {
@@ -106,33 +100,33 @@ function fillCellsAroundShip(cell, direction, i, shipSize, newArray) {
         }
       }
 
-      if (i === 0 && i === shipSize - 1) {
-        if (`${cell}`.includes("0")) {
-          newArray[cell - 10].nextToShipCell = true;
-          newArray[cell - 9].nextToShipCell = true;
-          newArray[cell + 1].nextToShipCell = true;
-          newArray[cell + 10].nextToShipCell = true;
-          newArray[cell + 11].nextToShipCell = true;
-        }
+      //if (i === 0 && i === shipSize - 1) {
+      //  if (`${cell}`.includes("0")) {
+      //    newArray[cell - 10].nextToShipCell = true;
+      //    newArray[cell - 9].nextToShipCell = true;
+      //    newArray[cell + 1].nextToShipCell = true;
+      //    newArray[cell + 10].nextToShipCell = true;
+      //    newArray[cell + 11].nextToShipCell = true;
+      //  }
 
-        if (!`${cell}`.includes("0") && !`${cell}`.includes("9")) {
-          newArray[cell - 11].nextToShipCell = true;
-          newArray[cell - 10].nextToShipCell = true;
-          newArray[cell - 9].nextToShipCell = true;
-          newArray[cell - 1].nextToShipCell = true;
-          newArray[cell + 1].nextToShipCell = true;
-          newArray[cell + 9].nextToShipCell = true;
-          newArray[cell + 10].nextToShipCell = true;
-          newArray[cell + 11].nextToShipCell = true;
-        }
-        if (`${cell}`.includes("9")) {
-          newArray[cell - 10].nextToShipCell = true;
-          newArray[cell - 11].nextToShipCell = true;
-          newArray[cell - 1].nextToShipCell = true;
-          newArray[cell + 9].nextToShipCell = true;
-          newArray[cell + 10].nextToShipCell = true;
-        }
-      }
+      //  if (!`${cell}`.includes("0") && !`${cell}`.includes("9")) {
+      //    newArray[cell - 11].nextToShipCell = true;
+      //    newArray[cell - 10].nextToShipCell = true;
+      //    newArray[cell - 9].nextToShipCell = true;
+      //    newArray[cell - 1].nextToShipCell = true;
+      //    newArray[cell + 1].nextToShipCell = true;
+      //    newArray[cell + 9].nextToShipCell = true;
+      //    newArray[cell + 10].nextToShipCell = true;
+      //    newArray[cell + 11].nextToShipCell = true;
+      //  }
+      //  if (`${cell}`.includes("9")) {
+      //    newArray[cell - 10].nextToShipCell = true;
+      //    newArray[cell - 11].nextToShipCell = true;
+      //    newArray[cell - 1].nextToShipCell = true;
+      //    newArray[cell + 9].nextToShipCell = true;
+      //    newArray[cell + 10].nextToShipCell = true;
+      //  }
+      //}
     }
     //last horizontal field line
     if (cell > 89) {
@@ -161,38 +155,214 @@ function fillCellsAroundShip(cell, direction, i, shipSize, newArray) {
         newArray[cell - 10].nextToShipCell = true;
       }
       //last horizontal line for single-deck ship
-      if (i === 0 && i === shipSize - 1) {
-        if (cell === 90) {
+      //if (i === 0 && i === shipSize - 1) {
+      //  if (cell === 90) {
+      //    newArray[cell - 10].nextToShipCell = true;
+      //    newArray[cell - 9].nextToShipCell = true;
+      //    newArray[cell + 1].nextToShipCell = true;
+      //  }
+
+      //  if (cell > 0 && cell < 9) {
+      //    newArray[cell - 1].nextToShipCell = true;
+      //    newArray[cell - 11].nextToShipCell = true;
+      //    newArray[cell - 10].nextToShipCell = true;
+      //    newArray[cell + 9].nextToShipCell = true;
+      //    newArray[cell + 1].nextToShipCell = true;
+      //  }
+
+      //  if (cell === 9) {
+      //    newArray[cell - 1].nextToShipCell = true;
+      //    newArray[cell - 11].nextToShipCell = true;
+      //    newArray[cell - 10].nextToShipCell = true;
+      //  }
+      //}
+    }
+  }
+  if (direction === vertical) {
+    //first vertical fields line
+    if (`${cell}`.includes("0")) {
+      if (i === 0 && i < shipSize - 1) {
+        if (cell === 0) {
+          newArray[cell + 1].nextToShipCell = true;
+        }
+        if (cell > 0 && cell < 90) {
           newArray[cell - 10].nextToShipCell = true;
           newArray[cell - 9].nextToShipCell = true;
           newArray[cell + 1].nextToShipCell = true;
         }
+      }
 
-        if (cell > 0 && cell < 9) {
+      if (i > 0 && i < shipSize - 1) {
+        newArray[cell + 1].nextToShipCell = true;
+      }
+
+      if (i > 0 && i === shipSize - 1 && cell < 90) {
+        newArray[cell + 10].nextToShipCell = true;
+        newArray[cell + 11].nextToShipCell = true;
+        newArray[cell + 1].nextToShipCell = true;
+      }
+
+      if (i > 0 && i === shipSize - 1 && cell === 90) {
+        newArray[cell + 1].nextToShipCell = true;
+        newArray[cell - 9].nextToShipCell = true;
+      }
+    }
+    //middle vertical field lines
+    if (!`${cell}`.includes("0") && !`${cell}`.endsWith("9")) {
+      if (i === 0 && i < shipSize - 1) {
+        if (cell < 9) {
+          newArray[cell - 1].nextToShipCell = true;
+          newArray[cell + 1].nextToShipCell = true;
+        }
+        if (cell > 10 && cell < 89) {
           newArray[cell - 1].nextToShipCell = true;
           newArray[cell - 11].nextToShipCell = true;
           newArray[cell - 10].nextToShipCell = true;
-          newArray[cell + 9].nextToShipCell = true;
+          newArray[cell - 9].nextToShipCell = true;
           newArray[cell + 1].nextToShipCell = true;
         }
+      }
 
+      if (i > 0 && i < shipSize - 1 && cell > 10 && cell < 89) {
+        newArray[cell - 10].nextToShipCell = true;
+        newArray[cell + 10].nextToShipCell = true;
+      }
+
+      if (i > 0 && i === shipSize - 1 && cell < 89) {
+        newArray[cell - 1].nextToShipCell = true;
+        newArray[cell + 1].nextToShipCell = true;
+        newArray[cell + 9].nextToShipCell = true;
+        newArray[cell + 10].nextToShipCell = true;
+        newArray[cell + 11].nextToShipCell = true;
+      }
+      if (i > 0 && i === shipSize - 1 && cell > 90 && cell < 99) {
+        newArray[cell - 1].nextToShipCell = true;
+        newArray[cell + 1].nextToShipCell = true;
+      }
+    }
+    //last vertical field line
+    if (`${cell}`.endsWith("9")) {
+      if (i === 0 && i < shipSize - 1) {
         if (cell === 9) {
+          newArray[cell - 1].nextToShipCell = true;
+        }
+        if (cell > 9 && cell < 99) {
           newArray[cell - 1].nextToShipCell = true;
           newArray[cell - 11].nextToShipCell = true;
           newArray[cell - 10].nextToShipCell = true;
         }
       }
+
+      if (i > 0 && i < shipSize - 1 && cell < 99) {
+        newArray[cell - 1].nextToShipCell = true;
+      }
+
+      if (i > 0 && i === shipSize - 1 && cell < 99) {
+        newArray[cell - 1].nextToShipCell = true;
+        newArray[cell + 9].nextToShipCell = true;
+        newArray[cell + 10].nextToShipCell = true;
+      }
+
+      if (i > 0 && i === shipSize - 1 && cell === 99) {
+        newArray[cell - 1].nextToShipCell = true;
+      }
+    }
+  }
+
+  //single-deck ship
+  if (i === 0 && i === shipSize - 1) {
+    //first horizontal field line
+    if (cell === 0) {
+      newArray[cell + 10].nextToShipCell = true;
+      newArray[cell + 11].nextToShipCell = true;
+      newArray[cell + 1].nextToShipCell = true;
+    }
+
+    if (cell > 0 && cell < 9) {
+      newArray[cell - 1].nextToShipCell = true;
+      newArray[cell + 9].nextToShipCell = true;
+      newArray[cell + 10].nextToShipCell = true;
+      newArray[cell + 11].nextToShipCell = true;
+      newArray[cell + 1].nextToShipCell = true;
+    }
+
+    if (cell === 9) {
+      newArray[cell - 1].nextToShipCell = true;
+      newArray[cell + 9].nextToShipCell = true;
+      newArray[cell + 10].nextToShipCell = true;
+    }
+    //=====================================
+  }
+
+  if (i === 0 && i === shipSize - 1) {
+    if (cell === 0) {
+      newArray[cell + 1].nextToShipCell = true;
+      newArray[cell + 10].nextToShipCell = true;
+      newArray[cell + 11].nextToShipCell = true;
+    }
+    //first vertical field line excluding 0 & 90
+    if (`${cell}`.includes("0") && cell > 0 && cell < 90) {
+      newArray[cell - 10].nextToShipCell = true;
+      newArray[cell - 9].nextToShipCell = true;
+      newArray[cell + 1].nextToShipCell = true;
+      newArray[cell + 10].nextToShipCell = true;
+      newArray[cell + 11].nextToShipCell = true;
+    }
+    //fields out of borders
+    if (
+      !`${cell}`.includes("0") &&
+      !`${cell}`.includes("9") &&
+      cell > 9 &&
+      cell < 89
+    ) {
+      newArray[cell - 11].nextToShipCell = true;
+      newArray[cell - 10].nextToShipCell = true;
+      newArray[cell - 9].nextToShipCell = true;
+      newArray[cell - 1].nextToShipCell = true;
+      newArray[cell + 1].nextToShipCell = true;
+      newArray[cell + 9].nextToShipCell = true;
+      newArray[cell + 10].nextToShipCell = true;
+      newArray[cell + 11].nextToShipCell = true;
+    }
+    //last vertical field line
+    if (`${cell}`.endsWith("9") && cell > 9 && cell < 99) {
+      newArray[cell - 10].nextToShipCell = true;
+      newArray[cell - 11].nextToShipCell = true;
+      newArray[cell - 1].nextToShipCell = true;
+      newArray[cell + 9].nextToShipCell = true;
+      newArray[cell + 10].nextToShipCell = true;
+    }
+  }
+
+  if (i === 0 && i === shipSize - 1) {
+    if (cell === 90) {
+      newArray[cell - 10].nextToShipCell = true;
+      newArray[cell - 9].nextToShipCell = true;
+      newArray[cell + 1].nextToShipCell = true;
+    }
+    //last horizontal line for single-deck ship
+    if (cell > 90 && cell < 99) {
+      newArray[cell - 1].nextToShipCell = true;
+      newArray[cell - 11].nextToShipCell = true;
+      newArray[cell - 10].nextToShipCell = true;
+      newArray[cell - 9].nextToShipCell = true;
+      newArray[cell + 1].nextToShipCell = true;
+    }
+
+    if (cell === 99) {
+      newArray[cell - 1].nextToShipCell = true;
+      newArray[cell - 11].nextToShipCell = true;
+      newArray[cell - 10].nextToShipCell = true;
     }
   }
 }
 
 function placeShips(array, shipSize) {
-  console.log("shipSize!!!", shipSize);
-
   const [startCell, direction] = getRandomInt();
-  const newArray = [...array];
+  const newArray = array.map((obj) => ({ ...obj }));
+
   console.log("startCell!!!", startCell);
-  console.log("direction!!!", !!direction ? "vertical" : "horizontal");
+  console.log("direction!!!", direction);
 
   //if last vertical cell of ship is out of field skip this startCell
   if (direction === vertical) {
@@ -222,6 +392,12 @@ function placeShips(array, shipSize) {
 
   for (let i = 0; i < shipSize; i++) {
     const cell = getCell(i, startCell);
+    //if cell is already occupied by ship part or next to ship part, skip this startCell
+    if (newArray[cell].shipPart || newArray[cell].nextToShipCell) {
+      console.log("busy cell - return placeShips!!!", cell);
+
+      return placeShips(array, shipSize);
+    }
     const shipPart = (i + 1) / shipSize;
     fillCellsAroundShip(cell, direction, i, shipSize, newArray);
     newArray[cell].shipPart = shipPart;
@@ -231,11 +407,15 @@ function placeShips(array, shipSize) {
 }
 
 function placeShipsOnField(field = [], setField) {
-  let currentField = field;
+  let changedField = field.map((obj) => ({ ...obj }));
   [4, 3, 2, 1].forEach((shipSize) => {
-    currentField = placeShips(currentField, shipSize);
+    console.log("======placing started - shipSize!!!", shipSize);
+    changedField = placeShips(changedField, shipSize);
+    console.log("======placing finished - shipSize - field!!!", changedField);
   });
-  setField(currentField);
+  console.log("++++placing finished - field+++++!!!", changedField);
+
+  setField(changedField);
 }
 
 export { getRandomInt, placeShips, placeShipsOnField, generateEmptyArray };
