@@ -6,17 +6,21 @@
   display: grid;
   grid-template-columns: repeat(10, 50px);
   grid-template-rows: repeat(10, 50px);
-  gap: 1px;
+  //gap: 1px;
+  background-image: url("/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .cell {
-  background: #59e5ef;
-  border: 1px solid #3e4ab7;
+  border: 1px solid #5d5783;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 50px;
   width: 50px;
+  cursor: pointer;
 }
 
 .shipPart {
@@ -35,4 +39,51 @@
   &:hover {
     background-color: #125916;
   }
+}
+
+.targetedEmptyCell {
+  will-change: background-size;
+  cursor: none;
+  background-image: url("/emptyShotB.jpg");
+  background-size: 0 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: grow-bg 1s forwards;
+}
+
+@keyframes grow-bg {
+  from {
+    background-size: 0 0;
+  }
+  to {
+    background-size: cover;
+  }
+}
+
+.targetedShipCell {
+  cursor: none;
+  background-image: url("/explosion.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.textWrapper {
+  text-align: center;
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.tryAgain {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.destroyed {
+  background-image: url("/destroyedShip.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

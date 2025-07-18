@@ -284,13 +284,13 @@ function fillCellsAroundShip(cell, direction, i, shipSize, newArray) {
   }
 }
 
-function placeShips(array, shipSize) {
+function placeShips(array, shipSize, count) {
   const [startCell, direction] = getRandomInt();
   const newArray = array.map((obj) => ({ ...obj }));
   //if last vertical cell of ship is out of field skip this startCell
   if (direction === vertical) {
     if (startCell + (shipSize - 1) * 10 > 99) {
-      return placeShips(array, shipSize);
+      return placeShips(array, shipSize, count);
     }
   }
 
@@ -299,7 +299,7 @@ function placeShips(array, shipSize) {
     const lastHorizonCell = startCell + (shipSize - 1);
     const lastCellRaw = Math.ceil(startCell / 10) * 10 - 1;
     if (lastHorizonCell > lastCellRaw) {
-      return placeShips(array, shipSize);
+      return placeShips(array, shipSize, count);
     }
   }
 
@@ -318,25 +318,81 @@ function placeShips(array, shipSize) {
     const cell = getCell(i, startCell);
     //if cell is already occupied by ship part or next to ship part, skip this startCell
     if (newArray[cell].shipPart || newArray[cell].nextToShipCell) {
-      return placeShips(array, shipSize);
+      return placeShips(array, shipSize, count);
     }
-    const shipPart = (i + 1) / shipSize;
+    //const shipPart = (i + 1) / shipSize;
+    const shipId = `${shipSize}-${count}`;
     fillCellsAroundShip(cell, direction, i, shipSize, newArray);
-    newArray[cell].shipPart = shipPart;
+    newArray[cell].shipPart = true;
+    newArray[cell].shipId = shipId;
   }
 
   return newArray;
 }
 
-function placeShipsOnField(field = [], setField) {
-  let changedField = field.map((obj) => ({ ...obj }));
+function placeShipsOnField(field = [], setField, setShipsStatus) {
+  let shipsStatus = {};
+  let filledField = field.map((obj) => ({ ...obj }));
   shipsConfig.forEach(({ size, count }) => {
     for (let i = 0; i < count; i++) {
-      changedField = placeShips(changedField, size);
+      filledField = placeShips(filledField, size, i);
     }
   });
 
-  setField(changedField);
+  filledField.forEach((item, idx) => {
+    if (item.shipPart) {
+      const shipId = item.shipId;
+      if (!shipsStatus[shipId]) {
+        shipsStatus[shipId] = {
+          id: shipId,
+          cells: [],
+          isDestroyed: false,
+        };
+      }
+      shipsStatus[shipId].cells.push(idx);
+    }
+  });
+  setShipsStatus(shipsStatus);
+  setField(filledField);
 }
 
-export { getRandomInt, placeShips, placeShipsOnField, generateEmptyArray };
+function shootRandomCell(
+  array,
+  setArray,
+  shipsStatus,
+  setShipsStatus,
+  onSetIsPlayerTurn
+) {
+  const [startCell] = getRandomInt();
+  const newArray = array.map((obj) => ({ ...obj }));
+  if (newArray[startCell].targeted) {
+    return shootRandomCell(
+      newArray,
+      setArray,
+      shipsStatus,
+      setShipsStatus,
+      onSetIsPlayerTurn
+    );
+  }
+  newArray[startCell].targeted = true;
+  const shipId = newArray[startCell].shipId;
+  if (shipId) {
+    const isDestroyed = shipsStatus[shipId].cells
+      .map((idx) => newArray[idx].targeted)
+      .every((targeted) => targeted);
+    setShipsStatus((prev) => ({
+      ...prev,
+      [shipId]: { ...prev[shipId], isDestroyed },
+    }));
+  }
+  setArray(newArray);
+  onSetIsPlayerTurn(true);
+}
+
+export {
+  getRandomInt,
+  placeShips,
+  placeShipsOnField,
+  generateEmptyArray,
+  shootRandomCell,
+};
