@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import cls from "classnames";
 import {
   placeShipsOnField,
   generateEmptyArray,
   shootRandomCell,
+  huntingShip,
 } from "../../utils/placementLogic";
 import styles from "./styles.module.scss";
 
@@ -14,6 +15,7 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
 
   const [array, setArray] = useState(() => generateEmptyArray());
   const [shipsStatus, setShipsStatus] = useState({});
+  const [huntingHistory, setHuntingHistory] = useState(null);
 
   useEffect(() => {
     placeShipsOnField(array, setArray, setShipsStatus);
@@ -32,14 +34,45 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
     if (!isPlayer) {
       return;
     }
-    if (!isPlayerTurn) {
-      shootRandomCell(
+    if (!isPlayerTurn && !huntingHistory) {
+      shootRandomCell({
         array,
         setArray,
         shipsStatus,
         setShipsStatus,
-        onSetIsPlayerTurn
+        onSetIsPlayerTurn,
+        setHuntingHistory,
+      });
+    }
+    if (!isPlayerTurn && huntingHistory) {
+      //console.log("huntingHistory!!!", huntingHistory);
+      huntingShip(
+        array,
+        setArray,
+        shipsStatus,
+        setShipsStatus,
+        onSetIsPlayerTurn,
+        setHuntingHistory,
+        huntingHistory
       );
+
+      //const newArray = array.map((obj) => ({ ...obj }));
+      //const lastHitCell = huntingHistory[huntingHistory.length - 1];
+      //const startCell = lastHitCell.idx;
+      //newArray[startCell].targeted = true;
+      //const shipId = newArray[startCell].shipId;
+
+      //if (shipId) {
+      //  const isDestroyed = shipsStatus[shipId].cells
+      //    .map((idx) => newArray[idx].targeted)
+      //    .every((targeted) => targeted);
+      //  setShipsStatus((prev) => ({
+      //    ...prev,
+      //    [shipId]: { ...prev[shipId], isDestroyed },
+      //  }));
+      //}
+      //setArray(newArray);
+      //onSetIsPlayerTurn(true);
     }
   }, [isPlayerTurn]);
 
@@ -75,7 +108,9 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
     setArray(arrayWithTargeted);
     onSetIsPlayerTurn(false);
   };
-
+  //if (isPlayer) {
+  //  console.log("array!!!", array);
+  //}
   return (
     <div className={styles.container}>
       {/*<div className={styles.textWrapper}>
@@ -104,9 +139,10 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
                 item.targeted && item.shipPart && !item.destroyed,
               [styles.destroyed]:
                 shipsStatus[item.shipId]?.isDestroyed && item.shipPart,
+              [styles.nextToDestroyedShip]: item.nextToDestroyedShip,
             })}
           >
-            {/*{idx}*/}
+            {idx}
           </div>
         ))}
       </div>

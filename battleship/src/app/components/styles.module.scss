@@ -21,6 +21,7 @@
   height: 50px;
   width: 50px;
   cursor: pointer;
+  color: #fff;
 }
 
 .shipPart {
@@ -86,4 +87,8 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.nextToDestroyedShip {
+  color: red;
 }
