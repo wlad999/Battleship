@@ -9,9 +9,14 @@ import {
 } from "../../utils/placementLogic";
 import styles from "./styles.module.scss";
 
-function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
+function Field({
+  isPlayer = false,
+  isPlayerTurn,
+  onSetIsPlayerTurn,
+  onSetWinner,
+  winner,
+}) {
   const [placeShips, setPlaceShips] = useState(false);
-  const [isWinner, setIsWinner] = useState(false);
 
   const [array, setArray] = useState(() => generateEmptyArray());
   const [shipsStatus, setShipsStatus] = useState({});
@@ -26,7 +31,7 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
       (item) => item.targeted && item.shipPart
     );
     if (targetedShipParts.length > 19) {
-      setIsWinner(true);
+      onSetWinner(isPlayer ? "Enemy" : "Player");
     }
   }, [array]);
 
@@ -45,7 +50,6 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
       });
     }
     if (!isPlayerTurn && huntingHistory) {
-      //console.log("huntingHistory!!!", huntingHistory);
       huntingShip(
         array,
         setArray,
@@ -55,31 +59,12 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
         setHuntingHistory,
         huntingHistory
       );
-
-      //const newArray = array.map((obj) => ({ ...obj }));
-      //const lastHitCell = huntingHistory[huntingHistory.length - 1];
-      //const startCell = lastHitCell.idx;
-      //newArray[startCell].targeted = true;
-      //const shipId = newArray[startCell].shipId;
-
-      //if (shipId) {
-      //  const isDestroyed = shipsStatus[shipId].cells
-      //    .map((idx) => newArray[idx].targeted)
-      //    .every((targeted) => targeted);
-      //  setShipsStatus((prev) => ({
-      //    ...prev,
-      //    [shipId]: { ...prev[shipId], isDestroyed },
-      //  }));
-      //}
-      //setArray(newArray);
-      //onSetIsPlayerTurn(true);
     }
   }, [isPlayerTurn]);
 
   const handlePlaceShips = () => {
     setArray(generateEmptyArray());
     setPlaceShips((prev) => !prev);
-    setIsWinner(false);
   };
 
   const handleClick = (idx) => {
@@ -87,7 +72,7 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
       return;
     }
 
-    if (array[idx].targeted || isWinner) {
+    if (array[idx].targeted || winner) {
       return;
     }
 
@@ -108,23 +93,9 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
     setArray(arrayWithTargeted);
     onSetIsPlayerTurn(false);
   };
-  //if (isPlayer) {
-  //  console.log("array!!!", array);
-  //}
+
   return (
     <div className={styles.container}>
-      {/*<div className={styles.textWrapper}>
-        {isWinner && (
-          <>
-            <h1>Congrats you are win!!!</h1>
-            <h3>
-              <span className={styles.tryAgain} onClick={handlePlaceShips}>
-                Try playing again!!!
-              </span>
-            </h3>
-          </>
-        )}
-      </div>*/}
       <h3>{isPlayer ? "Player" : "Enemy"}</h3>
       <div className={styles.wrapper}>
         {array.map((item, idx) => (
@@ -132,7 +103,9 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
             key={idx}
             onClick={() => handleClick(idx)}
             className={cls(styles.cell, {
-              [styles.shipPart]: item.shipPart,
+              [styles.shipPart]:
+                (item.shipPart && isPlayer) ||
+                shipsStatus[item.shipId]?.isDestroyed,
               //[styles.nextToShipCell]: item.nextToShipCell,
               [styles.targetedEmptyCell]: item.targeted && !item.shipPart,
               [styles.targetedShipCell]:
@@ -142,7 +115,7 @@ function Field({ isPlayer = false, isPlayerTurn, onSetIsPlayerTurn }) {
               [styles.nextToDestroyedShip]: item.nextToDestroyedShip,
             })}
           >
-            {idx}
+            {/*{idx}*/}
           </div>
         ))}
       </div>

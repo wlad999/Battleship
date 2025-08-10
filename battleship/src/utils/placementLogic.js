@@ -22,8 +22,6 @@ function fillCellsAroundShip(
   newArray,
   isDestroyed = false
 ) {
-  console.log("fillCellsAroundShip!!!", newArray);
-
   const bufferZone = isDestroyed ? "nextToDestroyedShip" : "nextToShipCell";
   if (direction === horizon) {
     //first horizontal field line
@@ -433,10 +431,7 @@ const huntingShip = (
   };
 
   if (huntingHistory.availableCells) {
-    console.log("huntingHistory exist!!!", huntingHistory);
-
     if (huntingHistory.targetedShipParts.length === 1) {
-      console.log("targetedShipParts.length === 1!!!", huntingHistory);
       const newAvailableCells = huntingHistory.availableCells.map((cell) => ({
         ...cell,
       }));
@@ -444,13 +439,11 @@ const huntingShip = (
       const availableIdxShotCells = huntingHistory.availableCells
         .map((cell, idx) => (!cell.targeted ? idx : null))
         .filter((idx) => idx !== null);
-      //console.log("availableIdxShotCells!!!", availableIdxShotCells);
 
       const randomIdx = Math.floor(
         Math.random() * availableIdxShotCells.length
       );
       const targetedIdx = availableIdxShotCells[randomIdx];
-      console.log("randomIdx!!!", randomIdx);
 
       newAvailableCells[targetedIdx].targeted = true;
       const targetedCell = newAvailableCells[targetedIdx].idx;
@@ -520,102 +513,108 @@ const huntingShip = (
         ].idx;
 
       const distanseBetweenTargetedParts = lastShotIdx - previousShotIdx;
-      console.log(
-        "distanseBetweenTargetedParts!!!",
-        distanseBetweenTargetedParts
-      );
-      console.log("lastShotIdx!!!", lastShotIdx);
-      console.log("previousShotIdx!!!", previousShotIdx);
 
       let nextShotIdx;
-      if (Math.abs(distanseBetweenTargetedParts) === 1) {
+      if (Math.abs(distanseBetweenTargetedParts) < 10) {
         const newArray = array.map((obj) => ({ ...obj }));
 
         if (distanseBetweenTargetedParts > 0) {
-          if (
-            !`${lastShotIdx}`.endsWith("9") &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts].targeted &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts]
-              .nextToTargetedShip
-          ) {
-            nextShotIdx = lastShotIdx + distanseBetweenTargetedParts;
+          if (!`${lastShotIdx}`.endsWith("9")) {
+            if (
+              !newArray[lastShotIdx + 1].targeted ||
+              !newArray[lastShotIdx + 1].nextToTargetedShip
+            ) {
+              nextShotIdx = lastShotIdx + 1;
+            }
+
+            if (
+              newArray[lastShotIdx + 1].targeted ||
+              newArray[lastShotIdx + 1].nextToTargetedShip
+            ) {
+              nextShotIdx = huntingHistory.targetedShipParts[0].idx - 1;
+            }
           }
 
           if (
             `${lastShotIdx}`.endsWith("9") ||
-            newArray[lastShotIdx + distanseBetweenTargetedParts].targeted
+            newArray[lastShotIdx + 1].targeted
           ) {
-            nextShotIdx =
-              huntingHistory.targetedShipParts[0].idx -
-              distanseBetweenTargetedParts;
+            nextShotIdx = huntingHistory.targetedShipParts[0].idx - 1;
           }
         }
         if (distanseBetweenTargetedParts < 0) {
-          if (
-            !`${lastShotIdx}`.endsWith("0") &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts].targeted &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts]
-              .nextToTargetedShip
-          ) {
-            nextShotIdx = lastShotIdx + distanseBetweenTargetedParts;
+          if (!`${lastShotIdx}`.endsWith("0")) {
+            if (
+              !newArray[lastShotIdx - 1].targeted ||
+              !newArray[lastShotIdx - 1].nextToTargetedShip
+            ) {
+              nextShotIdx = lastShotIdx - 1;
+            }
+            if (
+              newArray[lastShotIdx - 1].targeted ||
+              newArray[lastShotIdx - 1].nextToTargetedShip
+            ) {
+              nextShotIdx = huntingHistory.targetedShipParts[0].idx + 1;
+            }
           }
 
           if (
             `${lastShotIdx}`.endsWith("0") ||
             newArray[lastShotIdx + distanseBetweenTargetedParts].targeted
           ) {
-            nextShotIdx =
-              huntingHistory.targetedShipParts[0].idx -
-              distanseBetweenTargetedParts;
+            nextShotIdx = huntingHistory.targetedShipParts[0].idx + 1;
           }
         }
       }
-
-      if (Math.abs(distanseBetweenTargetedParts) === 10) {
+      //verical shot
+      if (Math.abs(distanseBetweenTargetedParts) >= 10) {
         const newArray = array.map((obj) => ({ ...obj }));
-
+        //from top to bottom
         if (distanseBetweenTargetedParts > 0) {
-          if (
-            lastShotIdx < 90 &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts].targeted &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts]
-              .nextToDestroyedShip
-          ) {
-            nextShotIdx = lastShotIdx + distanseBetweenTargetedParts;
+          //if (lastShotIdx < 10) {
+          //  nextShotIdx = huntingHistory.targetedShipParts[0].idx + 10;
+          //}
+
+          if (lastShotIdx > 9 && lastShotIdx < 90) {
+            if (
+              !newArray[lastShotIdx + 10].targeted ||
+              !newArray[lastShotIdx + 10].nextToDestroyedShip
+            ) {
+              nextShotIdx = lastShotIdx + 10;
+            }
+            if (
+              newArray[lastShotIdx + 10].targeted ||
+              newArray[lastShotIdx + 10].nextToDestroyedShip
+            ) {
+              nextShotIdx = huntingHistory.targetedShipParts[0].idx - 10;
+            }
           }
 
-          if (
-            lastShotIdx > 89 ||
-            newArray[lastShotIdx + distanseBetweenTargetedParts].targeted
-          ) {
-            nextShotIdx =
-              huntingHistory.targetedShipParts[0].idx -
-              distanseBetweenTargetedParts;
+          if (lastShotIdx > 89) {
+            nextShotIdx = huntingHistory.targetedShipParts[0].idx - 10;
           }
         }
+        //from bottom to top
         if (distanseBetweenTargetedParts < 0) {
-          if (
-            !`${lastShotIdx}`.endsWith("0") &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts].targeted &&
-            !newArray[lastShotIdx + distanseBetweenTargetedParts]
-              .nextToTargetedShip
-          ) {
-            nextShotIdx = lastShotIdx + distanseBetweenTargetedParts;
+          if (lastShotIdx < 10) {
+            nextShotIdx = huntingHistory.targetedShipParts[0].idx + 10;
           }
-
-          if (
-            `${lastShotIdx}`.endsWith("0") ||
-            newArray[lastShotIdx + distanseBetweenTargetedParts].targeted
-          ) {
-            nextShotIdx =
-              huntingHistory.targetedShipParts[0].idx -
-              distanseBetweenTargetedParts;
+          if (lastShotIdx > 9) {
+            if (
+              !newArray[lastShotIdx - 10].targeted ||
+              !newArray[lastShotIdx - 10].nextToTargetedShip
+            ) {
+              nextShotIdx = lastShotIdx - 10;
+            }
+            if (
+              newArray[lastShotIdx - 10].targeted ||
+              newArray[lastShotIdx - 10].nextToTargetedShip
+            ) {
+              nextShotIdx = huntingHistory.targetedShipParts[0].idx + 10;
+            }
           }
         }
       }
-      console.log("nextShotIdx!!!", nextShotIdx);
-      console.log("array!!!", array);
-
       const newArray = array.map((obj) => ({ ...obj }));
       newArray[nextShotIdx].targeted = true;
 
@@ -641,8 +640,6 @@ const huntingShip = (
         }
         if (isDestroyed) {
           setHuntingHistory(null);
-          console.log("ship destroyed!!!", shipId);
-          console.log("shipsStatus[shipId]!!!", shipsStatus[shipId]);
           const shipSize = shipsStatus[shipId].cells.length;
           const ship = shipsStatus[shipId].cells;
           let direction;
@@ -674,7 +671,6 @@ const huntingShip = (
   }
 
   if (!huntingHistory.availableCells) {
-    console.log("hunting history absent!!!", huntingHistory);
     // first targeted ship part
     const cell = huntingHistory.targetedShipParts[0].idx;
     //first horizontal field line
@@ -739,7 +735,6 @@ const huntingShip = (
     const newArray = array.map((obj) => ({ ...obj }));
     newArray[targetedCell].targeted = true;
 
-    console.log("availableCells!!!", availableCells);
     const shipId = newArray[targetedCell].shipId;
 
     if (shipId) {
