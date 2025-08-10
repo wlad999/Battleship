@@ -331,9 +331,9 @@ function placeShips(array, shipSize, count) {
   return newArray;
 }
 
-function placeShipsOnField(field = [], setField, setShipsStatus) {
+function placeShipsOnField() {
   let shipsStatus = {};
-  let filledField = field.map((obj) => ({ ...obj }));
+  let filledField = generateEmptyArray();
   shipsConfig.forEach(({ size, count }) => {
     for (let i = 0; i < count; i++) {
       filledField = placeShips(filledField, size, i);
@@ -353,8 +353,7 @@ function placeShipsOnField(field = [], setField, setShipsStatus) {
       shipsStatus[shipId].cells.push(idx);
     }
   });
-  setShipsStatus(shipsStatus);
-  setField(filledField);
+  return { shipsStatus, filledField };
 }
 
 function shootRandomCell({

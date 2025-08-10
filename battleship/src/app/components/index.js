@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import cls from "classnames";
 import {
   placeShipsOnField,
-  generateEmptyArray,
   shootRandomCell,
   huntingShip,
 } from "../../utils/placementLogic";
@@ -15,15 +14,20 @@ function Field({
   onSetIsPlayerTurn,
   onSetWinner,
   winner,
+  placeShips,
+  started,
 }) {
-  const [placeShips, setPlaceShips] = useState(false);
-
-  const [array, setArray] = useState(() => generateEmptyArray());
+  const [array, setArray] = useState([]);
   const [shipsStatus, setShipsStatus] = useState({});
   const [huntingHistory, setHuntingHistory] = useState(null);
 
   useEffect(() => {
-    placeShipsOnField(array, setArray, setShipsStatus);
+    if (placeShips !== null && !isPlayer) {
+      return;
+    }
+    const { shipsStatus, filledField } = placeShipsOnField();
+    setArray(filledField);
+    setShipsStatus(shipsStatus);
   }, [placeShips]);
 
   useEffect(() => {
@@ -62,17 +66,16 @@ function Field({
     }
   }, [isPlayerTurn]);
 
-  const handlePlaceShips = () => {
-    setArray(generateEmptyArray());
-    setPlaceShips((prev) => !prev);
-  };
-
   const handleClick = (idx) => {
     if (isPlayer || !isPlayerTurn) {
       return;
     }
 
     if (array[idx].targeted || winner) {
+      return;
+    }
+
+    if (!started) {
       return;
     }
 
@@ -103,6 +106,8 @@ function Field({
             key={idx}
             onClick={() => handleClick(idx)}
             className={cls(styles.cell, {
+              //[styles.shipPart]:
+              //  item.shipPart || shipsStatus[item.shipId]?.isDestroyed,
               [styles.shipPart]:
                 (item.shipPart && isPlayer) ||
                 shipsStatus[item.shipId]?.isDestroyed,
@@ -119,11 +124,6 @@ function Field({
           </div>
         ))}
       </div>
-      {isPlayer && (
-        <button className={styles.button} onClick={handlePlaceShips}>
-          place ships
-        </button>
-      )}
     </div>
   );
 }
