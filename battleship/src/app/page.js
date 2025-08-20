@@ -9,6 +9,7 @@ export default function Home() {
   const [winner, setWinner] = useState(null);
   const [started, setStarted] = useState(false);
   const [placeShips, setPlaceShips] = useState(null);
+  const [showShips, setShowShips] = useState(false);
 
   const handlePlaceShips = () => {
     if (placeShips === null) {
@@ -23,6 +24,7 @@ export default function Home() {
     setStarted(false);
     setPlaceShips(null);
     setIsPlayerTurn(true);
+    setShowShips(false);
   };
 
   return (
@@ -53,9 +55,19 @@ export default function Home() {
               ? "Captain, you've lost! Don't be a coward, try again!"
               : "Congratulations, General, you won! You are cooler than AI!"}
           </h1>
-          <button className={styles.button} onClick={handleRestart}>
-            To battle!
-          </button>
+          <div>
+            <button className={styles.button} onClick={handleRestart}>
+              To battle!
+            </button>
+            {winner === "Enemy" && !showShips && (
+              <button
+                className={cls(styles.button, styles.showShipsButton)}
+                onClick={() => setShowShips(true)}
+              >
+                Show all ships
+              </button>
+            )}
+          </div>
         </>
       )}
       <div className={styles.page}>
@@ -66,6 +78,7 @@ export default function Home() {
           winner={winner}
           placeShips={placeShips}
           started={started}
+          showShips={showShips}
         />
         <Field
           isPlayerTurn={isPlayerTurn}

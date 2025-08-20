@@ -363,18 +363,24 @@ function shootRandomCell({
   setShipsStatus,
   onSetIsPlayerTurn,
   setHuntingHistory,
+  setNextCpuShoot,
 }) {
-  const availableCells = array
+  const newArray = array.map((obj) => ({ ...obj }));
+  const availableCells = newArray
     .map((cell, idx) =>
       !cell.targeted && !cell.nextToDestroyedShip ? idx : null
     )
     .filter((idx) => idx !== null);
+  //console.log("availableCells!!!", availableCells);
 
   if (availableCells.length === 0) return;
   const randomIdx = Math.floor(Math.random() * availableCells.length);
   const startCell = availableCells[randomIdx];
-  const newArray = array.map((obj) => ({ ...obj }));
+  //console.log("randomIdx in avalibleCells!!!", randomIdx);
+  //console.log("startCell!!!", startCell);
+
   newArray[startCell].targeted = true;
+  //console.log("newArray[startCell]!!!", newArray[startCell]);
   const shipId = newArray[startCell].shipId;
 
   if (shipId) {
@@ -411,7 +417,10 @@ function shootRandomCell({
     }
   }
   setArray(newArray);
-  onSetIsPlayerTurn(true);
+  setNextCpuShoot((prev) => {
+    return shipId ? prev + 1 : 0;
+  });
+  onSetIsPlayerTurn(shipId ? false : true);
 }
 
 const huntingShip = (
@@ -421,11 +430,13 @@ const huntingShip = (
   setShipsStatus,
   onSetIsPlayerTurn,
   setHuntingHistory,
-  huntingHistory
+  huntingHistory,
+  setNextCpuShoot
 ) => {
   const availableCells = [];
+  const newArray = array.map((obj) => ({ ...obj }));
   const pushAvailableCells = (cell) => {
-    if (array[cell].targeted || array[cell].nextToDestroyedShip) return;
+    if (newArray[cell].targeted || newArray[cell].nextToDestroyedShip) return;
     availableCells.push({ idx: cell });
   };
 
@@ -446,12 +457,11 @@ const huntingShip = (
 
       newAvailableCells[targetedIdx].targeted = true;
       const targetedCell = newAvailableCells[targetedIdx].idx;
-      const newArray = array.map((obj) => ({ ...obj }));
       newArray[targetedCell].targeted = true;
 
       const shipId = newArray[targetedCell].shipId;
 
-      if (shipId) {
+      if (shipId && newArray[targetedCell].shipPart) {
         const isDestroyed = shipsStatus[shipId].cells
           .map((idx) => newArray[idx].targeted)
           .every((targeted) => targeted);
@@ -497,7 +507,10 @@ const huntingShip = (
         }));
       }
       setArray(newArray);
-      onSetIsPlayerTurn(true);
+      setNextCpuShoot((prev) => {
+        return shipId ? prev + 1 : 0;
+      });
+      onSetIsPlayerTurn(shipId ? false : true);
     }
 
     if (huntingHistory.targetedShipParts.length > 1) {
@@ -515,8 +528,6 @@ const huntingShip = (
 
       let nextShotIdx;
       if (Math.abs(distanseBetweenTargetedParts) < 10) {
-        const newArray = array.map((obj) => ({ ...obj }));
-
         if (distanseBetweenTargetedParts > 0) {
           if (!`${lastShotIdx}`.endsWith("9")) {
             if (
@@ -567,13 +578,8 @@ const huntingShip = (
       }
       //verical shot
       if (Math.abs(distanseBetweenTargetedParts) >= 10) {
-        const newArray = array.map((obj) => ({ ...obj }));
         //from top to bottom
         if (distanseBetweenTargetedParts > 0) {
-          //if (lastShotIdx < 10) {
-          //  nextShotIdx = huntingHistory.targetedShipParts[0].idx + 10;
-          //}
-
           if (lastShotIdx > 9 && lastShotIdx < 90) {
             if (
               !newArray[lastShotIdx + 10].targeted ||
@@ -614,7 +620,6 @@ const huntingShip = (
           }
         }
       }
-      const newArray = array.map((obj) => ({ ...obj }));
       newArray[nextShotIdx].targeted = true;
 
       const shipId = newArray[nextShotIdx].shipId;
@@ -665,7 +670,10 @@ const huntingShip = (
         }));
       }
       setArray(newArray);
-      onSetIsPlayerTurn(true);
+      setNextCpuShoot((prev) => {
+        return shipId ? prev + 1 : 0;
+      });
+      onSetIsPlayerTurn(shipId ? false : true);
     }
   }
 
@@ -731,15 +739,14 @@ const huntingShip = (
     }
     console.log("availableCells!!!", availableCells);
     //===============================
-    //add if !availableCells.length === 0
+    //add if availableCells.length === 0
     //================================
 
     const randomIdx = Math.floor(Math.random() * availableCells.length);
     availableCells[randomIdx].targeted = true;
     const targetedCell = availableCells[randomIdx].idx;
-    const newArray = array.map((obj) => ({ ...obj }));
     newArray[targetedCell].targeted = true;
-    console.log("targetedCell!!!", targetedCell);
+    //console.log("targetedCell!!!", targetedCell);
 
     const shipId = newArray[targetedCell].shipId;
 
@@ -789,7 +796,10 @@ const huntingShip = (
       }));
     }
     setArray(newArray);
-    onSetIsPlayerTurn(true);
+    setNextCpuShoot((prev) => {
+      return shipId ? prev + 1 : 0;
+    });
+    onSetIsPlayerTurn(shipId ? false : true);
   }
 };
 

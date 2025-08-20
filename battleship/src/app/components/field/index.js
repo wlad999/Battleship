@@ -17,10 +17,12 @@ function Field({
   winner,
   placeShips,
   started,
+  showShips = false,
 }) {
   const [array, setArray] = useState([]);
   const [shipsStatus, setShipsStatus] = useState({});
   const [huntingHistory, setHuntingHistory] = useState(null);
+  const [nextCpuShoot, setNextCpuShoot] = useState(null);
 
   useEffect(() => {
     if (placeShips !== null && !isPlayer) {
@@ -48,7 +50,10 @@ function Field({
     if (!isPlayer) {
       return;
     }
-    if (!isPlayerTurn && !huntingHistory) {
+    if (
+      (!isPlayerTurn && !huntingHistory) ||
+      (!isPlayerTurn && !huntingHistory && !!nextCpuShoot)
+    ) {
       shootRandomCell({
         array,
         setArray,
@@ -56,9 +61,13 @@ function Field({
         setShipsStatus,
         onSetIsPlayerTurn,
         setHuntingHistory,
+        setNextCpuShoot,
       });
     }
-    if (!isPlayerTurn && huntingHistory) {
+    if (
+      (!isPlayerTurn && huntingHistory) ||
+      (!isPlayerTurn && huntingHistory && !!nextCpuShoot)
+    ) {
       huntingShip(
         array,
         setArray,
@@ -66,10 +75,11 @@ function Field({
         setShipsStatus,
         onSetIsPlayerTurn,
         setHuntingHistory,
-        huntingHistory
+        huntingHistory,
+        setNextCpuShoot
       );
     }
-  }, [isPlayerTurn]);
+  }, [isPlayerTurn, nextCpuShoot]);
 
   const handleClick = (idx) => {
     if (isPlayer || !isPlayerTurn) {
@@ -99,7 +109,7 @@ function Field({
       }));
     }
     setArray(arrayWithTargeted);
-    onSetIsPlayerTurn(false);
+    onSetIsPlayerTurn(shipId ? true : false);
   };
 
   return (
@@ -116,7 +126,8 @@ function Field({
               //  item.shipPart || shipsStatus[item.shipId]?.isDestroyed,
               [styles.shipPart]:
                 (item.shipPart && isPlayer) ||
-                shipsStatus[item.shipId]?.isDestroyed,
+                shipsStatus[item.shipId]?.isDestroyed ||
+                (item.shipPart && showShips),
               //[styles.nextToShipCell]: item.nextToShipCell,
               [styles.targetedEmptyCell]: item.targeted && !item.shipPart,
               [styles.targetedShipCell]:
@@ -126,7 +137,7 @@ function Field({
               [styles.nextToDestroyedShip]: item.nextToDestroyedShip,
             })}
           >
-            {idx}
+            {/*{idx}*/}
           </div>
         ))}
       </div>
