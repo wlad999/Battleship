@@ -4,13 +4,13 @@
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(10, 50px);
-  grid-template-rows: repeat(10, 50px);
-  //gap: 1px;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
   background-image: url("/bg.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  width: fit-content;
 }
 
 .cell {
@@ -18,28 +18,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50px;
-  width: 50px;
+  height: 100%;
+  width: 100%;
   cursor: pointer;
   color: #fff;
 }
 
 .shipPart {
   background-color: #737798;
-  border: 1px solid #101011;
 }
 
 .nextToShipCell {
   background-color: #f36363;
-}
-
-.button {
-  padding: 4px 8px;
-  background-color: #4caf50;
-  cursor: pointer;
-  &:hover {
-    background-color: #125916;
-  }
 }
 
 .targetedEmptyCell {
@@ -67,19 +57,6 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-.textWrapper {
-  text-align: center;
-  height: 80px;
-  margin-bottom: 10px;
-}
-
-.tryAgain {
-  cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
 .destroyed {

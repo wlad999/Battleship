@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import styles from "./page.module.css";
-import Field from "./components";
+import Field from "./components/field";
 import cls from "classnames";
 
 export default function Home() {

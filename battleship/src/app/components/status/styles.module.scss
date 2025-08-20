@@ -1,0 +1,46 @@
+.ship {
+  display: flex;
+  width: fit-content;
+  margin-bottom: 2px;
+  border: 1px solid #656568;
+}
+
+.cell {
+  width: 20px;
+  height: 20px;
+  background-color: #acacb0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.destroyedCell {
+  background-color: #5c5b5b;
+}
+
+.statusContainer {
+  display: flex;
+}
+.cellStatus {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.targeted {
+  background-color: #f36363;
+}
+
+.destroyed {
+  background-color: #a03f3f;
+}
+
+.shipPart {
+  background-color: lightseagreen;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  margin-right: 15px;
+}

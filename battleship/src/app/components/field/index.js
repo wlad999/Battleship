@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import cls from "classnames";
+import Status from "../status";
 import {
   placeShipsOnField,
   shootRandomCell,
   huntingShip,
-} from "../../utils/placementLogic";
+} from "@/utils/placementLogic";
 import styles from "./styles.module.scss";
 
 function Field({
@@ -25,10 +26,14 @@ function Field({
     if (placeShips !== null && !isPlayer) {
       return;
     }
+
+    if (started) {
+      return;
+    }
     const { shipsStatus, filledField } = placeShipsOnField();
     setArray(filledField);
     setShipsStatus(shipsStatus);
-  }, [placeShips]);
+  }, [placeShips, started]);
 
   useEffect(() => {
     const targetedShipParts = array.filter(
@@ -99,7 +104,8 @@ function Field({
 
   return (
     <div className={styles.container}>
-      <h3>{isPlayer ? "Player" : "Enemy"}</h3>
+      <Status shipsStatus={shipsStatus} />
+      <h3>{isPlayer ? "Player fleet" : "Enemy fleet"}</h3>
       <div className={styles.wrapper}>
         {array.map((item, idx) => (
           <div
@@ -120,7 +126,7 @@ function Field({
               [styles.nextToDestroyedShip]: item.nextToDestroyedShip,
             })}
           >
-            {/*{idx}*/}
+            {idx}
           </div>
         ))}
       </div>

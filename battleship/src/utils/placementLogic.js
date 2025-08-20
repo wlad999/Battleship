@@ -700,6 +700,8 @@ const huntingShip = (
       cell > 9 &&
       cell < 89
     ) {
+      console.log("fields out of borders - cell!!!");
+
       pushAvailableCells(cell - 10);
       pushAvailableCells(cell - 1);
       pushAvailableCells(cell + 1);
@@ -727,12 +729,17 @@ const huntingShip = (
       pushAvailableCells(cell - 1);
       pushAvailableCells(cell - 10);
     }
+    console.log("availableCells!!!", availableCells);
+    //===============================
+    //add if !availableCells.length === 0
+    //================================
 
     const randomIdx = Math.floor(Math.random() * availableCells.length);
     availableCells[randomIdx].targeted = true;
     const targetedCell = availableCells[randomIdx].idx;
     const newArray = array.map((obj) => ({ ...obj }));
     newArray[targetedCell].targeted = true;
+    console.log("targetedCell!!!", targetedCell);
 
     const shipId = newArray[targetedCell].shipId;
 
