@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import cls from "classnames";
 import Status from "../status";
 import {
@@ -25,7 +25,7 @@ function Field({
   const [nextCpuShoot, setNextCpuShoot] = useState(null);
 
   useEffect(() => {
-    if (placeShips !== null && !isPlayer) {
+    if (!isPlayer && placeShips !== null) {
       return;
     }
 
@@ -38,6 +38,7 @@ function Field({
   }, [placeShips, started]);
 
   useEffect(() => {
+    if (!array.length) return;
     const targetedShipParts = array.filter(
       (item) => item.targeted && item.shipPart
     );
@@ -81,7 +82,7 @@ function Field({
     }
   }, [isPlayerTurn, nextCpuShoot]);
 
-  const handleClick = (idx) => {
+  const handleClick = useCallback((idx) => {
     if (isPlayer || !isPlayerTurn) {
       return;
     }
@@ -109,12 +110,12 @@ function Field({
       }));
     }
     setArray(arrayWithTargeted);
-    onSetIsPlayerTurn(shipId ? true : false);
-  };
+    onSetIsPlayerTurn(!!shipId);
+  });
 
   return (
     <div className={styles.container}>
-      <Status shipsStatus={shipsStatus} />
+      <Status shipsStatus={shipsStatus} isPlayer={isPlayer} />
       <h3>{isPlayer ? "Player fleet" : "Enemy fleet"}</h3>
       <div className={styles.wrapper}>
         {array.map((item, idx) => (

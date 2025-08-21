@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import styles from "./page.module.css";
-import Field from "./components/field";
 import cls from "classnames";
+import Field from "./components/field";
+
+import styles from "./page.module.css";
 
 export default function Home() {
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
@@ -30,9 +31,9 @@ export default function Home() {
   return (
     <div className={styles.container}>
       {!winner && started && (
-        <h1 className={styles.title}>
+        <h2 className={styles.title}>
           {isPlayerTurn ? "Player" : "Enemy"} turn
-        </h1>
+        </h2>
       )}
 
       {!started && (
@@ -50,11 +51,11 @@ export default function Home() {
       )}
       {winner && (
         <>
-          <h1>
+          <h2 className={styles.title}>
             {winner === "Enemy"
               ? "Captain, you've lost! Don't be a coward, try again!"
               : "Congratulations, General, you won! You are cooler than AI!"}
-          </h1>
+          </h2>
           <div>
             <button className={styles.button} onClick={handleRestart}>
               To battle!

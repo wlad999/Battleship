@@ -371,16 +371,12 @@ function shootRandomCell({
       !cell.targeted && !cell.nextToDestroyedShip ? idx : null
     )
     .filter((idx) => idx !== null);
-  //console.log("availableCells!!!", availableCells);
 
   if (availableCells.length === 0) return;
   const randomIdx = Math.floor(Math.random() * availableCells.length);
   const startCell = availableCells[randomIdx];
-  //console.log("randomIdx in avalibleCells!!!", randomIdx);
-  //console.log("startCell!!!", startCell);
 
   newArray[startCell].targeted = true;
-  //console.log("newArray[startCell]!!!", newArray[startCell]);
   const shipId = newArray[startCell].shipId;
 
   if (shipId) {
@@ -708,8 +704,6 @@ const huntingShip = (
       cell > 9 &&
       cell < 89
     ) {
-      console.log("fields out of borders - cell!!!");
-
       pushAvailableCells(cell - 10);
       pushAvailableCells(cell - 1);
       pushAvailableCells(cell + 1);
@@ -737,16 +731,11 @@ const huntingShip = (
       pushAvailableCells(cell - 1);
       pushAvailableCells(cell - 10);
     }
-    console.log("availableCells!!!", availableCells);
-    //===============================
-    //add if availableCells.length === 0
-    //================================
 
     const randomIdx = Math.floor(Math.random() * availableCells.length);
     availableCells[randomIdx].targeted = true;
     const targetedCell = availableCells[randomIdx].idx;
     newArray[targetedCell].targeted = true;
-    //console.log("targetedCell!!!", targetedCell);
 
     const shipId = newArray[targetedCell].shipId;
 
@@ -803,6 +792,18 @@ const huntingShip = (
   }
 };
 
+function groupAndSortShips(shipsStatus) {
+  const ships = Object.values(shipsStatus);
+  return [
+    ships.filter((ship) => ship.cells.length === 4),
+    ships.filter((ship) => ship.cells.length === 3),
+    ships.filter((ship) => ship.cells.length === 2),
+    ships.filter((ship) => ship.cells.length === 1),
+  ].map((group) =>
+    group.sort((a, b) => Number(a.isDestroyed) - Number(b.isDestroyed))
+  );
+}
+
 export {
   getRandomInt,
   placeShips,
@@ -810,4 +811,5 @@ export {
   generateEmptyArray,
   shootRandomCell,
   huntingShip,
+  groupAndSortShips,
 };

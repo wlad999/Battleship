@@ -1,25 +1,19 @@
 "use client";
 import cls from "classnames";
+import { groupAndSortShips } from "@/utils/placementLogic";
+
 import styles from "./styles.module.scss";
 
-function Status({ shipsStatus }) {
+function Status({ shipsStatus = {}, isPlayer }) {
   if (!Object.values(shipsStatus).length) {
     return;
   }
 
-  const ships = Object.values(shipsStatus);
-  const groupedShips = [
-    ships.filter((ship) => ship.cells.length === 4),
-    ships.filter((ship) => ship.cells.length === 3),
-    ships.filter((ship) => ship.cells.length === 2),
-    ships.filter((ship) => ship.cells.length === 1),
-  ].map((group) =>
-    group.sort((a, b) => Number(a.isDestroyed) - Number(b.isDestroyed))
-  );
+  const groupedShips = groupAndSortShips(shipsStatus);
 
   return (
     <>
-      <p>Fleet status</p>
+      <p>{isPlayer ? "Player" : "Enemy"} fleet status</p>
       <div className={styles.statusContainer}>
         {groupedShips.map((group, groupIdx) => (
           <div className={styles.group} key={groupIdx}>

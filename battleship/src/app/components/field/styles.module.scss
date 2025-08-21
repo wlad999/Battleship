@@ -1,16 +1,23 @@
 .container {
-  padding: 10px;
+  padding-bottom: 10px;
+  @media screen and (min-width: 768px) {
+    padding: 10px;
+  }
 }
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(10, 40px);
-  grid-template-rows: repeat(10, 40px);
+  width: fit-content;
   background-image: url("/bg.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  width: fit-content;
+  grid-template-columns: repeat(10, 35px);
+  grid-template-rows: repeat(10, 35px);
+  @media screen and (min-width: 768px) {
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+  }
 }
 
 .cell {
