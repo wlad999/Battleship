@@ -6,7 +6,7 @@ import {
   placeShipsOnField,
   shootRandomCell,
   huntingShip,
-} from "@/utils/placementLogic";
+} from "@/utils/gameLogic.js";
 import styles from "./styles.module.scss";
 
 function Field({
@@ -123,13 +123,10 @@ function Field({
             key={idx}
             onClick={() => handleClick(idx)}
             className={cls(styles.cell, {
-              //[styles.shipPart]:
-              //  item.shipPart || shipsStatus[item.shipId]?.isDestroyed,
               [styles.shipPart]:
                 (item.shipPart && isPlayer) ||
                 shipsStatus[item.shipId]?.isDestroyed ||
                 (item.shipPart && showShips),
-              //[styles.nextToShipCell]: item.nextToShipCell,
               [styles.targetedEmptyCell]: item.targeted && !item.shipPart,
               [styles.targetedShipCell]:
                 item.targeted && item.shipPart && !item.destroyed,
@@ -137,9 +134,7 @@ function Field({
                 shipsStatus[item.shipId]?.isDestroyed && item.shipPart,
               [styles.nextToDestroyedShip]: item.nextToDestroyedShip,
             })}
-          >
-            {/*{idx}*/}
-          </div>
+          />
         ))}
       </div>
     </div>
