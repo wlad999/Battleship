@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import cls from "classnames";
-import Status from "../status";
+import Status from "../Status";
 import {
   placeShipsOnField,
   shootRandomCell,
   huntingShip,
-} from "@/utils/gameLogic.js";
+} from "../../../utils/gameLogic";
 import styles from "./styles.module.scss";
 
 function Field({

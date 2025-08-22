@@ -1,6 +1,6 @@
 "use client";
 import cls from "classnames";
-import { groupAndSortShips } from "@/utils/gameLogic";
+import { groupAndSortShips } from "../../../utils/gameLogic";
 
 import styles from "./styles.module.scss";
 

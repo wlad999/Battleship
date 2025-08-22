@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import cls from "classnames";
-import Field from "./components/field";
+import Field from "./components/Field";
 
 import styles from "./page.module.css";
 
