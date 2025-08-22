@@ -51,35 +51,40 @@ function Field({
     if (!isPlayer) {
       return;
     }
-    if (
-      (!isPlayerTurn && !huntingHistory) ||
-      (!isPlayerTurn && !huntingHistory && !!nextCpuShoot)
-    ) {
-      shootRandomCell({
-        array,
-        setArray,
-        shipsStatus,
-        setShipsStatus,
-        onSetIsPlayerTurn,
-        setHuntingHistory,
-        setNextCpuShoot,
-      });
-    }
-    if (
-      (!isPlayerTurn && huntingHistory) ||
-      (!isPlayerTurn && huntingHistory && !!nextCpuShoot)
-    ) {
-      huntingShip(
-        array,
-        setArray,
-        shipsStatus,
-        setShipsStatus,
-        onSetIsPlayerTurn,
-        setHuntingHistory,
-        huntingHistory,
-        setNextCpuShoot
-      );
-    }
+    const shootWithDelay = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      if (
+        (!isPlayerTurn && !huntingHistory) ||
+        (!isPlayerTurn && !huntingHistory && !!nextCpuShoot)
+      ) {
+        shootRandomCell({
+          array,
+          setArray,
+          shipsStatus,
+          setShipsStatus,
+          onSetIsPlayerTurn,
+          setHuntingHistory,
+          setNextCpuShoot,
+        });
+      }
+      if (
+        (!isPlayerTurn && huntingHistory) ||
+        (!isPlayerTurn && huntingHistory && !!nextCpuShoot)
+      ) {
+        huntingShip(
+          array,
+          setArray,
+          shipsStatus,
+          setShipsStatus,
+          onSetIsPlayerTurn,
+          setHuntingHistory,
+          huntingHistory,
+          setNextCpuShoot
+        );
+      }
+    };
+    shootWithDelay();
   }, [isPlayerTurn, nextCpuShoot]);
 
   const handleClick = useCallback((idx) => {
