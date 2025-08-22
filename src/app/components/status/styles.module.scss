@@ -20,6 +20,10 @@
 
 .statusContainer {
   display: flex;
+  justify-content: flex-end;
+  .group:last-child {
+    margin-right: 0;
+  }
 }
 .cellStatus {
   width: 10px;
@@ -43,4 +47,8 @@
   display: flex;
   flex-direction: column;
   margin-right: 15px;
+}
+
+.title {
+  text-align: end;
 }

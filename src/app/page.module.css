@@ -12,13 +12,16 @@
 }
 
 .container {
+  padding: 60px 10px 10px;
   width: 100%;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: lightblue;
   min-height: 100vh;
+  @media screen and (min-width: 768px) {
+    padding: 20px;
+  }
 }
 
 .button {
@@ -43,4 +46,19 @@
 
 .title {
   margin-bottom: 10px;
+}
+
+.startButtonContainer {
+  position: fixed;
+  top: 0;
+  padding-top: 5px;
+  @media screen and (min-width: 768px) {
+    position: uset;
+  }
+}
+
+.start {
+  @media screen and (max-width: 768px) {
+    padding: 10px;
+  }
 }

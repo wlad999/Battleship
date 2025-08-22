@@ -115,7 +115,7 @@ function Field({
 
   return (
     <div className={styles.container}>
-      <Status shipsStatus={shipsStatus} isPlayer={isPlayer} />
+      <Status shipsStatus={shipsStatus} isPlayer={isPlayer} started={started} />
       <h3>{isPlayer ? "Player fleet" : "Enemy fleet"}</h3>
       <div className={styles.wrapper}>
         {array.map((item, idx) => (

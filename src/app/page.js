@@ -29,7 +29,7 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={cls(styles.container, { [styles.start]: started })}>
       {!winner && started && (
         <h2 className={styles.title}>
           {isPlayerTurn ? "Player" : "Enemy"} turn
@@ -37,7 +37,7 @@ export default function Home() {
       )}
 
       {!started && (
-        <div>
+        <div className={styles.startButtonContainer}>
           <button
             className={cls(styles.button, styles.startButton)}
             onClick={() => setStarted(true)}

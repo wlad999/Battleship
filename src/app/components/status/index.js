@@ -4,8 +4,8 @@ import { groupAndSortShips } from "@/utils/gameLogic";
 
 import styles from "./styles.module.scss";
 
-function Status({ shipsStatus = {}, isPlayer }) {
-  if (!Object.values(shipsStatus).length) {
+function Status({ shipsStatus = {}, isPlayer, started }) {
+  if (!Object.values(shipsStatus).length || !started) {
     return;
   }
 
@@ -13,7 +13,9 @@ function Status({ shipsStatus = {}, isPlayer }) {
 
   return (
     <>
-      <p>{isPlayer ? "Player" : "Enemy"} fleet status</p>
+      <p className={styles.title}>
+        {isPlayer ? "Player" : "Enemy"} fleet status
+      </p>
       <div className={styles.statusContainer}>
         {groupedShips.map((group, groupIdx) => (
           <div className={styles.group} key={groupIdx}>
