@@ -83,3 +83,7 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 [wlad999](https://github.com/wlad999)  
 [Project repository](https://github.com/wlad999/Battleship)
+
+## 🚀 Play Online
+
+[Click here to play Battleship](https://battleship-2kb1.vercel.app/)

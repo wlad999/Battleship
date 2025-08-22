@@ -1,5 +1,7 @@
 .container {
   padding-bottom: 10px;
+  max-width: 450px;
+  width: 100%;
   @media screen and (min-width: 768px) {
     padding: 10px;
   }
@@ -7,17 +9,15 @@
 
 .wrapper {
   display: grid;
-  width: fit-content;
+  width: 100%;
+  max-width: 450px;
+  aspect-ratio: 1 / 1;
   background-image: url("/bg.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  grid-template-columns: repeat(10, 35px);
-  grid-template-rows: repeat(10, 35px);
-  @media screen and (min-width: 768px) {
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
-  }
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
 }
 
 .cell {
