@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import cls from "classnames";
-import Status from "../Status";
+import Status from "../status";
 import {
   placeShipsOnField,
   shootRandomCell,
