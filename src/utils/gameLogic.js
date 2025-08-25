@@ -14,274 +14,24 @@ function getRandomInt() {
   return [startCell, direction];
 }
 
-function fillCellsAroundShip(
-  cell,
-  direction,
-  i,
-  shipSize,
-  newArray,
-  isDestroyed = false
-) {
+function fillCellsAroundShip(newArray, shipCells, isDestroyed = false) {
   const bufferZone = isDestroyed ? "nextToDestroyedShip" : "nextToShipCell";
-  if (direction === horizon) {
-    //first horizontal field line
-    if (cell < 10) {
-      if (i === 0 && i < shipSize - 1) {
-        if (cell === 0) {
-          newArray[cell + 10][bufferZone] = true;
-        }
-        if (cell > 0 && cell < 9) {
-          newArray[cell - 1][bufferZone] = true;
-          newArray[cell + 9][bufferZone] = true;
-          newArray[cell + 10][bufferZone] = true;
-        }
-      }
+  const coords = shipCells.map((c) => [Math.floor(c / 10), c % 10]);
 
-      if (i > 0 && i < shipSize - 1 && cell < 9) {
-        newArray[cell + 10][bufferZone] = true;
-      }
+  const minRow = Math.min(...coords.map(([r]) => r)) - 1;
+  const maxRow = Math.max(...coords.map(([r]) => r)) + 1;
+  const minCol = Math.min(...coords.map(([_, c]) => c)) - 1;
+  const maxCol = Math.max(...coords.map(([_, c]) => c)) + 1;
 
-      if (i > 0 && i === shipSize - 1 && cell < 9) {
-        newArray[cell + 1][bufferZone] = true;
-        newArray[cell + 10][bufferZone] = true;
-        newArray[cell + 11][bufferZone] = true;
-      }
+  for (let r = minRow; r <= maxRow; r++) {
+    for (let c = minCol; c <= maxCol; c++) {
+      if (r >= 0 && r < 10 && c >= 0 && c < 10) {
+        const index = r * 10 + c;
 
-      if (i > 0 && i === shipSize - 1 && cell === 9) {
-        newArray[cell + 9][bufferZone] = true;
-        newArray[cell + 10][bufferZone] = true;
-      }
-    }
-    //middle horizontal field lines
-    if (cell > 9 && cell < 90) {
-      if (i === 0 && i < shipSize - 1) {
-        if (`${cell}`.includes("0")) {
-          newArray[cell - 10][bufferZone] = true;
-          newArray[cell + 10][bufferZone] = true;
-        }
-        if (!`${cell}`.includes("0")) {
-          newArray[cell - 10][bufferZone] = true;
-          newArray[cell - 11][bufferZone] = true;
-          newArray[cell - 1][bufferZone] = true;
-          newArray[cell + 9][bufferZone] = true;
-          newArray[cell + 10][bufferZone] = true;
+        if (!shipCells.includes(index)) {
+          newArray[index][bufferZone] = true;
         }
       }
-      if (i > 0 && i < shipSize - 1) {
-        newArray[cell - 10][bufferZone] = true;
-        newArray[cell + 10][bufferZone] = true;
-      }
-      if (i > 0 && i === shipSize - 1) {
-        if (`${cell}`.includes("9")) {
-          newArray[cell - 10][bufferZone] = true;
-          newArray[cell + 10][bufferZone] = true;
-        }
-
-        if (!`${cell}`.includes("9")) {
-          newArray[cell - 10][bufferZone] = true;
-          newArray[cell - 9][bufferZone] = true;
-          newArray[cell + 1][bufferZone] = true;
-          newArray[cell + 11][bufferZone] = true;
-          newArray[cell + 10][bufferZone] = true;
-        }
-      }
-    }
-    //last horizontal field line
-    if (cell > 89) {
-      if (i === 0 && i < shipSize - 1) {
-        if (cell === 90) {
-          newArray[cell - 10][bufferZone] = true;
-        }
-        if (cell > 90 && cell < 99) {
-          newArray[cell - 1][bufferZone] = true;
-          newArray[cell - 11][bufferZone] = true;
-          newArray[cell - 10][bufferZone] = true;
-        }
-      }
-
-      if (i > 0 && i < shipSize - 1 && cell < 99) {
-        newArray[cell - 10][bufferZone] = true;
-      }
-
-      if (i > 0 && i === shipSize - 1 && cell < 99) {
-        newArray[cell + 1][bufferZone] = true;
-        newArray[cell - 9][bufferZone] = true;
-        newArray[cell - 10][bufferZone] = true;
-      }
-
-      if (i > 0 && i === shipSize - 1 && cell === 99) {
-        newArray[cell - 10][bufferZone] = true;
-      }
-    }
-  }
-  if (direction === vertical) {
-    //first vertical fields line
-    if (`${cell}`.includes("0")) {
-      if (i === 0 && i < shipSize - 1) {
-        if (cell === 0) {
-          newArray[cell + 1][bufferZone] = true;
-        }
-        if (cell > 0 && cell < 90) {
-          newArray[cell - 10][bufferZone] = true;
-          newArray[cell - 9][bufferZone] = true;
-          newArray[cell + 1][bufferZone] = true;
-        }
-      }
-
-      if (i > 0 && i < shipSize - 1) {
-        newArray[cell + 1][bufferZone] = true;
-      }
-
-      if (i > 0 && i === shipSize - 1 && cell < 90) {
-        newArray[cell + 10][bufferZone] = true;
-        newArray[cell + 11][bufferZone] = true;
-        newArray[cell + 1][bufferZone] = true;
-      }
-
-      if (i > 0 && i === shipSize - 1 && cell === 90) {
-        newArray[cell + 1][bufferZone] = true;
-        newArray[cell - 9][bufferZone] = true;
-      }
-    }
-    //middle vertical field lines
-    if (!`${cell}`.includes("0") && !`${cell}`.endsWith("9")) {
-      if (i === 0 && i < shipSize - 1) {
-        if (cell < 9) {
-          newArray[cell - 1][bufferZone] = true;
-          newArray[cell + 1][bufferZone] = true;
-        }
-        if (cell > 10 && cell < 89) {
-          newArray[cell - 1][bufferZone] = true;
-          newArray[cell - 11][bufferZone] = true;
-          newArray[cell - 10][bufferZone] = true;
-          newArray[cell - 9][bufferZone] = true;
-          newArray[cell + 1][bufferZone] = true;
-        }
-      }
-
-      if (i > 0 && i < shipSize - 1 && cell > 10 && cell < 89) {
-        newArray[cell - 10][bufferZone] = true;
-        newArray[cell + 10][bufferZone] = true;
-      }
-
-      if (i > 0 && i === shipSize - 1 && cell < 89) {
-        newArray[cell - 1][bufferZone] = true;
-        newArray[cell + 1][bufferZone] = true;
-        newArray[cell + 9][bufferZone] = true;
-        newArray[cell + 10][bufferZone] = true;
-        newArray[cell + 11][bufferZone] = true;
-      }
-      if (i > 0 && i === shipSize - 1 && cell > 90 && cell < 99) {
-        newArray[cell - 1][bufferZone] = true;
-        newArray[cell + 1][bufferZone] = true;
-      }
-    }
-    //last vertical field line
-    if (`${cell}`.endsWith("9")) {
-      if (i === 0 && i < shipSize - 1) {
-        if (cell === 9) {
-          newArray[cell - 1][bufferZone] = true;
-        }
-        if (cell > 9 && cell < 99) {
-          newArray[cell - 1][bufferZone] = true;
-          newArray[cell - 11][bufferZone] = true;
-          newArray[cell - 10][bufferZone] = true;
-        }
-      }
-
-      if (i > 0 && i < shipSize - 1 && cell < 99) {
-        newArray[cell - 1][bufferZone] = true;
-      }
-
-      if (i > 0 && i === shipSize - 1 && cell < 99) {
-        newArray[cell - 1][bufferZone] = true;
-        newArray[cell + 9][bufferZone] = true;
-        newArray[cell + 10][bufferZone] = true;
-      }
-
-      if (i > 0 && i === shipSize - 1 && cell === 99) {
-        newArray[cell - 1][bufferZone] = true;
-      }
-    }
-  }
-
-  //single-deck ship
-  if (i === 0 && i === shipSize - 1) {
-    //first horizontal field line
-    if (cell === 0) {
-      newArray[cell + 10][bufferZone] = true;
-      newArray[cell + 11][bufferZone] = true;
-      newArray[cell + 1][bufferZone] = true;
-    }
-
-    if (cell > 0 && cell < 9) {
-      newArray[cell - 1][bufferZone] = true;
-      newArray[cell + 9][bufferZone] = true;
-      newArray[cell + 10][bufferZone] = true;
-      newArray[cell + 11][bufferZone] = true;
-      newArray[cell + 1][bufferZone] = true;
-    }
-
-    if (cell === 9) {
-      newArray[cell - 1][bufferZone] = true;
-      newArray[cell + 9][bufferZone] = true;
-      newArray[cell + 10][bufferZone] = true;
-    }
-  }
-
-  if (i === 0 && i === shipSize - 1) {
-    if (`${cell}`.includes("0") && cell > 0 && cell < 90) {
-      newArray[cell - 10][bufferZone] = true;
-      newArray[cell - 9][bufferZone] = true;
-      newArray[cell + 1][bufferZone] = true;
-      newArray[cell + 10][bufferZone] = true;
-      newArray[cell + 11][bufferZone] = true;
-    }
-    //fields out of borders
-    if (
-      !`${cell}`.includes("0") &&
-      !`${cell}`.includes("9") &&
-      cell > 9 &&
-      cell < 89
-    ) {
-      newArray[cell - 11][bufferZone] = true;
-      newArray[cell - 10][bufferZone] = true;
-      newArray[cell - 9][bufferZone] = true;
-      newArray[cell - 1][bufferZone] = true;
-      newArray[cell + 1][bufferZone] = true;
-      newArray[cell + 9][bufferZone] = true;
-      newArray[cell + 10][bufferZone] = true;
-      newArray[cell + 11][bufferZone] = true;
-    }
-    //last vertical field line
-    if (`${cell}`.endsWith("9") && cell > 9 && cell < 99) {
-      newArray[cell - 10][bufferZone] = true;
-      newArray[cell - 11][bufferZone] = true;
-      newArray[cell - 1][bufferZone] = true;
-      newArray[cell + 9][bufferZone] = true;
-      newArray[cell + 10][bufferZone] = true;
-    }
-  }
-
-  if (i === 0 && i === shipSize - 1) {
-    if (cell === 90) {
-      newArray[cell - 10][bufferZone] = true;
-      newArray[cell - 9][bufferZone] = true;
-      newArray[cell + 1][bufferZone] = true;
-    }
-    //last horizontal line for single-deck ship
-    if (cell > 90 && cell < 99) {
-      newArray[cell - 1][bufferZone] = true;
-      newArray[cell - 11][bufferZone] = true;
-      newArray[cell - 10][bufferZone] = true;
-      newArray[cell - 9][bufferZone] = true;
-      newArray[cell + 1][bufferZone] = true;
-    }
-
-    if (cell === 99) {
-      newArray[cell - 1][bufferZone] = true;
-      newArray[cell - 11][bufferZone] = true;
-      newArray[cell - 10][bufferZone] = true;
     }
   }
 }
@@ -307,6 +57,7 @@ function placeShips(array, shipSize, count) {
 
   const getCell = (i, startCell) => {
     //direction - 0 - horizontal, 1 - vertical
+    //i===0 - first ship part
     if (i === 0) {
       return i + startCell;
     }
@@ -316,17 +67,20 @@ function placeShips(array, shipSize, count) {
     return i * 10 + startCell;
   };
 
+  const shipCells = [];
+
   for (let i = 0; i < shipSize; i++) {
     const cell = getCell(i, startCell);
     //if cell is already occupied by ship part or next to ship part, skip this startCell
     if (newArray[cell].shipPart || newArray[cell].nextToShipCell) {
       return placeShips(array, shipSize, count);
     }
-    const shipId = `${shipSize}-${count}`;
-    fillCellsAroundShip(cell, direction, i, shipSize, newArray);
+    //collect ship cells to fill buffer zone around ship after all ship parts are placed
+    shipCells.push(cell);
     newArray[cell].shipPart = true;
-    newArray[cell].shipId = shipId;
+    newArray[cell].shipId = `${shipSize}-${count}`;
   }
+  fillCellsAroundShip(newArray, shipCells);
 
   return newArray;
 }
@@ -393,23 +147,8 @@ function shootRandomCell({
     }
     if (isDestroyed) {
       setHuntingHistory(null);
-      const shipSize = shipsStatus[shipId].cells.length;
-      const ship = shipsStatus[shipId].cells;
-      let direction;
-      if (shipSize > 1) {
-        direction =
-          Math.abs(
-            shipsStatus[shipId].cells[0] - shipsStatus[shipId].cells[1]
-          ) === 1
-            ? horizon
-            : vertical;
-      } else {
-        direction = horizon; // single-deck ship
-      }
-
-      ship.forEach((cell, i) => {
-        fillCellsAroundShip(cell, direction, i, shipSize, newArray, true);
-      });
+      const shipCells = shipsStatus[shipId].cells;
+      fillCellsAroundShip(newArray, shipCells, true);
     }
   }
   setArray(newArray);
@@ -450,7 +189,7 @@ const huntingShip = (
         Math.random() * availableIdxShotCells.length
       );
       const targetedIdx = availableIdxShotCells[randomIdx];
-
+      //add random shot if cell is already targeted or filled
       newAvailableCells[targetedIdx].targeted = true;
       const targetedCell = newAvailableCells[targetedIdx].idx;
       newArray[targetedCell].targeted = true;
@@ -477,23 +216,8 @@ const huntingShip = (
         }
         if (isDestroyed) {
           setHuntingHistory(null);
-          const shipSize = shipsStatus[shipId].cells.length;
-          const ship = shipsStatus[shipId].cells;
-          let direction;
-          if (shipSize > 1) {
-            direction =
-              Math.abs(
-                shipsStatus[shipId].cells[0] - shipsStatus[shipId].cells[1]
-              ) === 1
-                ? horizon
-                : vertical;
-          } else {
-            direction = horizon; // single-deck ship
-          }
-
-          ship.forEach((cell, i) => {
-            fillCellsAroundShip(cell, direction, i, shipSize, newArray, true);
-          });
+          const shipCells = shipsStatus[shipId].cells;
+          fillCellsAroundShip(newArray, shipCells, true);
         }
       }
       if (!shipId) {
@@ -640,23 +364,8 @@ const huntingShip = (
         }
         if (isDestroyed) {
           setHuntingHistory(null);
-          const shipSize = shipsStatus[shipId].cells.length;
-          const ship = shipsStatus[shipId].cells;
-          let direction;
-          if (shipSize > 1) {
-            direction =
-              Math.abs(
-                shipsStatus[shipId].cells[0] - shipsStatus[shipId].cells[1]
-              ) === 1
-                ? horizon
-                : vertical;
-          } else {
-            direction = horizon; // single-deck ship
-          }
-
-          ship.forEach((cell, i) => {
-            fillCellsAroundShip(cell, direction, i, shipSize, newArray, true);
-          });
+          const shipCells = shipsStatus[shipId].cells;
+          fillCellsAroundShip(newArray, shipCells, true);
         }
       }
       if (!shipId) {
@@ -759,23 +468,8 @@ const huntingShip = (
       }
       if (isDestroyed) {
         setHuntingHistory(null);
-        const shipSize = shipsStatus[shipId].cells.length;
-        const ship = shipsStatus[shipId].cells;
-        let direction;
-        if (shipSize > 1) {
-          direction =
-            Math.abs(
-              shipsStatus[shipId].cells[0] - shipsStatus[shipId].cells[1]
-            ) === 1
-              ? horizon
-              : vertical;
-        } else {
-          direction = horizon; // single-deck ship
-        }
-
-        ship.forEach((cell, i) => {
-          fillCellsAroundShip(cell, direction, i, shipSize, newArray, true);
-        });
+        const shipCells = shipsStatus[shipId].cells;
+        fillCellsAroundShip(newArray, shipCells, true);
       }
     }
     if (!shipId) {
