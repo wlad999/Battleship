@@ -72,16 +72,16 @@ function Field({
         (!isPlayerTurn && huntingHistory) ||
         (!isPlayerTurn && huntingHistory && !!nextCpuShoot)
       ) {
-        huntingShip(
+        huntingShip({
           array,
           setArray,
           shipsStatus,
           setShipsStatus,
-          onSetIsPlayerTurn,
-          setHuntingHistory,
           huntingHistory,
-          setNextCpuShoot
-        );
+          setHuntingHistory,
+          setNextCpuShoot,
+          onSetIsPlayerTurn,
+        });
       }
     };
     shootWithDelay();
@@ -137,7 +137,6 @@ function Field({
                 item.targeted && item.shipPart && !item.destroyed,
               [styles.destroyed]:
                 shipsStatus[item.shipId]?.isDestroyed && item.shipPart,
-              [styles.nextToDestroyedShip]: item.nextToDestroyedShip,
             })}
           />
         ))}

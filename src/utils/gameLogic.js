@@ -90,12 +90,13 @@ function placeShipsOnField() {
   let filledField = generateEmptyArray();
   shipsConfig.forEach(({ size, count }) => {
     for (let i = 0; i < count; i++) {
-      filledField = placeShips(filledField, size, i);
+      const filledFieldWithShip = placeShips(filledField, size, i);
+      filledField = [...filledFieldWithShip];
     }
   });
 
   filledField.forEach((item, idx) => {
-    if (item.shipPart) {
+    if (item.shipPart && item.shipId) {
       const shipId = item.shipId;
       if (!shipsStatus[shipId]) {
         shipsStatus[shipId] = {
@@ -133,7 +134,7 @@ function shootRandomCell({
   newArray[startCell].targeted = true;
   const shipId = newArray[startCell].shipId;
 
-  if (shipId) {
+  if (shipId && newArray[startCell].shipPart) {
     const isDestroyed = shipsStatus[shipId].cells
       .map((idx) => newArray[idx].targeted)
       .every((targeted) => targeted);
@@ -143,7 +144,7 @@ function shootRandomCell({
     }));
 
     if (!isDestroyed) {
-      setHuntingHistory({ targetedShipParts: [newArray[startCell]] });
+      setHuntingHistory({ targetedShipParts: [startCell] });
     }
     if (isDestroyed) {
       setHuntingHistory(null);
@@ -158,333 +159,150 @@ function shootRandomCell({
   onSetIsPlayerTurn(shipId ? false : true);
 }
 
-const huntingShip = (
+function huntingShip({
   array,
   setArray,
   shipsStatus,
-  setShipsStatus,
-  onSetIsPlayerTurn,
-  setHuntingHistory,
   huntingHistory,
-  setNextCpuShoot
-) => {
-  const availableCells = [];
+  setHuntingHistory,
+  setNextCpuShoot,
+  onSetIsPlayerTurn,
+  setShipsStatus,
+}) {
   const newArray = array.map((obj) => ({ ...obj }));
-  const pushAvailableCells = (cell) => {
-    if (newArray[cell].targeted || newArray[cell].nextToDestroyedShip) return;
-    availableCells.push({ idx: cell });
-  };
+  let availableCells = huntingHistory.availableCells || [];
+  let nextShotIdx;
 
-  if (huntingHistory.availableCells) {
-    if (huntingHistory.targetedShipParts.length === 1) {
-      const newAvailableCells = huntingHistory.availableCells.map((cell) => ({
-        ...cell,
-      }));
+  const hits = huntingHistory.targetedShipParts;
 
-      const availableIdxShotCells = huntingHistory.availableCells
-        .map((cell, idx) => (!cell.targeted ? idx : null))
-        .filter((idx) => idx !== null);
+  if (!availableCells.length) {
+    const firstHit = hits[0];
+    const potentialNeighbors = [];
+    if (firstHit % 10 > 0) potentialNeighbors.push(firstHit - 1); // left
+    if (firstHit % 10 < 9) potentialNeighbors.push(firstHit + 1); // right
+    if (firstHit - 10 >= 0) potentialNeighbors.push(firstHit - 10); // up
+    if (firstHit + 10 <= 99) potentialNeighbors.push(firstHit + 10); // down
 
-      const randomIdx = Math.floor(
-        Math.random() * availableIdxShotCells.length
-      );
-      const targetedIdx = availableIdxShotCells[randomIdx];
-      //add random shot if cell is already targeted or filled
-      newAvailableCells[targetedIdx].targeted = true;
-      const targetedCell = newAvailableCells[targetedIdx].idx;
-      newArray[targetedCell].targeted = true;
+    availableCells = potentialNeighbors
+      .filter(
+        (idx) => !newArray[idx].targeted && !newArray[idx].nextToDestroyedShip
+      )
+      .map((idx) => idx);
+  }
 
-      const shipId = newArray[targetedCell].shipId;
+  if (hits.length === 1) {
+    const randomIdx = Math.floor(Math.random() * availableCells.length);
 
-      if (shipId && newArray[targetedCell].shipPart) {
-        const isDestroyed = shipsStatus[shipId].cells
-          .map((idx) => newArray[idx].targeted)
-          .every((targeted) => targeted);
-        setShipsStatus((prev) => ({
-          ...prev,
-          [shipId]: { ...prev[shipId], isDestroyed },
-        }));
+    nextShotIdx = availableCells[randomIdx];
 
-        if (!isDestroyed) {
-          setHuntingHistory((prev) => ({
-            targetedShipParts: [
-              ...prev.targetedShipParts,
-              newArray[targetedCell],
-            ],
-            availableCells: newAvailableCells,
-          }));
-        }
-        if (isDestroyed) {
-          setHuntingHistory(null);
-          const shipCells = shipsStatus[shipId].cells;
-          fillCellsAroundShip(newArray, shipCells, true);
-        }
-      }
-      if (!shipId) {
-        setHuntingHistory((prev) => ({
-          ...prev,
-          availableCells: newAvailableCells,
-        }));
-      }
-      setArray(newArray);
-      setNextCpuShoot((prev) => {
-        return shipId ? prev + 1 : 0;
+    if (!nextShotIdx && nextShotIdx !== 0) {
+      shootRandomCell({
+        array: newArray,
+        setArray,
+        shipsStatus,
+        setShipsStatus,
+        onSetIsPlayerTurn,
+        setHuntingHistory,
+        setNextCpuShoot,
       });
-      onSetIsPlayerTurn(shipId ? false : true);
+      return;
+    }
+  } else {
+    const hits = huntingHistory.targetedShipParts;
+    const prev = hits[hits.length - 2];
+    const last = hits[hits.length - 1];
+    const step = last - prev;
+
+    const isValid = (idx) =>
+      idx >= 0 &&
+      idx < 100 &&
+      !newArray[idx].targeted &&
+      !newArray[idx].nextToDestroyedShip;
+
+    if (Math.abs(step) < 10) {
+      // horizontal
+      if (step > 0) {
+        // right
+        if (isValid(last + 1) && !`${last}`.endsWith("9")) {
+          nextShotIdx = last + 1;
+        } else {
+          nextShotIdx = hits[0] - 1;
+        }
+      } else {
+        // left
+        if (isValid(last - 1) && !`${last}`.endsWith("0")) {
+          nextShotIdx = last - 1;
+        } else {
+          nextShotIdx = hits[0] + 1;
+        }
+      }
+    } else {
+      // vertical
+      if (step > 0) {
+        // down
+        if (isValid(last + 10) && last < 90) {
+          nextShotIdx = last + 10;
+        } else {
+          nextShotIdx = hits[0] - 10;
+        }
+      } else {
+        // up
+        if (isValid(last - 10) && last > 9) {
+          nextShotIdx = last - 10;
+        } else {
+          nextShotIdx = hits[0] + 10;
+        }
+      }
     }
 
-    if (huntingHistory.targetedShipParts.length > 1) {
-      const previousShotIdx =
-        huntingHistory.targetedShipParts[
-          huntingHistory.targetedShipParts.length - 2
-        ].idx;
-
-      const lastShotIdx =
-        huntingHistory.targetedShipParts[
-          huntingHistory.targetedShipParts.length - 1
-        ].idx;
-
-      const distanseBetweenTargetedParts = lastShotIdx - previousShotIdx;
-
-      let nextShotIdx;
-      if (Math.abs(distanseBetweenTargetedParts) < 10) {
-        if (distanseBetweenTargetedParts > 0) {
-          if (!`${lastShotIdx}`.endsWith("9")) {
-            if (
-              !newArray[lastShotIdx + 1].targeted ||
-              !newArray[lastShotIdx + 1].nextToTargetedShip
-            ) {
-              nextShotIdx = lastShotIdx + 1;
-            }
-
-            if (
-              newArray[lastShotIdx + 1].targeted ||
-              newArray[lastShotIdx + 1].nextToTargetedShip
-            ) {
-              nextShotIdx = huntingHistory.targetedShipParts[0].idx - 1;
-            }
-          }
-
-          if (
-            `${lastShotIdx}`.endsWith("9") ||
-            newArray[lastShotIdx + 1].targeted
-          ) {
-            nextShotIdx = huntingHistory.targetedShipParts[0].idx - 1;
-          }
-        }
-        if (distanseBetweenTargetedParts < 0) {
-          if (!`${lastShotIdx}`.endsWith("0")) {
-            if (
-              !newArray[lastShotIdx - 1].targeted ||
-              !newArray[lastShotIdx - 1].nextToTargetedShip
-            ) {
-              nextShotIdx = lastShotIdx - 1;
-            }
-            if (
-              newArray[lastShotIdx - 1].targeted ||
-              newArray[lastShotIdx - 1].nextToTargetedShip
-            ) {
-              nextShotIdx = huntingHistory.targetedShipParts[0].idx + 1;
-            }
-          }
-
-          if (
-            `${lastShotIdx}`.endsWith("0") ||
-            newArray[lastShotIdx + distanseBetweenTargetedParts].targeted
-          ) {
-            nextShotIdx = huntingHistory.targetedShipParts[0].idx + 1;
-          }
-        }
-      }
-      //verical shot
-      if (Math.abs(distanseBetweenTargetedParts) >= 10) {
-        //from top to bottom
-        if (distanseBetweenTargetedParts > 0) {
-          if (lastShotIdx > 9 && lastShotIdx < 90) {
-            if (
-              !newArray[lastShotIdx + 10].targeted ||
-              !newArray[lastShotIdx + 10].nextToDestroyedShip
-            ) {
-              nextShotIdx = lastShotIdx + 10;
-            }
-            if (
-              newArray[lastShotIdx + 10].targeted ||
-              newArray[lastShotIdx + 10].nextToDestroyedShip
-            ) {
-              nextShotIdx = huntingHistory.targetedShipParts[0].idx - 10;
-            }
-          }
-
-          if (lastShotIdx > 89) {
-            nextShotIdx = huntingHistory.targetedShipParts[0].idx - 10;
-          }
-        }
-        //from bottom to top
-        if (distanseBetweenTargetedParts < 0) {
-          if (lastShotIdx < 10) {
-            nextShotIdx = huntingHistory.targetedShipParts[0].idx + 10;
-          }
-          if (lastShotIdx > 9) {
-            if (
-              !newArray[lastShotIdx - 10].targeted ||
-              !newArray[lastShotIdx - 10].nextToTargetedShip
-            ) {
-              nextShotIdx = lastShotIdx - 10;
-            }
-            if (
-              newArray[lastShotIdx - 10].targeted ||
-              newArray[lastShotIdx - 10].nextToTargetedShip
-            ) {
-              nextShotIdx = huntingHistory.targetedShipParts[0].idx + 10;
-            }
-          }
-        }
-      }
-      newArray[nextShotIdx].targeted = true;
-
-      const shipId = newArray[nextShotIdx].shipId;
-
-      if (shipId) {
-        const isDestroyed = shipsStatus[shipId].cells
-          .map((idx) => newArray[idx].targeted)
-          .every((targeted) => targeted);
-        setShipsStatus((prev) => ({
-          ...prev,
-          [shipId]: { ...prev[shipId], isDestroyed },
-        }));
-
-        if (!isDestroyed) {
-          setHuntingHistory((prev) => ({
-            targetedShipParts: [
-              ...prev.targetedShipParts,
-              newArray[nextShotIdx],
-            ],
-            availableCells: [],
-          }));
-        }
-        if (isDestroyed) {
-          setHuntingHistory(null);
-          const shipCells = shipsStatus[shipId].cells;
-          fillCellsAroundShip(newArray, shipCells, true);
-        }
-      }
-      if (!shipId) {
-        setHuntingHistory((prev) => ({
-          ...prev,
-          availableCells: [],
-        }));
-      }
-      setArray(newArray);
-      setNextCpuShoot((prev) => {
-        return shipId ? prev + 1 : 0;
+    // if nextShotIdx is not valid (out of bounds or already targeted), fallback to random available cell
+    if (!isValid(nextShotIdx) || nextShotIdx === undefined) {
+      shootRandomCell({
+        array: newArray,
+        setArray,
+        shipsStatus,
+        setShipsStatus,
+        onSetIsPlayerTurn,
+        setHuntingHistory,
+        setNextCpuShoot,
       });
-      onSetIsPlayerTurn(shipId ? false : true);
+      return;
     }
   }
 
-  if (!huntingHistory.availableCells) {
-    // first targeted ship part
-    const cell = huntingHistory.targetedShipParts[0].idx;
-    //first horizontal field line
-    if (cell === 0) {
-      pushAvailableCells(cell + 10);
-      pushAvailableCells(cell + 1);
-    }
+  newArray[nextShotIdx].targeted = true;
+  const shipId = newArray[nextShotIdx].shipId;
+  availableCells = availableCells.filter((c) => c !== nextShotIdx);
 
-    if (cell > 0 && cell < 9) {
-      pushAvailableCells(cell - 1);
-      pushAvailableCells(cell + 10);
-      pushAvailableCells(cell + 1);
-    }
-    if (cell === 9) {
-      pushAvailableCells(cell - 1);
-      pushAvailableCells(cell + 10);
-    }
-    //first vertical field line excluding 0 & 90
-    if (`${cell}`.includes("0") && cell > 0 && cell < 90) {
-      pushAvailableCells(cell - 10);
-      pushAvailableCells(cell + 1);
-      pushAvailableCells(cell + 10);
-    }
-    //fields out of borders
-    if (
-      !`${cell}`.includes("0") &&
-      !`${cell}`.includes("9") &&
-      cell > 9 &&
-      cell < 89
-    ) {
-      pushAvailableCells(cell - 10);
-      pushAvailableCells(cell - 1);
-      pushAvailableCells(cell + 1);
-      pushAvailableCells(cell + 10);
-    }
-    //last vertical field line
-    if (`${cell}`.endsWith("9") && cell > 9 && cell < 99) {
-      pushAvailableCells(cell - 10);
-      pushAvailableCells(cell - 1);
-      pushAvailableCells(cell + 10);
-    }
+  if (shipId) {
+    const isDestroyed = shipsStatus[shipId].cells.every(
+      (idx) => newArray[idx].targeted
+    );
+    setShipsStatus((prev) => ({
+      ...prev,
+      [shipId]: { ...prev[shipId], isDestroyed },
+    }));
 
-    if (cell === 90) {
-      pushAvailableCells(cell - 10);
-      pushAvailableCells(cell + 1);
-    }
-    //last horizontal line for single-deck ship
-    if (cell > 90 && cell < 99) {
-      pushAvailableCells(cell - 1);
-      pushAvailableCells(cell - 10);
-      pushAvailableCells(cell + 1);
-    }
-
-    if (cell === 99) {
-      pushAvailableCells(cell - 1);
-      pushAvailableCells(cell - 10);
-    }
-
-    const randomIdx = Math.floor(Math.random() * availableCells.length);
-    availableCells[randomIdx].targeted = true;
-    const targetedCell = availableCells[randomIdx].idx;
-    newArray[targetedCell].targeted = true;
-
-    const shipId = newArray[targetedCell].shipId;
-
-    if (shipId) {
-      const isDestroyed = shipsStatus[shipId].cells
-        .map((idx) => newArray[idx].targeted)
-        .every((targeted) => targeted);
-      setShipsStatus((prev) => ({
-        ...prev,
-        [shipId]: { ...prev[shipId], isDestroyed },
-      }));
-
-      if (!isDestroyed) {
-        setHuntingHistory((prev) => ({
-          targetedShipParts: [
-            ...prev.targetedShipParts,
-            newArray[targetedCell],
-          ],
-          availableCells,
-        }));
-      }
-      if (isDestroyed) {
-        setHuntingHistory(null);
-        const shipCells = shipsStatus[shipId].cells;
-        fillCellsAroundShip(newArray, shipCells, true);
-      }
-    }
-    if (!shipId) {
+    if (!isDestroyed) {
       setHuntingHistory((prev) => ({
-        ...prev,
+        targetedShipParts: [...prev.targetedShipParts, nextShotIdx],
         availableCells,
       }));
+    } else {
+      setHuntingHistory(null);
+      fillCellsAroundShip(newArray, shipsStatus[shipId].cells, true);
     }
-    setArray(newArray);
-    setNextCpuShoot((prev) => {
-      return shipId ? prev + 1 : 0;
-    });
-    onSetIsPlayerTurn(shipId ? false : true);
+  } else {
+    setHuntingHistory((prev) => ({
+      ...prev,
+      availableCells,
+    }));
   }
-};
+
+  setArray(newArray);
+  setNextCpuShoot((prev) => (shipId ? prev + 1 : 0));
+  onSetIsPlayerTurn(!shipId);
+}
 
 function groupAndSortShips(shipsStatus) {
   const ships = Object.values(shipsStatus);
