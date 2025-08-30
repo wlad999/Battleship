@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import cls from "classnames";
 import Field from "./components/field";
+import Firework from "./components/firework";
+import { PLAYER, ENEMY } from "../utils/constants";
 
 import styles from "./page.module.css";
 
@@ -31,9 +33,7 @@ export default function Home() {
   return (
     <div className={cls(styles.container, { [styles.start]: started })}>
       {!winner && started && (
-        <h2 className={styles.title}>
-          {isPlayerTurn ? "Player" : "Enemy"} turn
-        </h2>
+        <h2 className={styles.title}>{isPlayerTurn ? PLAYER : ENEMY} turn</h2>
       )}
 
       {!started && (
@@ -52,15 +52,15 @@ export default function Home() {
       {winner && (
         <>
           <h2 className={styles.title}>
-            {winner === "Enemy"
-              ? "Captain, you've lost! Don't be a coward, try again!"
+            {winner === ENEMY
+              ? "Captain, you've lost! Don't give up, try again!"
               : "Congratulations, General, you won! You are cooler than AI!"}
           </h2>
           <div>
             <button className={styles.button} onClick={handleRestart}>
               To battle!
             </button>
-            {winner === "Enemy" && !showShips && (
+            {winner === ENEMY && !showShips && (
               <button
                 className={cls(styles.button, styles.showShipsButton)}
                 onClick={() => setShowShips(true)}
@@ -72,6 +72,7 @@ export default function Home() {
         </>
       )}
       <div className={styles.page}>
+        <Firework active={winner === PLAYER} />
         <Field
           isPlayerTurn={isPlayerTurn}
           onSetIsPlayerTurn={setIsPlayerTurn}

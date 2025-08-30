@@ -41,6 +41,10 @@ Battleship is a browser-based implementation of the classic "Battleship" game bu
 
 **Note:** This is a pet project developed for learning and experimentation purposes.
 
+## Firework added especially for Viktoriia Adonina
+
+Celebrate the victory in the game with a fireworks animation!
+
 **Wishing you victory, Captain!**
 
 ## Features

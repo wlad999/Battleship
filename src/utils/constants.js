@@ -7,4 +7,7 @@ const shipsConfig = [
   { size: 1, count: 4 },
 ];
 
-export { horizon, vertical, shipsConfig };
+const PLAYER = "Player";
+const ENEMY = "Enemy";
+
+export { horizon, vertical, shipsConfig, PLAYER, ENEMY };

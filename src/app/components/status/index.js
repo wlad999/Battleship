@@ -1,6 +1,7 @@
 "use client";
 import cls from "classnames";
 import { groupAndSortShips } from "../../../utils/gameLogic";
+import { PLAYER, ENEMY } from "../../../utils/constants";
 
 import styles from "./styles.module.scss";
 
@@ -13,9 +14,7 @@ function Status({ shipsStatus = {}, isPlayer, started }) {
 
   return (
     <>
-      <p className={styles.title}>
-        {isPlayer ? "Player" : "Enemy"} fleet status
-      </p>
+      <p className={styles.title}>{isPlayer ? PLAYER : ENEMY} fleet status</p>
       <div className={styles.statusContainer}>
         {groupedShips.map((group, groupIdx) => (
           <div className={styles.group} key={groupIdx}>

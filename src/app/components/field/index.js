@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import cls from "classnames";
 import Status from "../status";
+import { PLAYER, ENEMY } from "../../../utils/constants";
 import {
   placeShipsOnField,
   shootRandomCell,
@@ -43,7 +44,7 @@ function Field({
       (item) => item.targeted && item.shipPart
     );
     if (targetedShipParts.length > 19) {
-      onSetWinner(isPlayer ? "Enemy" : "Player");
+      onSetWinner(isPlayer ? ENEMY : PLAYER);
     }
   }, [array]);
 
@@ -121,7 +122,7 @@ function Field({
   return (
     <div className={styles.container}>
       <Status shipsStatus={shipsStatus} isPlayer={isPlayer} started={started} />
-      <h3>{isPlayer ? "Player fleet" : "Enemy fleet"}</h3>
+      <h3>{isPlayer ? `${PLAYER} fleet` : `${ENEMY} fleet`}</h3>
       <div className={styles.wrapper}>
         {array.map((item, idx) => (
           <div
