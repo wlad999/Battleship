@@ -35,7 +35,6 @@ export default function Home() {
       {!winner && started && (
         <h2 className={styles.title}>{isPlayerTurn ? PLAYER : ENEMY} turn</h2>
       )}
-
       {!started && (
         <div className={styles.startButtonContainer}>
           <button

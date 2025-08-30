@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import cls from "classnames";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
+import HitWaveSVG from "../hitWave";
 import {
   placeShipsOnField,
   shootRandomCell,
@@ -24,6 +25,7 @@ function Field({
   const [shipsStatus, setShipsStatus] = useState({});
   const [huntingHistory, setHuntingHistory] = useState(null);
   const [nextCpuShoot, setNextCpuShoot] = useState(null);
+  const [lastHitId, setLastHitId] = useState(null);
 
   useEffect(() => {
     if (!isPlayer && placeShips !== null) {
@@ -67,6 +69,7 @@ function Field({
           onSetIsPlayerTurn,
           setHuntingHistory,
           setNextCpuShoot,
+          setLastHitId,
         });
       }
       if (
@@ -82,6 +85,7 @@ function Field({
           setHuntingHistory,
           setNextCpuShoot,
           onSetIsPlayerTurn,
+          setLastHitId,
         });
       }
     };
@@ -115,18 +119,21 @@ function Field({
         [shipId]: { ...prev[shipId], isDestroyed },
       }));
     }
+    setLastHitId(idx);
     setArray(arrayWithTargeted);
     onSetIsPlayerTurn(!!shipId);
   });
 
   return (
     <div className={styles.container}>
+      <HitWaveSVG lastHitId={lastHitId} isPlayer={isPlayer} active />
       <Status shipsStatus={shipsStatus} isPlayer={isPlayer} started={started} />
       <h3>{isPlayer ? `${PLAYER} fleet` : `${ENEMY} fleet`}</h3>
       <div className={styles.wrapper}>
         {array.map((item, idx) => (
           <div
             key={idx}
+            id={`${isPlayer ? PLAYER : ENEMY}-${idx}`}
             onClick={() => handleClick(idx)}
             className={cls(styles.cell, {
               [styles.shipPart]:

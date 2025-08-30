@@ -119,6 +119,7 @@ function shootRandomCell({
   onSetIsPlayerTurn,
   setHuntingHistory,
   setNextCpuShoot,
+  setLastHitId,
 }) {
   const newArray = array.map((obj) => ({ ...obj }));
   const availableCells = newArray
@@ -152,6 +153,7 @@ function shootRandomCell({
       fillCellsAroundShip(newArray, shipCells, true);
     }
   }
+  setLastHitId(startCell);
   setArray(newArray);
   setNextCpuShoot((prev) => {
     return shipId ? prev + 1 : 0;
@@ -168,6 +170,7 @@ function huntingShip({
   setNextCpuShoot,
   onSetIsPlayerTurn,
   setShipsStatus,
+  setLastHitId,
 }) {
   const newArray = array.map((obj) => ({ ...obj }));
   let availableCells = huntingHistory.availableCells || [];
