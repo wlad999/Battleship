@@ -12,7 +12,7 @@
   width: 100%;
   max-width: 450px;
   aspect-ratio: 1 / 1;
-  background-image: url("/bg.jpg");
+  background-image: url("/bg.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -21,7 +21,7 @@
 }
 
 .cell {
-  border: 0.1px solid #5d5783;
+  border: 0.1px solid #225d53;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,32 +38,42 @@
 .targetedEmptyCell {
   will-change: background-size;
   cursor: none;
-  background-image: url("/emptyShotB.jpg");
+  background-image: url("/emptyShotB.webp");
   background-size: 0 0;
   background-position: center;
   background-repeat: no-repeat;
-  animation: grow-bg 1s forwards;
+  animation: grow-bg-targetedEmpty 1s forwards;
 }
 
-@keyframes grow-bg {
+@keyframes grow-bg-targetedEmpty {
   from {
     background-size: 0 0;
   }
   to {
-    background-size: cover;
+    background-size: 120% 120%;
   }
 }
 
 .targetedShipCell {
   cursor: none;
-  background-image: url("/explosion.png");
-  background-size: cover;
+  background-image: url("/explosion.webp");
+  background-size: 0 0;
   background-position: center;
   background-repeat: no-repeat;
+  animation: grow-bg-targeted 1s forwards;
+}
+
+@keyframes grow-bg-targeted {
+  from {
+    background-size: 0 0;
+  }
+  to {
+    background-size: 90% 90%;
+  }
 }
 
 .destroyed {
-  background-image: url("/destroyedShip.png");
+  background-image: url("/destroyedShip.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
