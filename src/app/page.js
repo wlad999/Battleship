@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import cls from "classnames";
 import Field from "./components/field";
 import Animations from "./components/animations";
-import { PLAYER, ENEMY } from "../utils/constants";
+import Header from "./components/header";
 
 import styles from "./page.module.css";
 
@@ -32,44 +32,16 @@ export default function Home() {
 
   return (
     <div className={cls(styles.container, { [styles.start]: started })}>
-      {!winner && started && (
-        <h2 className={styles.title}>{isPlayerTurn ? PLAYER : ENEMY} turn</h2>
-      )}
-      {!started && (
-        <div className={styles.startButtonContainer}>
-          <button
-            className={cls(styles.button, styles.startButton)}
-            onClick={() => setStarted(true)}
-          >
-            start a battle
-          </button>
-          <button className={styles.button} onClick={handlePlaceShips}>
-            change placement
-          </button>
-        </div>
-      )}
-      {winner && (
-        <>
-          <h2 className={styles.title}>
-            {winner === ENEMY
-              ? "Captain, you've lost! Don't give up, try again!"
-              : "Congratulations, General, you won! You are cooler than AI!"}
-          </h2>
-          <div>
-            <button className={styles.button} onClick={handleRestart}>
-              To battle!
-            </button>
-            {winner === ENEMY && !showShips && (
-              <button
-                className={cls(styles.button, styles.showShipsButton)}
-                onClick={() => setShowShips(true)}
-              >
-                Show all ships
-              </button>
-            )}
-          </div>
-        </>
-      )}
+      <Header
+        isPlayerTurn={isPlayerTurn}
+        showShips={showShips}
+        started={started}
+        winner={winner}
+        onHandlePlaceShips={handlePlaceShips}
+        onHandleRestart={handleRestart}
+        onSetShowShips={setShowShips}
+        onSetStarted={setStarted}
+      />
       <Animations winner={winner} />
       <div className={styles.page}>
         <Field
