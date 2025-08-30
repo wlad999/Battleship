@@ -2,11 +2,7 @@
 
 import styles from "./styles.module.scss";
 
-function Firework({ active = false }) {
-  if (!active) {
-    return null;
-  }
-
+function Firework() {
   const explosions = [
     { cx: 100, cy: 100, delay: "0s", colors: ["red", "yellow", "orange"] },
     { cx: 60, cy: 80, delay: "0.8s", colors: ["cyan", "blue", "violet"] },

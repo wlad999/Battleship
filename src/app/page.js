@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import cls from "classnames";
 import Field from "./components/field";
-import Firework from "./components/firework";
+import Animations from "./components/animations";
 import { PLAYER, ENEMY } from "../utils/constants";
 
 import styles from "./page.module.css";
@@ -71,8 +71,8 @@ export default function Home() {
           </div>
         </>
       )}
+      <Animations winner={winner} />
       <div className={styles.page}>
-        <Firework active={winner === PLAYER} />
         <Field
           isPlayerTurn={isPlayerTurn}
           onSetIsPlayerTurn={setIsPlayerTurn}
