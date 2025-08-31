@@ -48,7 +48,7 @@ function fillCellsAroundShip(newArray, shipCells, isDestroyed = false) {
       if (r >= 0 && r < 10 && c >= 0 && c < 10) {
         const index = r * 10 + c;
 
-        if (!shipCells.includes(index)) {
+        if (!shipCells.includes(index) || !newArray[index][bufferZone]) {
           newArray[index] = {
             ...newArray[index],
             [bufferZone]: true,
