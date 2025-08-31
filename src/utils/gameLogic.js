@@ -144,11 +144,10 @@ function shootRandomCell({
   setLastHitId,
 }) {
   const newArray = [...array];
-  const availableCells = newArray
-    .map((cell, idx) =>
-      !cell.targeted && !cell.nextToDestroyedShip ? idx : null
-    )
-    .filter((idx) => idx !== null);
+  const availableCells = newArray.reduce((acc, cell, idx) => {
+    if (!cell.targeted && !cell.nextToDestroyedShip) acc.push(idx);
+    return acc;
+  }, []);
 
   if (availableCells.length === 0) return;
   const randomIdx = Math.floor(Math.random() * availableCells.length);
@@ -158,9 +157,9 @@ function shootRandomCell({
   const shipId = newArray[startCell].shipId;
 
   if (shipId && newArray[startCell].shipPart) {
-    const isDestroyed = shipsStatus[shipId].cells
-      .map((idx) => newArray[idx].targeted)
-      .every((targeted) => targeted);
+    const isDestroyed = shipsStatus[shipId].cells.every(
+      (idx) => newArray[idx].targeted
+    );
     setShipsStatus((prev) => ({
       ...prev,
       [shipId]: { ...prev[shipId], isDestroyed },
