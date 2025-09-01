@@ -39,6 +39,8 @@ function fillCellsAroundShip(
   shipCells = [],
   isDestroyed = false
 ) {
+  if (!shipCells.length) return;
+
   const bufferZone = isDestroyed ? "nextToDestroyedShip" : "nextToShipCell";
   const coords = shipCells.map((c) => [Math.floor(c / 10), c % 10]);
   const shipCellsSet = new Set(shipCells);
