@@ -267,12 +267,6 @@ function huntingShip({
     const last = hits[hits.length - 1];
     const step = last - prev;
 
-    //const isValid = (idx, newArray) =>
-    //  idx >= 0 &&
-    //  idx < 100 &&
-    //  !newArray[idx].targeted &&
-    //  !newArray[idx].nextToDestroyedShip;
-
     if (Math.abs(step) < 10) {
       // horizontal
       if (step > 0) {
