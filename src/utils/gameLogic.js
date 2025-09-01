@@ -34,9 +34,14 @@ function getRandomInt(field, shipSize) {
   return [startCell, direction];
 }
 
-function fillCellsAroundShip(newArray, shipCells, isDestroyed = false) {
+function fillCellsAroundShip(
+  newArray = [],
+  shipCells = [],
+  isDestroyed = false
+) {
   const bufferZone = isDestroyed ? "nextToDestroyedShip" : "nextToShipCell";
   const coords = shipCells.map((c) => [Math.floor(c / 10), c % 10]);
+  const shipCellsSet = new Set(shipCells);
 
   const minRow = Math.min(...coords.map(([r]) => r)) - 1;
   const maxRow = Math.max(...coords.map(([r]) => r)) + 1;
@@ -48,8 +53,8 @@ function fillCellsAroundShip(newArray, shipCells, isDestroyed = false) {
       if (r >= 0 && r < 10 && c >= 0 && c < 10) {
         const index = r * 10 + c;
 
-        const isShipCell = shipCells.includes(index);
-        const isAlreadyBuffered = newArray[index].bufferZone;
+        const isShipCell = shipCellsSet.has(index);
+        const isAlreadyBuffered = newArray[index][bufferZone];
 
         if (isShipCell || isAlreadyBuffered) continue;
 
