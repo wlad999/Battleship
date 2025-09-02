@@ -229,7 +229,6 @@ function processShotResult({
 
 function shootRandomCell({
   array,
-  setArray,
   shipsStatus,
   setShipsStatus,
   onSetIsPlayerTurn,
@@ -255,7 +254,7 @@ function shootRandomCell({
     onSetIsPlayerTurn,
   });
 
-  setArray(updatedArray);
+  return updatedArray;
 }
 
 const getNextCell = (last, step, hits, array) => {
@@ -297,7 +296,6 @@ function chooseNextShot(availableCells, hits, array) {
 
 function huntingShip({
   array,
-  setArray,
   shipsStatus,
   huntingHistory,
   setHuntingHistory,
@@ -329,9 +327,8 @@ function huntingShip({
 
   // if nextShotIdx is not valid (out of bounds or already targeted), fallback to random available cell
   if (!isValidIndex(nextShotIdx, newArray)) {
-    shootRandomCell({
+    const updatedArray = shootRandomCell({
       array: newArray,
-      setArray,
       shipsStatus,
       setShipsStatus,
       onSetIsPlayerTurn,
@@ -339,7 +336,8 @@ function huntingShip({
       setNextCpuShoot,
       setLastHitId,
     });
-    return;
+
+    return updatedArray;
   }
 
   availableCells = availableCells.filter((idx) => idx !== nextShotIdx);
@@ -356,7 +354,7 @@ function huntingShip({
     availableCells,
   });
 
-  setArray(updatedArray);
+  return updatedArray;
 }
 
 function groupAndSortShips(shipsStatus) {

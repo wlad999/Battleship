@@ -61,9 +61,8 @@ function Field({
         (!isPlayerTurn && !huntingHistory) ||
         (!isPlayerTurn && !huntingHistory && !!nextCpuShoot)
       ) {
-        shootRandomCell({
+        const updatedArray = shootRandomCell({
           array,
-          setArray,
           shipsStatus,
           setShipsStatus,
           onSetIsPlayerTurn,
@@ -71,14 +70,14 @@ function Field({
           setNextCpuShoot,
           setLastHitId,
         });
+        setArray(updatedArray);
       }
       if (
         (!isPlayerTurn && huntingHistory) ||
         (!isPlayerTurn && huntingHistory && !!nextCpuShoot)
       ) {
-        huntingShip({
+        const updatedArray = huntingShip({
           array,
-          setArray,
           shipsStatus,
           setShipsStatus,
           huntingHistory,
@@ -87,6 +86,7 @@ function Field({
           onSetIsPlayerTurn,
           setLastHitId,
         });
+        setArray(updatedArray);
       }
     };
     shootWithDelay();
