@@ -5,7 +5,7 @@ import { horizon, vertical, shipsConfig } from "./constants";
 // ----------------------------
 // Utility functions
 // ----------------------------
-function cloneArray(array) {
+function cloneArrayShallow(array) {
   return [...array];
 }
 
@@ -27,7 +27,7 @@ function generateEmptyArray() {
     .map((_, idx) => ({ shipPart: 0, targeted: false, idx }));
 }
 
-function getRandomInt(field, shipSize) {
+function getRandomStartPosition(field, shipSize) {
   const direction = Math.random() < 0.5 ? horizon : vertical;
 
   // Filter only cells from which the ship will fully fit
@@ -88,12 +88,12 @@ function fillCellsAroundShip(
   }
 }
 
-function getCell(i, startCell, direction) {
+function getNextIdx(i, startCell, direction) {
   return direction === horizon ? i + startCell : i * 10 + startCell;
 }
 
 function placeShips(array, shipSize, count) {
-  const newArray = cloneArray(array);
+  const newArray = cloneArrayShallow(array);
   const maxAttempts = 50; // maximum number of attempts to place a ship
   let attempt = 0;
   let placed = false;
@@ -101,26 +101,26 @@ function placeShips(array, shipSize, count) {
   // keep trying until the ship is placed or maxAttempts is reached
   while (!placed && attempt < maxAttempts) {
     attempt++;
-    const [startCell, direction] = getRandomInt(newArray, shipSize);
+    const [startCell, direction] = getRandomStartPosition(newArray, shipSize);
 
     const shipCells = [];
     let conflict = false;
 
     // check if ship can fit without overlapping or touching another ship
     for (let i = 0; i < shipSize; i++) {
-      const cell = getCell(i, startCell, direction);
-      if (newArray[cell].shipPart || newArray[cell].nextToShipCell) {
+      const nextIdx = getNextIdx(i, startCell, direction);
+      if (newArray[nextIdx].shipPart || newArray[nextIdx].nextToShipCell) {
         conflict = true; // found conflict, try a new start position
         break;
       }
-      shipCells.push(cell);
+      shipCells.push(nextIdx);
     }
 
     if (!conflict) {
       // place the ship on the field
-      shipCells.forEach((cell) => {
-        newArray[cell] = {
-          ...newArray[cell],
+      shipCells.forEach((idx) => {
+        newArray[idx] = {
+          ...newArray[idx],
           shipPart: true,
           shipId: `${shipSize}-${count}`,
         };
@@ -182,6 +182,51 @@ function markCellTargeted(array, idx) {
   array[idx] = { ...array[idx], targeted: true };
 }
 
+function processShotResult({
+  idx,
+  newArray,
+  shipsStatus,
+  setShipsStatus,
+  setHuntingHistory,
+  setLastHitId,
+  setNextCpuShoot,
+  onSetIsPlayerTurn,
+  availableCells,
+}) {
+  markCellTargeted(newArray, idx);
+  const shipId = newArray[idx].shipId;
+
+  if (shipId && newArray[idx].shipPart) {
+    const isDestroyed = updateShipStatus(
+      shipId,
+      newArray,
+      shipsStatus,
+      setShipsStatus
+    );
+
+    if (!isDestroyed) {
+      setHuntingHistory((prev) =>
+        prev
+          ? {
+              ...prev,
+              targetedShipParts: [...prev.targetedShipParts, idx],
+              availableCells,
+            }
+          : { targetedShipParts: [idx], availableCells }
+      );
+    } else {
+      setHuntingHistory(null);
+      fillCellsAroundShip(newArray, shipsStatus[shipId].cells, true);
+    }
+  }
+
+  setLastHitId(idx);
+  setNextCpuShoot((prev) => (shipId ? prev + 1 : 0));
+  onSetIsPlayerTurn(!shipId);
+
+  return newArray;
+}
+
 function shootRandomCell({
   array,
   setArray,
@@ -192,36 +237,25 @@ function shootRandomCell({
   setNextCpuShoot,
   setLastHitId,
 }) {
-  const newArray = cloneArray(array);
+  const newArray = cloneArrayShallow(array);
   const availableCells = getAvailableCells(newArray);
 
   if (availableCells.length === 0) return;
   const randomIdx = Math.floor(Math.random() * availableCells.length);
-  const startCell = availableCells[randomIdx];
+  const startIdx = availableCells[randomIdx];
 
-  markCellTargeted(newArray, startCell);
-  const shipId = newArray[startCell].shipId;
+  const updatedArray = processShotResult({
+    idx: startIdx,
+    newArray,
+    shipsStatus,
+    setShipsStatus,
+    setHuntingHistory,
+    setLastHitId,
+    setNextCpuShoot,
+    onSetIsPlayerTurn,
+  });
 
-  if (shipId && newArray[startCell].shipPart) {
-    const isDestroyed = updateShipStatus(
-      shipId,
-      newArray,
-      shipsStatus,
-      setShipsStatus
-    );
-
-    if (!isDestroyed) {
-      setHuntingHistory({ targetedShipParts: [startCell] });
-    }
-    if (isDestroyed) {
-      setHuntingHistory(null);
-      fillCellsAroundShip(newArray, shipsStatus[shipId].cells, true);
-    }
-  }
-  setLastHitId(startCell);
-  setArray(newArray);
-  setNextCpuShoot((prev) => (shipId ? prev + 1 : 0));
-  onSetIsPlayerTurn(!shipId);
+  setArray(updatedArray);
 }
 
 const getNextCell = (last, step, hits, array) => {
@@ -272,7 +306,7 @@ function huntingShip({
   setShipsStatus,
   setLastHitId,
 }) {
-  const newArray = cloneArray(array);
+  const newArray = cloneArrayShallow(array);
   let availableCells = huntingHistory.availableCells || [];
   let nextShotIdx;
 
@@ -308,38 +342,21 @@ function huntingShip({
     return;
   }
 
-  markCellTargeted(newArray, nextShotIdx);
   availableCells = availableCells.filter((idx) => idx !== nextShotIdx);
-  const shipId = newArray[nextShotIdx].shipId;
 
-  if (shipId) {
-    const isDestroyed = updateShipStatus(
-      shipId,
-      newArray,
-      shipsStatus,
-      setShipsStatus
-    );
+  const updatedArray = processShotResult({
+    idx: nextShotIdx,
+    newArray,
+    shipsStatus,
+    setShipsStatus,
+    setHuntingHistory,
+    setLastHitId,
+    setNextCpuShoot,
+    onSetIsPlayerTurn,
+    availableCells,
+  });
 
-    if (!isDestroyed) {
-      setHuntingHistory((prev) => ({
-        targetedShipParts: [...prev.targetedShipParts, nextShotIdx],
-        availableCells,
-      }));
-    }
-    if (isDestroyed) {
-      setHuntingHistory(null);
-      fillCellsAroundShip(newArray, shipsStatus[shipId].cells, true);
-    }
-  } else {
-    setHuntingHistory((prev) => ({
-      ...prev,
-      availableCells,
-    }));
-  }
-  setLastHitId(nextShotIdx);
-  setArray(newArray);
-  setNextCpuShoot((prev) => (shipId ? prev + 1 : 0));
-  onSetIsPlayerTurn(!shipId);
+  setArray(updatedArray);
 }
 
 function groupAndSortShips(shipsStatus) {
@@ -355,7 +372,6 @@ function groupAndSortShips(shipsStatus) {
 }
 
 export {
-  getRandomInt,
   placeShips,
   placeShipsOnField,
   generateEmptyArray,
