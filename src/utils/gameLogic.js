@@ -2,6 +2,25 @@
 
 import { horizon, vertical, shipsConfig } from "./constants";
 
+// ----------------------------
+// Utility functions
+// ----------------------------
+function cloneArray(array) {
+  return [...array];
+}
+
+function isValidIndex(idx, array) {
+  if (idx === undefined) {
+    return false;
+  }
+  return (
+    idx >= 0 &&
+    idx < 100 &&
+    !array[idx].targeted &&
+    !array[idx].nextToDestroyedShip
+  );
+}
+
 function generateEmptyArray() {
   return Array(100)
     .fill(null)
@@ -74,7 +93,7 @@ function getCell(i, startCell, direction) {
 }
 
 function placeShips(array, shipSize, count) {
-  const newArray = [...array];
+  const newArray = cloneArray(array);
   const maxAttempts = 50; // maximum number of attempts to place a ship
   let attempt = 0;
   let placed = false;
@@ -173,7 +192,7 @@ function shootRandomCell({
   setNextCpuShoot,
   setLastHitId,
 }) {
-  const newArray = [...array];
+  const newArray = cloneArray(array);
   const availableCells = getAvailableCells(newArray);
 
   if (availableCells.length === 0) return;
@@ -205,11 +224,42 @@ function shootRandomCell({
   onSetIsPlayerTurn(!shipId);
 }
 
-const isValid = (idx, array) =>
-  idx >= 0 &&
-  idx < 100 &&
-  !array[idx].targeted &&
-  !array[idx].nextToDestroyedShip;
+const getNextCell = (last, step, hits, array) => {
+  if (Math.abs(step) < 10) {
+    // horizontal
+    if (step > 0)
+      return isValidIndex(last + 1, array) && !`${last}`.endsWith("9")
+        ? last + 1
+        : hits[0] - 1;
+    else
+      return isValidIndex(last - 1, array) && !`${last}`.endsWith("0")
+        ? last - 1
+        : hits[0] + 1;
+  } else {
+    // vertical
+    if (step > 0)
+      return isValidIndex(last + 10, array) && last < 90
+        ? last + 10
+        : hits[0] - 10;
+    else
+      return isValidIndex(last - 10, array) && last > 9
+        ? last - 10
+        : hits[0] + 10;
+  }
+};
+
+function chooseNextShot(availableCells, hits, array) {
+  if (hits.length === 1) {
+    const randomIdx = Math.floor(Math.random() * availableCells.length);
+    return availableCells[randomIdx];
+  }
+
+  const prevShot = hits[hits.length - 2];
+  const lastShot = hits[hits.length - 1];
+  const directionDelta = lastShot - prevShot;
+
+  return getNextCell(lastShot, directionDelta, hits, array);
+}
 
 function huntingShip({
   array,
@@ -222,7 +272,7 @@ function huntingShip({
   setShipsStatus,
   setLastHitId,
 }) {
-  const newArray = [...array];
+  const newArray = cloneArray(array);
   let availableCells = huntingHistory.availableCells || [];
   let nextShotIdx;
 
@@ -236,92 +286,31 @@ function huntingShip({
     if (firstHit - 10 >= 0) potentialNeighbors.push(firstHit - 10); // up
     if (firstHit + 10 <= 99) potentialNeighbors.push(firstHit + 10); // down
 
-    availableCells = potentialNeighbors
-      .filter(
-        (idx) => !newArray[idx].targeted && !newArray[idx].nextToDestroyedShip
-      )
-      .map((idx) => idx);
+    availableCells = potentialNeighbors.filter((idx) =>
+      isValidIndex(idx, newArray)
+    );
   }
 
-  if (hits.length === 1) {
-    const randomIdx = Math.floor(Math.random() * availableCells.length);
+  nextShotIdx = chooseNextShot(availableCells, hits, newArray);
 
-    nextShotIdx = availableCells[randomIdx];
-
-    if (!nextShotIdx && nextShotIdx !== 0) {
-      shootRandomCell({
-        array: newArray,
-        setArray,
-        shipsStatus,
-        setShipsStatus,
-        onSetIsPlayerTurn,
-        setHuntingHistory,
-        setNextCpuShoot,
-        setLastHitId,
-      });
-      return;
-    }
-  } else {
-    const hits = huntingHistory.targetedShipParts;
-    const prev = hits[hits.length - 2];
-    const last = hits[hits.length - 1];
-    const step = last - prev;
-
-    if (Math.abs(step) < 10) {
-      // horizontal
-      if (step > 0) {
-        // right
-        if (isValid(last + 1, newArray) && !`${last}`.endsWith("9")) {
-          nextShotIdx = last + 1;
-        } else {
-          nextShotIdx = hits[0] - 1;
-        }
-      } else {
-        // left
-        if (isValid(last - 1, newArray) && !`${last}`.endsWith("0")) {
-          nextShotIdx = last - 1;
-        } else {
-          nextShotIdx = hits[0] + 1;
-        }
-      }
-    } else {
-      // vertical
-      if (step > 0) {
-        // down
-        if (isValid(last + 10, newArray) && last < 90) {
-          nextShotIdx = last + 10;
-        } else {
-          nextShotIdx = hits[0] - 10;
-        }
-      } else {
-        // up
-        if (isValid(last - 10, newArray) && last > 9) {
-          nextShotIdx = last - 10;
-        } else {
-          nextShotIdx = hits[0] + 10;
-        }
-      }
-    }
-
-    // if nextShotIdx is not valid (out of bounds or already targeted), fallback to random available cell
-    if (!isValid(nextShotIdx, newArray) || nextShotIdx === undefined) {
-      shootRandomCell({
-        array: newArray,
-        setArray,
-        shipsStatus,
-        setShipsStatus,
-        onSetIsPlayerTurn,
-        setHuntingHistory,
-        setNextCpuShoot,
-        setLastHitId,
-      });
-      return;
-    }
+  // if nextShotIdx is not valid (out of bounds or already targeted), fallback to random available cell
+  if (!isValidIndex(nextShotIdx, newArray)) {
+    shootRandomCell({
+      array: newArray,
+      setArray,
+      shipsStatus,
+      setShipsStatus,
+      onSetIsPlayerTurn,
+      setHuntingHistory,
+      setNextCpuShoot,
+      setLastHitId,
+    });
+    return;
   }
 
   markCellTargeted(newArray, nextShotIdx);
+  availableCells = availableCells.filter((idx) => idx !== nextShotIdx);
   const shipId = newArray[nextShotIdx].shipId;
-  availableCells = availableCells.filter((c) => c !== nextShotIdx);
 
   if (shipId) {
     const isDestroyed = updateShipStatus(
