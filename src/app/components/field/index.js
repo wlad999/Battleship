@@ -8,6 +8,7 @@ import {
   placeShipsOnField,
   shootRandomCell,
   huntingShip,
+  markCellTargeted,
 } from "../../../utils/gameLogic";
 import styles from "./styles.module.scss";
 
@@ -106,7 +107,7 @@ function Field({
     }
 
     const arrayWithTargeted = [...array];
-    arrayWithTargeted[idx].targeted = true;
+    markCellTargeted(arrayWithTargeted, idx);
     const shipId = arrayWithTargeted[idx].shipId;
 
     if (shipId) {

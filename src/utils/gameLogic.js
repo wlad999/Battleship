@@ -376,4 +376,5 @@ export {
   shootRandomCell,
   huntingShip,
   groupAndSortShips,
+  markCellTargeted,
 };
