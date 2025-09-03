@@ -52,7 +52,7 @@ function Field({
   }, [array]);
 
   useEffect(() => {
-    if (!isPlayer) {
+    if (!isPlayer || winner) {
       return;
     }
     const shootWithDelay = async () => {
