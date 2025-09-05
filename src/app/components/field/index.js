@@ -8,7 +8,7 @@ import {
   placeShipsOnField,
   shootRandomCell,
   huntingShip,
-  markCellTargeted,
+  getFieldWithTargetedCell,
 } from "../../../utils/gameLogic";
 import styles from "./styles.module.scss";
 
@@ -106,13 +106,12 @@ function Field({
       return;
     }
 
-    const arrayWithTargeted = [...array];
-    markCellTargeted(arrayWithTargeted, idx);
-    const shipId = arrayWithTargeted[idx].shipId;
+    const updatedField = getFieldWithTargetedCell(array, idx);
+    const shipId = updatedField[idx].shipId;
 
     if (shipId) {
       const isDestroyed = shipsStatus[shipId].cells
-        .map((idx) => arrayWithTargeted[idx].targeted)
+        .map((idx) => updatedField[idx].targeted)
         .every((targeted) => targeted);
 
       setShipsStatus((prev) => ({
@@ -121,7 +120,7 @@ function Field({
       }));
     }
     setLastHitId(idx);
-    setArray(arrayWithTargeted);
+    setArray(updatedField);
     onSetIsPlayerTurn(!!shipId);
   });
 

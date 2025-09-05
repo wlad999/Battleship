@@ -178,8 +178,13 @@ function updateShipStatus(shipId, newArray, shipsStatus, setShipsStatus) {
   return isDestroyed;
 }
 
-function markCellTargeted(array, idx) {
-  array[idx] = { ...array[idx], targeted: true };
+function getFieldWithTargetedCell(field, cellIndex) {
+  const updatedField = cloneArrayShallow(field);
+  updatedField[cellIndex] = {
+    ...updatedField[cellIndex],
+    targeted: true,
+  };
+  return updatedField;
 }
 
 function processShotResult({
@@ -193,13 +198,13 @@ function processShotResult({
   onSetIsPlayerTurn,
   availableCells,
 }) {
-  markCellTargeted(newArray, idx);
-  const shipId = newArray[idx].shipId;
+  const updatedField = getFieldWithTargetedCell(newArray, idx);
+  const shipId = updatedField[idx].shipId;
 
-  if (shipId && newArray[idx].shipPart) {
+  if (shipId && updatedField[idx].shipPart) {
     const isDestroyed = updateShipStatus(
       shipId,
-      newArray,
+      updatedField,
       shipsStatus,
       setShipsStatus
     );
@@ -216,7 +221,7 @@ function processShotResult({
       );
     } else {
       setHuntingHistory(null);
-      fillCellsAroundShip(newArray, shipsStatus[shipId].cells, true);
+      fillCellsAroundShip(updatedField, shipsStatus[shipId].cells, true);
     }
   }
 
@@ -224,7 +229,7 @@ function processShotResult({
   setNextCpuShoot((prev) => (shipId ? prev + 1 : 0));
   onSetIsPlayerTurn(!shipId);
 
-  return newArray;
+  return updatedField;
 }
 
 function shootRandomCell({
@@ -376,5 +381,5 @@ export {
   shootRandomCell,
   huntingShip,
   groupAndSortShips,
-  markCellTargeted,
+  getFieldWithTargetedCell,
 };
