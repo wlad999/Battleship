@@ -10,4 +10,9 @@ const shipsConfig = [
 const PLAYER = "Player";
 const ENEMY = "Enemy";
 
-export { horizon, vertical, shipsConfig, PLAYER, ENEMY };
+const TOTAL_SHIP_PARTS = shipsConfig.reduce(
+  (acc, ship) => acc + ship.size * ship.count,
+  0
+);
+
+export { horizon, vertical, shipsConfig, PLAYER, ENEMY, TOTAL_SHIP_PARTS };

@@ -9,6 +9,7 @@ import {
   shootRandomCell,
   huntingShip,
   getFieldWithTargetedCell,
+  isGameOver,
 } from "../../../utils/gameLogic";
 import styles from "./styles.module.scss";
 
@@ -43,15 +44,21 @@ function Field({
 
   useEffect(() => {
     if (!array.length) return;
-    const targetedShipParts = array.filter(
-      (item) => item.targeted && item.shipPart
-    );
-    if (targetedShipParts.length > 19) {
+    const hasGameEnded = isGameOver(array);
+
+    if (hasGameEnded) {
+      debugger;
       onSetWinner(isPlayer ? ENEMY : PLAYER);
     }
   }, [array]);
 
   useEffect(() => {
+    const hasGameEnded = isGameOver(array);
+    //return from function if game is over to avoid extra shot
+    if (hasGameEnded) {
+      return;
+    }
+
     if (!isPlayer || winner) {
       return;
     }

@@ -1,6 +1,6 @@
 // This file contains logic for placing ships on a battleship game field.
 
-import { horizon, vertical, shipsConfig } from "./constants";
+import { horizon, vertical, shipsConfig, TOTAL_SHIP_PARTS } from "./constants";
 
 // ----------------------------
 // Utility functions
@@ -53,39 +53,41 @@ function getRandomStartPosition(field, shipSize) {
   return [startCell, direction];
 }
 
-function fillCellsAroundShip(
-  newArray = [],
+function getCoordsFromIndex(idx) {
+  return [Math.floor(idx / 10), idx % 10];
+}
+
+function getFieldWithShipBuffer(
+  field = [],
   shipCells = [],
   isDestroyed = false
 ) {
-  if (!shipCells.length) return;
+  if (!shipCells.length) return [...field];
 
+  const updatedField = cloneArrayShallow(field);
   const bufferZone = isDestroyed ? "nextToDestroyedShip" : "nextToShipCell";
-  const coords = shipCells.map((c) => [Math.floor(c / 10), c % 10]);
-  const shipCellsSet = new Set(shipCells);
 
-  const minRow = Math.min(...coords.map(([r]) => r)) - 1;
-  const maxRow = Math.max(...coords.map(([r]) => r)) + 1;
-  const minCol = Math.min(...coords.map(([_, c]) => c)) - 1;
-  const maxCol = Math.max(...coords.map(([_, c]) => c)) + 1;
+  const shipCellsSet = new Set(shipCells);
+  const coords = shipCells.map((cellIdx) => getCoordsFromIndex(cellIdx));
+
+  //find min and max rows and columns, ensuring they stay within field
+  const minRow = Math.max(Math.min(...coords.map(([r]) => r)) - 1, 0);
+  const maxRow = Math.min(Math.max(...coords.map(([r]) => r)) + 1, 9);
+  const minCol = Math.max(Math.min(...coords.map(([_, c]) => c)) - 1, 0);
+  const maxCol = Math.min(Math.max(...coords.map(([_, c]) => c)) + 1, 9);
 
   for (let r = minRow; r <= maxRow; r++) {
     for (let c = minCol; c <= maxCol; c++) {
-      if (r >= 0 && r < 10 && c >= 0 && c < 10) {
-        const index = r * 10 + c;
+      const index = r * 10 + c;
 
-        const isShipCell = shipCellsSet.has(index);
-        const isAlreadyBuffered = newArray[index][bufferZone];
+      // skip if it's a ship cell or already marked
+      if (shipCellsSet.has(index) || updatedField[index][bufferZone]) continue;
 
-        if (isShipCell || isAlreadyBuffered) continue;
-
-        newArray[index] = {
-          ...newArray[index],
-          [bufferZone]: true,
-        };
-      }
+      updatedField[index] = { ...updatedField[index], [bufferZone]: true };
     }
   }
+
+  return updatedField;
 }
 
 function getNextIdx(i, startCell, direction) {
@@ -93,7 +95,7 @@ function getNextIdx(i, startCell, direction) {
 }
 
 function placeShips(array, shipSize, count) {
-  const newArray = cloneArrayShallow(array);
+  let updatedField = cloneArrayShallow(array);
   const maxAttempts = 50; // maximum number of attempts to place a ship
   let attempt = 0;
   let placed = false;
@@ -101,7 +103,10 @@ function placeShips(array, shipSize, count) {
   // keep trying until the ship is placed or maxAttempts is reached
   while (!placed && attempt < maxAttempts) {
     attempt++;
-    const [startCell, direction] = getRandomStartPosition(newArray, shipSize);
+    const [startCell, direction] = getRandomStartPosition(
+      updatedField,
+      shipSize
+    );
 
     const shipCells = [];
     let conflict = false;
@@ -109,7 +114,10 @@ function placeShips(array, shipSize, count) {
     // check if ship can fit without overlapping or touching another ship
     for (let i = 0; i < shipSize; i++) {
       const nextIdx = getNextIdx(i, startCell, direction);
-      if (newArray[nextIdx].shipPart || newArray[nextIdx].nextToShipCell) {
+      if (
+        updatedField[nextIdx].shipPart ||
+        updatedField[nextIdx].nextToShipCell
+      ) {
         conflict = true; // found conflict, try a new start position
         break;
       }
@@ -119,19 +127,19 @@ function placeShips(array, shipSize, count) {
     if (!conflict) {
       // place the ship on the field
       shipCells.forEach((idx) => {
-        newArray[idx] = {
-          ...newArray[idx],
+        updatedField[idx] = {
+          ...updatedField[idx],
           shipPart: true,
           shipId: `${shipSize}-${count}`,
         };
       });
       // mark buffer zone around ship
-      fillCellsAroundShip(newArray, shipCells);
+      updatedField = getFieldWithShipBuffer(updatedField, shipCells);
       placed = true;
     }
   }
 
-  return newArray;
+  return updatedField;
 }
 
 function placeShipsOnField() {
@@ -198,7 +206,7 @@ function processShotResult({
   onSetIsPlayerTurn,
   availableCells,
 }) {
-  const updatedField = getFieldWithTargetedCell(newArray, idx);
+  let updatedField = getFieldWithTargetedCell(newArray, idx);
   const shipId = updatedField[idx].shipId;
 
   if (shipId && updatedField[idx].shipPart) {
@@ -221,7 +229,11 @@ function processShotResult({
       );
     } else {
       setHuntingHistory(null);
-      fillCellsAroundShip(updatedField, shipsStatus[shipId].cells, true);
+      updatedField = getFieldWithShipBuffer(
+        updatedField,
+        shipsStatus[shipId].cells,
+        true
+      );
     }
   }
 
@@ -374,6 +386,14 @@ function groupAndSortShips(shipsStatus) {
   );
 }
 
+function isGameOver(field = []) {
+  const targetedShipParts = field.reduce(
+    (count, cell) => count + (cell.targeted && cell.shipPart ? 1 : 0),
+    0
+  );
+  return targetedShipParts >= TOTAL_SHIP_PARTS;
+}
+
 export {
   placeShips,
   placeShipsOnField,
@@ -382,4 +402,5 @@ export {
   huntingShip,
   groupAndSortShips,
   getFieldWithTargetedCell,
+  isGameOver,
 };
