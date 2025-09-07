@@ -410,12 +410,8 @@ function groupAndSortShips(shipsStatus) {
   );
 }
 
-function isGameOver(field = []) {
-  const targetedShipParts = field.reduce(
-    (count, cell) => count + (cell.targeted && cell.shipPart ? 1 : 0),
-    0
-  );
-  return targetedShipParts >= TOTAL_SHIP_PARTS;
+function isGameOver(shipsStatus) {
+  return Object.values(shipsStatus).every((ship) => ship.isDestroyed);
 }
 
 export {

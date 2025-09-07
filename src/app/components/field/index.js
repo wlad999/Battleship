@@ -44,7 +44,7 @@ function Field({
 
   useEffect(() => {
     if (!array.length) return;
-    const hasGameEnded = isGameOver(array);
+    const hasGameEnded = isGameOver(shipsStatus);
 
     if (hasGameEnded) {
       onSetWinner(isPlayer ? ENEMY : PLAYER);
@@ -52,7 +52,7 @@ function Field({
   }, [array]);
 
   useEffect(() => {
-    const hasGameEnded = isGameOver(array);
+    const hasGameEnded = isGameOver(shipsStatus);
     //return from function if game is over to avoid extra shot
     if (hasGameEnded) {
       return;
