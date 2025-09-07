@@ -378,10 +378,17 @@ function huntingShip({
 
 function groupAndSortShips(shipsStatus) {
   const ships = Object.values(shipsStatus);
-  return shipsConfig.map(({ size }) =>
-    ships
-      .filter((ship) => ship.cells.length === size)
-      .sort((a, b) => Number(a.isDestroyed) - Number(b.isDestroyed))
+
+  // Collecting unique ship sizes
+  const uniqueSizes = [...new Set(ships.map((ship) => ship.cells.length))].sort(
+    (a, b) => b - a // first big, then small
+  );
+  //sort by isDestroyed, alive ships first, destroyed ships last
+  const sortByStatus = (a, b) => Number(a.isDestroyed) - Number(b.isDestroyed);
+
+  // Group ships by size and sort each group by isDestroyed status (alive first, destroyed last)
+  return uniqueSizes.map((size) =>
+    ships.filter((ship) => ship.cells.length === size).sort(sortByStatus)
   );
 }
 

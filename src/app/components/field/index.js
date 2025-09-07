@@ -47,7 +47,6 @@ function Field({
     const hasGameEnded = isGameOver(array);
 
     if (hasGameEnded) {
-      debugger;
       onSetWinner(isPlayer ? ENEMY : PLAYER);
     }
   }, [array]);
