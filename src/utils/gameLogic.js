@@ -24,8 +24,8 @@ function isValidIndex(idx, array) {
     return false;
   }
   return (
-    FIRST_IDX >= 0 &&
-    LAST_IDX <= 100 &&
+    idx >= FIRST_IDX &&
+    idx <= LAST_IDX &&
     !array[idx].targeted &&
     !array[idx][NEXT_TO_DESTROYED_SHIP]
   );
