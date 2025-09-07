@@ -62,19 +62,21 @@ function getFieldWithShipBuffer(
   shipCells = [],
   isDestroyed = false
 ) {
-  if (!shipCells.length) return [...field];
+  if (!shipCells.length) return cloneArrayShallow(field);
 
   const updatedField = cloneArrayShallow(field);
   const bufferZone = isDestroyed ? "nextToDestroyedShip" : "nextToShipCell";
 
   const shipCellsSet = new Set(shipCells);
-  const coords = shipCells.map((cellIdx) => getCoordsFromIndex(cellIdx));
+  const shipCoords = shipCells.map((cellIdx) => getCoordsFromIndex(cellIdx));
+  const rows = shipCoords.map(([r]) => r);
+  const cols = shipCoords.map(([_, c]) => c);
 
   //find min and max rows and columns, ensuring they stay within field
-  const minRow = Math.max(Math.min(...coords.map(([r]) => r)) - 1, 0);
-  const maxRow = Math.min(Math.max(...coords.map(([r]) => r)) + 1, 9);
-  const minCol = Math.max(Math.min(...coords.map(([_, c]) => c)) - 1, 0);
-  const maxCol = Math.min(Math.max(...coords.map(([_, c]) => c)) + 1, 9);
+  const minRow = Math.max(Math.min(...rows) - 1, 0);
+  const maxRow = Math.min(Math.max(...rows) + 1, 9);
+  const minCol = Math.max(Math.min(...cols) - 1, 0);
+  const maxCol = Math.min(Math.max(...cols) + 1, 9);
 
   for (let r = minRow; r <= maxRow; r++) {
     for (let c = minCol; c <= maxCol; c++) {
