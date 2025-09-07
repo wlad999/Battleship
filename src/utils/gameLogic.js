@@ -7,9 +7,14 @@ import {
   FIRST_IDX,
   LAST_IDX,
   FIELD_WIDTH,
-  LAST_ROW_IDX,
+  LAST_ROW_NUM,
+  LAST_COL_NUM,
+  FIRST_COL_NUM,
+  FIRST_ROW_NUM,
   NEXT_TO_SHIP_CELL,
   NEXT_TO_DESTROYED_SHIP,
+  FIELD_SIZE,
+  MAX_PLACEMENT_ATTEMPTS,
 } from "./constants";
 
 // ----------------------------
@@ -32,13 +37,13 @@ function isValidIndex(idx, array) {
 }
 
 function generateEmptyArray() {
-  return Array(100)
+  return Array(FIELD_SIZE)
     .fill(null)
     .map((_, idx) => ({ targeted: false, idx }));
 }
 
 function getCoordsFromIndex(idx) {
-  return [Math.floor(idx / 10), idx % 10];
+  return [Math.floor(idx / FIELD_WIDTH), idx % FIELD_WIDTH];
 }
 
 function getRandomDirection() {
@@ -55,7 +60,7 @@ function getRandomStartPosition(field, shipSize, direction) {
     }
     //horizon
     const [row] = getCoordsFromIndex(cell.idx);
-    const rowEnd = row * FIELD_WIDTH + LAST_ROW_IDX;
+    const rowEnd = row * FIELD_WIDTH + LAST_COL_NUM;
     return cell.idx + (shipSize - 1) <= rowEnd;
   });
 
@@ -83,14 +88,14 @@ function getFieldWithShipBuffer(
   const cols = shipCoords.map(([_, c]) => c);
 
   //find min and max rows and columns, ensuring they stay within field
-  const minRow = Math.max(Math.min(...rows) - 1, 0);
-  const maxRow = Math.min(Math.max(...rows) + 1, 9);
-  const minCol = Math.max(Math.min(...cols) - 1, 0);
-  const maxCol = Math.min(Math.max(...cols) + 1, 9);
+  const minRow = Math.max(Math.min(...rows) - 1, FIRST_ROW_NUM);
+  const maxRow = Math.min(Math.max(...rows) + 1, LAST_ROW_NUM);
+  const minCol = Math.max(Math.min(...cols) - 1, FIRST_COL_NUM);
+  const maxCol = Math.min(Math.max(...cols) + 1, LAST_COL_NUM);
 
   for (let r = minRow; r <= maxRow; r++) {
     for (let c = minCol; c <= maxCol; c++) {
-      const index = r * 10 + c;
+      const index = r * FIELD_WIDTH + c;
 
       // skip if it's a ship cell or already marked
       if (shipCellsSet.has(index) || updatedField[index][bufferZone]) continue;
@@ -102,18 +107,18 @@ function getFieldWithShipBuffer(
   return updatedField;
 }
 
-function getNextIdx(i, startCell, direction) {
-  return direction === horizon ? i + startCell : i * 10 + startCell;
+function getNextIdx(i, startIdx, direction) {
+  return direction === horizon ? i + startIdx : i * FIELD_WIDTH + startIdx;
 }
 
 function placeShips(array, shipSize, count) {
   let updatedField = cloneArrayShallow(array);
-  const maxAttempts = 50; // maximum number of attempts to place a ship
   let attempt = 0;
   let placed = false;
 
   // keep trying until the ship is placed or maxAttempts is reached
-  while (!placed && attempt < maxAttempts) {
+  // maximum number of attempts to place a ship
+  while (!placed && attempt < MAX_PLACEMENT_ATTEMPTS) {
     attempt++;
     const direction = getRandomDirection();
     const startIdx = getRandomStartPosition(updatedField, shipSize, direction);
@@ -124,7 +129,10 @@ function placeShips(array, shipSize, count) {
     // check if ship can fit without overlapping or touching another ship
     for (let i = 0; i < shipSize; i++) {
       const nextIdx = getNextIdx(i, startIdx, direction);
-      if (updatedField[nextIdx][NEXT_TO_SHIP_CELL]) {
+      if (
+        updatedField[nextIdx][NEXT_TO_SHIP_CELL] ||
+        updatedField[nextIdx].shipId
+      ) {
         conflict = true; // found conflict, try a new start position
         break;
       }
@@ -282,17 +290,20 @@ function shootRandomCell({
 
 const moveHorizontal = (lastHitIdx, step, firstHitIdx, field) => {
   const col = getCoordsFromIndex(lastHitIdx)[1];
+  const HORIZONTAL_STEP = 1;
 
   if (step > 0) {
     // move right
-    return isValidIndex(lastHitIdx + 1, field) && col < 9
-      ? lastHitIdx + 1
-      : firstHitIdx - 1; // fallback left
+    return isValidIndex(lastHitIdx + HORIZONTAL_STEP, field) &&
+      col < LAST_COL_NUM
+      ? lastHitIdx + HORIZONTAL_STEP
+      : firstHitIdx - HORIZONTAL_STEP; // fallback left
   } else {
     // move left
-    return isValidIndex(lastHitIdx - 1, field) && col > 0
-      ? lastHitIdx - 1
-      : firstHitIdx + 1; // fallback right
+    return isValidIndex(lastHitIdx - HORIZONTAL_STEP, field) &&
+      col > FIRST_COL_NUM
+      ? lastHitIdx - HORIZONTAL_STEP
+      : firstHitIdx + HORIZONTAL_STEP; // fallback right
   }
 };
 
@@ -301,19 +312,19 @@ const moveVertical = (lastHitIdx, step, firstHitIdx, field) => {
 
   if (step > 0) {
     // move down
-    return isValidIndex(lastHitIdx + 10, field) && row < 9
-      ? lastHitIdx + 10
-      : firstHitIdx - 10; // fallback up
+    return isValidIndex(lastHitIdx + FIELD_WIDTH, field) && row < LAST_ROW_NUM
+      ? lastHitIdx + FIELD_WIDTH
+      : firstHitIdx - FIELD_WIDTH; // fallback up
   } else {
     // move up
-    return isValidIndex(lastHitIdx - 10, field) && row > 0
-      ? lastHitIdx - 10
-      : firstHitIdx + 10; // fallback down
+    return isValidIndex(lastHitIdx - FIELD_WIDTH, field) && row > FIRST_ROW_NUM
+      ? lastHitIdx - FIELD_WIDTH
+      : firstHitIdx + FIELD_WIDTH; // fallback down
   }
 };
 
 const getNextShotIdx = (lastHitIdx, step, firstHitIdx, field) => {
-  if (Math.abs(step) < 10) {
+  if (Math.abs(step) < FIELD_WIDTH) {
     return moveHorizontal(lastHitIdx, step, firstHitIdx, field);
     // horizontal
   } else {
@@ -354,10 +365,14 @@ function huntingShip({
   if (!availableCells.length) {
     const firstHit = hits[0];
     const potentialNeighbors = [];
-    if (firstHit % 10 > 0) potentialNeighbors.push(firstHit - 1); // left
-    if (firstHit % 10 < 9) potentialNeighbors.push(firstHit + 1); // right
-    if (firstHit - 10 >= 0) potentialNeighbors.push(firstHit - 10); // up
-    if (firstHit + 10 <= 99) potentialNeighbors.push(firstHit + 10); // down
+    if (firstHit % FIELD_WIDTH > FIRST_COL_NUM)
+      potentialNeighbors.push(firstHit - 1); // left
+    if (firstHit % FIELD_WIDTH < LAST_COL_NUM)
+      potentialNeighbors.push(firstHit + 1); // right
+    if (firstHit - FIELD_WIDTH >= FIRST_ROW_NUM)
+      potentialNeighbors.push(firstHit - FIELD_WIDTH); // up
+    if (firstHit + FIELD_WIDTH <= LAST_IDX)
+      potentialNeighbors.push(firstHit + FIELD_WIDTH); // down
 
     availableCells = potentialNeighbors.filter((idx) =>
       isValidIndex(idx, newArray)
