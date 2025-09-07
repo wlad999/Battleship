@@ -27,7 +27,7 @@ function isValidIndex(idx, array) {
     FIRST_IDX >= 0 &&
     LAST_IDX <= 100 &&
     !array[idx].targeted &&
-    !array[idx].nextToDestroyedShip
+    !array[idx][NEXT_TO_DESTROYED_SHIP]
   );
 }
 
@@ -48,7 +48,7 @@ function getRandomDirection() {
 function getRandomStartPosition(field, shipSize, direction) {
   // Filter only cells from which the ship will fully fit
   const safeCells = field.filter((cell) => {
-    if (cell.shipId || cell.nextToShipCell) return false;
+    if (cell.shipId || cell[NEXT_TO_SHIP_CELL]) return false;
 
     if (direction === vertical) {
       return cell.idx + (shipSize - 1) * FIELD_WIDTH <= LAST_IDX;
@@ -75,7 +75,7 @@ function getFieldWithShipBuffer(
   if (!shipCells.length) return cloneArrayShallow(field);
 
   const updatedField = cloneArrayShallow(field);
-  const bufferZone = isDestroyed ? "nextToDestroyedShip" : "nextToShipCell";
+  const bufferZone = isDestroyed ? NEXT_TO_DESTROYED_SHIP : NEXT_TO_SHIP_CELL;
 
   const shipCellsSet = new Set(shipCells);
   const shipCoords = shipCells.map((cellIdx) => getCoordsFromIndex(cellIdx));
@@ -124,7 +124,7 @@ function placeShips(array, shipSize, count) {
     // check if ship can fit without overlapping or touching another ship
     for (let i = 0; i < shipSize; i++) {
       const nextIdx = getNextIdx(i, startIdx, direction);
-      if (updatedField[nextIdx].nextToShipCell) {
+      if (updatedField[nextIdx][NEXT_TO_SHIP_CELL]) {
         conflict = true; // found conflict, try a new start position
         break;
       }
@@ -176,7 +176,7 @@ function placeShipsOnField() {
 
 function getAvailableCells(array) {
   return array.reduce((acc, cell, idx) => {
-    if (!cell.targeted && !cell.nextToDestroyedShip) acc.push(idx);
+    if (!cell.targeted && !cell[NEXT_TO_DESTROYED_SHIP]) acc.push(idx);
     return acc;
   }, []);
 }
