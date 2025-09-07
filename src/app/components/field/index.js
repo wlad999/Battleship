@@ -143,14 +143,14 @@ function Field({
             onClick={() => handleClick(idx)}
             className={cls(styles.cell, {
               [styles.shipPart]:
-                (item.shipPart && isPlayer) ||
+                (item.shipId && isPlayer) ||
                 shipsStatus[item.shipId]?.isDestroyed ||
-                (item.shipPart && showShips),
-              [styles.targetedEmptyCell]: item.targeted && !item.shipPart,
+                (item.shipId && showShips),
+              [styles.targetedEmptyCell]: item.targeted && !item.shipId,
               [styles.targetedShipCell]:
-                item.targeted && item.shipPart && !item.destroyed,
+                item.targeted && item.shipId && !item.destroyed,
               [styles.destroyed]:
-                shipsStatus[item.shipId]?.isDestroyed && item.shipPart,
+                shipsStatus[item.shipId]?.isDestroyed && item.shipId,
             })}
           />
         ))}

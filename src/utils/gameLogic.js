@@ -7,7 +7,9 @@ import {
   FIRST_IDX,
   LAST_IDX,
   FIELD_WIDTH,
-  LAST_COL_IDX,
+  LAST_ROW_IDX,
+  NEXT_TO_SHIP_CELL,
+  NEXT_TO_DESTROYED_SHIP,
 } from "./constants";
 
 // ----------------------------
@@ -32,7 +34,7 @@ function isValidIndex(idx, array) {
 function generateEmptyArray() {
   return Array(100)
     .fill(null)
-    .map((_, idx) => ({ shipPart: 0, targeted: false, idx }));
+    .map((_, idx) => ({ targeted: false, idx }));
 }
 
 function getCoordsFromIndex(idx) {
@@ -46,14 +48,14 @@ function getRandomDirection() {
 function getRandomStartPosition(field, shipSize, direction) {
   // Filter only cells from which the ship will fully fit
   const safeCells = field.filter((cell) => {
-    if (cell.shipPart || cell.nextToShipCell) return false;
+    if (cell.shipId || cell.nextToShipCell) return false;
 
     if (direction === vertical) {
       return cell.idx + (shipSize - 1) * FIELD_WIDTH <= LAST_IDX;
     }
     //horizon
     const [row] = getCoordsFromIndex(cell.idx);
-    const rowEnd = row * FIELD_WIDTH + LAST_COL_IDX;
+    const rowEnd = row * FIELD_WIDTH + LAST_ROW_IDX;
     return cell.idx + (shipSize - 1) <= rowEnd;
   });
 
@@ -122,10 +124,7 @@ function placeShips(array, shipSize, count) {
     // check if ship can fit without overlapping or touching another ship
     for (let i = 0; i < shipSize; i++) {
       const nextIdx = getNextIdx(i, startIdx, direction);
-      if (
-        updatedField[nextIdx].shipPart ||
-        updatedField[nextIdx].nextToShipCell
-      ) {
+      if (updatedField[nextIdx].nextToShipCell) {
         conflict = true; // found conflict, try a new start position
         break;
       }
@@ -137,7 +136,6 @@ function placeShips(array, shipSize, count) {
       shipCells.forEach((idx) => {
         updatedField[idx] = {
           ...updatedField[idx],
-          shipPart: true,
           shipId: `${shipSize}-${count}`,
         };
       });
@@ -161,7 +159,7 @@ function placeShipsOnField() {
   });
 
   filledField.forEach((item, idx) => {
-    if (item.shipPart && item.shipId) {
+    if (item.shipId) {
       const shipId = item.shipId;
       if (!shipsStatus[shipId]) {
         shipsStatus[shipId] = {
@@ -217,7 +215,7 @@ function processShotResult({
   let updatedField = getFieldWithTargetedCell(newArray, idx);
   const shipId = updatedField[idx].shipId;
 
-  if (shipId && updatedField[idx].shipPart) {
+  if (shipId) {
     const isDestroyed = updateShipStatus(
       shipId,
       updatedField,
