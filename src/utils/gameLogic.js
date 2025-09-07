@@ -1,6 +1,14 @@
 // This file contains logic for placing ships on a battleship game field.
 
-import { horizon, vertical, shipsConfig, TOTAL_SHIP_PARTS } from "./constants";
+import {
+  horizon,
+  vertical,
+  shipsConfig,
+  FIRST_IDX,
+  LAST_IDX,
+  FIELD_WIDTH,
+  LAST_COL_IDX,
+} from "./constants";
 
 // ----------------------------
 // Utility functions
@@ -14,8 +22,8 @@ function isValidIndex(idx, array) {
     return false;
   }
   return (
-    idx >= 0 &&
-    idx < 100 &&
+    FIRST_IDX >= 0 &&
+    LAST_IDX <= 100 &&
     !array[idx].targeted &&
     !array[idx].nextToDestroyedShip
   );
@@ -27,34 +35,34 @@ function generateEmptyArray() {
     .map((_, idx) => ({ shipPart: 0, targeted: false, idx }));
 }
 
-function getRandomStartPosition(field, shipSize) {
-  const direction = Math.random() < 0.5 ? horizon : vertical;
+function getCoordsFromIndex(idx) {
+  return [Math.floor(idx / 10), idx % 10];
+}
 
+function getRandomDirection() {
+  return Math.random() < 0.5 ? horizon : vertical;
+}
+
+function getRandomStartPosition(field, shipSize, direction) {
   // Filter only cells from which the ship will fully fit
   const safeCells = field.filter((cell) => {
     if (cell.shipPart || cell.nextToShipCell) return false;
 
     if (direction === vertical) {
-      return cell.idx + (shipSize - 1) * 10 <= 99;
+      return cell.idx + (shipSize - 1) * FIELD_WIDTH <= LAST_IDX;
     }
-
-    if (direction === horizon) {
-      const rowStart = Math.floor(cell.idx / 10) * 10;
-      const rowEnd = rowStart + 9;
-      return cell.idx + (shipSize - 1) <= rowEnd;
-    }
-
-    return true;
+    //horizon
+    const [row] = getCoordsFromIndex(cell.idx);
+    const rowEnd = row * FIELD_WIDTH + LAST_COL_IDX;
+    return cell.idx + (shipSize - 1) <= rowEnd;
   });
 
-  const randomIndex = Math.floor(Math.random() * safeCells.length);
-  const startCell = safeCells[randomIndex].idx;
+  const availableCells = safeCells.length ? safeCells : field;
 
-  return [startCell, direction];
-}
+  const randomIndex = Math.floor(Math.random() * availableCells.length);
+  const startIdx = availableCells[randomIndex].idx;
 
-function getCoordsFromIndex(idx) {
-  return [Math.floor(idx / 10), idx % 10];
+  return startIdx;
 }
 
 function getFieldWithShipBuffer(
@@ -105,17 +113,15 @@ function placeShips(array, shipSize, count) {
   // keep trying until the ship is placed or maxAttempts is reached
   while (!placed && attempt < maxAttempts) {
     attempt++;
-    const [startCell, direction] = getRandomStartPosition(
-      updatedField,
-      shipSize
-    );
+    const direction = getRandomDirection();
+    const startIdx = getRandomStartPosition(updatedField, shipSize, direction);
 
     const shipCells = [];
     let conflict = false;
 
     // check if ship can fit without overlapping or touching another ship
     for (let i = 0; i < shipSize; i++) {
-      const nextIdx = getNextIdx(i, startCell, direction);
+      const nextIdx = getNextIdx(i, startIdx, direction);
       if (
         updatedField[nextIdx].shipPart ||
         updatedField[nextIdx].nextToShipCell
