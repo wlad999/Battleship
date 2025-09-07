@@ -276,27 +276,45 @@ function shootRandomCell({
   return updatedArray;
 }
 
-const getNextCell = (last, step, hits, array) => {
+const moveHorizontal = (lastHitIdx, step, firstHitIdx, field) => {
+  const col = getCoordsFromIndex(lastHitIdx)[1];
+
+  if (step > 0) {
+    // move right
+    return isValidIndex(lastHitIdx + 1, field) && col < 9
+      ? lastHitIdx + 1
+      : firstHitIdx - 1; // fallback left
+  } else {
+    // move left
+    return isValidIndex(lastHitIdx - 1, field) && col > 0
+      ? lastHitIdx - 1
+      : firstHitIdx + 1; // fallback right
+  }
+};
+
+const moveVertical = (lastHitIdx, step, firstHitIdx, field) => {
+  const row = getCoordsFromIndex(lastHitIdx)[0];
+
+  if (step > 0) {
+    // move down
+    return isValidIndex(lastHitIdx + 10, field) && row < 9
+      ? lastHitIdx + 10
+      : firstHitIdx - 10; // fallback up
+  } else {
+    // move up
+    return isValidIndex(lastHitIdx - 10, field) && row > 0
+      ? lastHitIdx - 10
+      : firstHitIdx + 10; // fallback down
+  }
+};
+
+const getNextShotIdx = (lastHitIdx, step, firstHitIdx, field) => {
   if (Math.abs(step) < 10) {
+    return moveHorizontal(lastHitIdx, step, firstHitIdx, field);
     // horizontal
-    if (step > 0)
-      return isValidIndex(last + 1, array) && !`${last}`.endsWith("9")
-        ? last + 1
-        : hits[0] - 1;
-    else
-      return isValidIndex(last - 1, array) && !`${last}`.endsWith("0")
-        ? last - 1
-        : hits[0] + 1;
   } else {
     // vertical
-    if (step > 0)
-      return isValidIndex(last + 10, array) && last < 90
-        ? last + 10
-        : hits[0] - 10;
-    else
-      return isValidIndex(last - 10, array) && last > 9
-        ? last - 10
-        : hits[0] + 10;
+    return moveVertical(lastHitIdx, step, firstHitIdx, field);
   }
 };
 
@@ -310,7 +328,7 @@ function chooseNextShot(availableCells, hits, array) {
   const lastShot = hits[hits.length - 1];
   const directionDelta = lastShot - prevShot;
 
-  return getNextCell(lastShot, directionDelta, hits, array);
+  return getNextShotIdx(lastShot, directionDelta, hits[0], array);
 }
 
 function huntingShip({
