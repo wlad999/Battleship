@@ -6,10 +6,9 @@ import { PLAYER, ENEMY } from "../../../utils/constants";
 import HitWaveSVG from "../hitWave";
 import {
   placeShipsOnField,
-  shootRandomCell,
-  huntingShip,
   getFieldWithTargetedCell,
   isGameOver,
+  cpuShoot,
 } from "../../../utils/gameLogic";
 import styles from "./styles.module.scss";
 
@@ -54,47 +53,23 @@ function Field({
   useEffect(() => {
     const hasGameEnded = isGameOver(shipsStatus);
     //return from function if game is over to avoid extra shot
-    if (hasGameEnded) {
-      return;
-    }
-
-    if (!isPlayer || winner) {
+    // shout on the player's field
+    if (!isPlayer || winner || isPlayerTurn || hasGameEnded) {
       return;
     }
     const shootWithDelay = async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
-
-      if (
-        (!isPlayerTurn && !huntingHistory) ||
-        (!isPlayerTurn && !huntingHistory && !!nextCpuShoot)
-      ) {
-        const updatedArray = shootRandomCell({
-          array,
-          shipsStatus,
-          setShipsStatus,
-          onSetIsPlayerTurn,
-          setHuntingHistory,
-          setNextCpuShoot,
-          setLastHitId,
-        });
-        setArray(updatedArray);
-      }
-      if (
-        (!isPlayerTurn && huntingHistory) ||
-        (!isPlayerTurn && huntingHistory && !!nextCpuShoot)
-      ) {
-        const updatedArray = huntingShip({
-          array,
-          shipsStatus,
-          setShipsStatus,
-          huntingHistory,
-          setHuntingHistory,
-          setNextCpuShoot,
-          onSetIsPlayerTurn,
-          setLastHitId,
-        });
-        setArray(updatedArray);
-      }
+      const updatedArray = cpuShoot({
+        array,
+        shipsStatus,
+        huntingHistory,
+        setHuntingHistory,
+        setNextCpuShoot,
+        onSetIsPlayerTurn,
+        setShipsStatus,
+        setLastHitId,
+      });
+      setArray(updatedArray);
     };
     shootWithDelay();
   }, [isPlayerTurn, nextCpuShoot]);

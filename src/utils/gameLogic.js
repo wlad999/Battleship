@@ -182,13 +182,6 @@ function placeShipsOnField() {
   return { shipsStatus, filledField };
 }
 
-function getAvailableCells(array) {
-  return array.reduce((acc, cell, idx) => {
-    if (!cell.targeted && !cell[NEXT_TO_DESTROYED_SHIP]) acc.push(idx);
-    return acc;
-  }, []);
-}
-
 function updateShipStatus(shipId, newArray, shipsStatus, setShipsStatus) {
   const isDestroyed = shipsStatus[shipId].cells.every(
     (idx) => newArray[idx].targeted
@@ -258,36 +251,6 @@ function processShotResult({
   return updatedField;
 }
 
-function shootRandomCell({
-  array,
-  shipsStatus,
-  setShipsStatus,
-  onSetIsPlayerTurn,
-  setHuntingHistory,
-  setNextCpuShoot,
-  setLastHitId,
-}) {
-  const newArray = cloneArrayShallow(array);
-  const availableCells = getAvailableCells(newArray);
-
-  if (availableCells.length === 0) return;
-  const randomIdx = Math.floor(Math.random() * availableCells.length);
-  const startIdx = availableCells[randomIdx];
-
-  const updatedArray = processShotResult({
-    idx: startIdx,
-    newArray,
-    shipsStatus,
-    setShipsStatus,
-    setHuntingHistory,
-    setLastHitId,
-    setNextCpuShoot,
-    onSetIsPlayerTurn,
-  });
-
-  return updatedArray;
-}
-
 const moveHorizontal = (lastHitIdx, step, firstHitIdx, field) => {
   const col = getCoordsFromIndex(lastHitIdx)[1];
   const HORIZONTAL_STEP = 1;
@@ -346,7 +309,29 @@ function chooseNextShot(availableCells, hits, array) {
   return getNextShotIdx(lastShot, directionDelta, hits[0], array);
 }
 
-function huntingShip({
+function getAvailableNeighbors(firstHit, field) {
+  const potentialNeighbors = [];
+  if (firstHit % FIELD_WIDTH > FIRST_COL_NUM)
+    potentialNeighbors.push(firstHit - 1); // left
+  if (firstHit % FIELD_WIDTH < LAST_COL_NUM)
+    potentialNeighbors.push(firstHit + 1); // right
+  if (firstHit - FIELD_WIDTH >= FIRST_ROW_NUM)
+    potentialNeighbors.push(firstHit - FIELD_WIDTH); // up
+  if (firstHit + FIELD_WIDTH <= LAST_IDX)
+    potentialNeighbors.push(firstHit + FIELD_WIDTH); // down
+
+  return potentialNeighbors.filter((idx) => isValidIndex(idx, field));
+}
+
+function getRandomAvailableCell(field) {
+  const availableCells = field
+    .filter((cell) => !cell.targeted && !cell[NEXT_TO_DESTROYED_SHIP])
+    .map((cell) => cell.idx);
+
+  return availableCells[Math.floor(Math.random() * availableCells.length)];
+}
+
+function cpuShoot({
   array,
   shipsStatus,
   huntingHistory,
@@ -357,48 +342,28 @@ function huntingShip({
   setLastHitId,
 }) {
   const newArray = cloneArrayShallow(array);
-  let availableCells = huntingHistory.availableCells || [];
+  let availableCells = huntingHistory?.availableCells || [];
   let nextShotIdx;
 
-  const hits = huntingHistory.targetedShipParts;
+  const hits = huntingHistory?.targetedShipParts || [];
 
-  if (!availableCells.length) {
-    const firstHit = hits[0];
-    const potentialNeighbors = [];
-    if (firstHit % FIELD_WIDTH > FIRST_COL_NUM)
-      potentialNeighbors.push(firstHit - 1); // left
-    if (firstHit % FIELD_WIDTH < LAST_COL_NUM)
-      potentialNeighbors.push(firstHit + 1); // right
-    if (firstHit - FIELD_WIDTH >= FIRST_ROW_NUM)
-      potentialNeighbors.push(firstHit - FIELD_WIDTH); // up
-    if (firstHit + FIELD_WIDTH <= LAST_IDX)
-      potentialNeighbors.push(firstHit + FIELD_WIDTH); // down
+  if (hits.length) {
+    if (!availableCells.length) {
+      availableCells = getAvailableNeighbors(hits[0], newArray);
+    }
 
-    availableCells = potentialNeighbors.filter((idx) =>
-      isValidIndex(idx, newArray)
-    );
+    nextShotIdx = chooseNextShot(availableCells, hits, newArray);
+
+    if (!isValidIndex(nextShotIdx, newArray)) {
+      nextShotIdx = getRandomAvailableCell(newArray);
+    }
+
+    availableCells = availableCells.filter((idx) => idx !== nextShotIdx);
+  } else {
+    nextShotIdx = getRandomAvailableCell(newArray);
   }
 
-  nextShotIdx = chooseNextShot(availableCells, hits, newArray);
-
-  // if nextShotIdx is not valid (out of bounds or already targeted), fallback to random available cell
-  if (!isValidIndex(nextShotIdx, newArray)) {
-    const updatedArray = shootRandomCell({
-      array: newArray,
-      shipsStatus,
-      setShipsStatus,
-      onSetIsPlayerTurn,
-      setHuntingHistory,
-      setNextCpuShoot,
-      setLastHitId,
-    });
-
-    return updatedArray;
-  }
-
-  availableCells = availableCells.filter((idx) => idx !== nextShotIdx);
-
-  const updatedArray = processShotResult({
+  return processShotResult({
     idx: nextShotIdx,
     newArray,
     shipsStatus,
@@ -409,8 +374,6 @@ function huntingShip({
     onSetIsPlayerTurn,
     availableCells,
   });
-
-  return updatedArray;
 }
 
 function groupAndSortShips(shipsStatus) {
@@ -442,4 +405,5 @@ export {
   groupAndSortShips,
   getFieldWithTargetedCell,
   isGameOver,
+  cpuShoot,
 };
