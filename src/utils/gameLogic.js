@@ -403,8 +403,6 @@ export {
   placeShips,
   placeShipsOnField,
   generateEmptyArray,
-  shootRandomCell,
-  huntingShip,
   groupAndSortShips,
   getFieldWithTargetedCell,
   isGameOver,
