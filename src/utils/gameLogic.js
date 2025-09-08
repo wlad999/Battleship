@@ -182,14 +182,17 @@ function placeShipsOnField() {
   return { shipsStatus, filledField };
 }
 
+function isShipDestroyed(ship, field) {
+  return ship.cells.every((idx) => field[idx].targeted);
+}
+
 function updateShipStatus(shipId, newArray, shipsStatus, setShipsStatus) {
-  const isDestroyed = shipsStatus[shipId].cells.every(
-    (idx) => newArray[idx].targeted
-  );
+  const isDestroyed = isShipDestroyed(shipsStatus[shipId], newArray);
   setShipsStatus((prev) => ({
     ...prev,
     [shipId]: { ...prev[shipId], isDestroyed },
   }));
+
   return isDestroyed;
 }
 
@@ -406,4 +409,5 @@ export {
   getFieldWithTargetedCell,
   isGameOver,
   cpuShoot,
+  isShipDestroyed,
 };

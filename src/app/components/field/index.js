@@ -9,6 +9,7 @@ import {
   getFieldWithTargetedCell,
   isGameOver,
   cpuShoot,
+  isShipDestroyed,
 } from "../../../utils/gameLogic";
 import styles from "./styles.module.scss";
 
@@ -29,13 +30,10 @@ function Field({
   const [lastHitId, setLastHitId] = useState(null);
 
   useEffect(() => {
-    if (!isPlayer && placeShips !== null) {
+    if ((!isPlayer && placeShips !== null) || started) {
       return;
     }
 
-    if (started) {
-      return;
-    }
     const { shipsStatus, filledField } = placeShipsOnField();
     setArray(filledField);
     setShipsStatus(shipsStatus);
@@ -75,15 +73,11 @@ function Field({
   }, [isPlayerTurn, nextCpuShoot]);
 
   const handleClick = useCallback((idx) => {
-    if (isPlayer || !isPlayerTurn) {
+    if (isPlayer || !isPlayerTurn || !started || winner) {
       return;
     }
 
-    if (array[idx].targeted || winner) {
-      return;
-    }
-
-    if (!started) {
+    if (array[idx].targeted) {
       return;
     }
 
@@ -91,9 +85,7 @@ function Field({
     const shipId = updatedField[idx].shipId;
 
     if (shipId) {
-      const isDestroyed = shipsStatus[shipId].cells
-        .map((idx) => updatedField[idx].targeted)
-        .every((targeted) => targeted);
+      const isDestroyed = isShipDestroyed(shipsStatus[shipId], updatedField);
 
       setShipsStatus((prev) => ({
         ...prev,
