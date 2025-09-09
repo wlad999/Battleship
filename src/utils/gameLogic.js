@@ -421,7 +421,7 @@ function isGameOver(shipsStatus) {
   return Object.values(shipsStatus).every((ship) => ship.isDestroyed);
 }
 
-export function getShotCoords(lastHitId, isPlayer) {
+function getShotCoords(lastHitId, isPlayer) {
   const id = `${isPlayer ? PLAYER : ENEMY}-${lastHitId}`;
   const el = document.getElementById(id);
   if (!el) return null;
