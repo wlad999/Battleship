@@ -5,15 +5,12 @@ import { PLAYER, ENEMY } from "../../../utils/constants";
 import styles from "./styles.module.scss";
 
 function Header({
-  isPlayerTurn,
-  showShips,
-  started,
-  winner,
+  gameState,
+  setGameState,
   onHandlePlaceShips,
   onHandleRestart,
-  onSetShowShips,
-  onSetStarted,
 }) {
+  const { isPlayerTurn, showShips, started, winner } = gameState;
   return (
     <>
       {!winner && started && (
@@ -23,7 +20,7 @@ function Header({
         <div className={styles.startButtonContainer}>
           <button
             className={cls(styles.button, styles.startButton)}
-            onClick={() => onSetStarted(true)}
+            onClick={() => setGameState((prev) => ({ ...prev, started: true }))}
           >
             start a battle
           </button>
@@ -46,7 +43,9 @@ function Header({
             {winner === ENEMY && !showShips && (
               <button
                 className={cls(styles.button, styles.showShipsButton)}
-                onClick={() => onSetShowShips(true)}
+                onClick={() =>
+                  setGameState((prev) => ({ ...prev, showShips: true }))
+                }
               >
                 Show all ships
               </button>

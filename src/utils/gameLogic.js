@@ -15,6 +15,8 @@ import {
   NEXT_TO_DESTROYED_SHIP,
   FIELD_SIZE,
   MAX_PLACEMENT_ATTEMPTS,
+  PLAYER,
+  ENEMY,
 } from "./constants";
 
 // ----------------------------
@@ -111,7 +113,7 @@ function getNextIdx(i, startIdx, direction) {
   return direction === horizon ? i + startIdx : i * FIELD_WIDTH + startIdx;
 }
 
-function placeShips(array, shipSize, count) {
+function placeShip(array, shipSize, count) {
   let updatedField = cloneArrayShallow(array);
   let attempt = 0;
   let placed = false;
@@ -161,7 +163,7 @@ function placeShipsOnField() {
   let filledField = generateEmptyArray();
   shipsConfig.forEach(({ size, count }) => {
     for (let i = 0; i < count; i++) {
-      const filledFieldWithShip = placeShips(filledField, size, i);
+      const filledFieldWithShip = placeShip(filledField, size, i);
       filledField = filledFieldWithShip;
     }
   });
@@ -186,22 +188,17 @@ function isShipDestroyed(ship, field) {
   return ship.cells.every((idx) => field[idx].targeted);
 }
 
-function updateShipStatus(shipId, newArray, shipsStatus, setShipsStatus) {
+function updateShipStatus(shipId, newArray, shipsStatus) {
   const isDestroyed = isShipDestroyed(shipsStatus[shipId], newArray);
-  setShipsStatus((prev) => ({
-    ...prev,
-    [shipId]: { ...prev[shipId], isDestroyed },
-  }));
-
-  return isDestroyed;
+  return {
+    ...shipsStatus,
+    [shipId]: { ...shipsStatus[shipId], isDestroyed },
+  };
 }
 
 function getFieldWithTargetedCell(field, cellIndex) {
   const updatedField = cloneArrayShallow(field);
-  updatedField[cellIndex] = {
-    ...updatedField[cellIndex],
-    targeted: true,
-  };
+  updatedField[cellIndex] = { ...updatedField[cellIndex], targeted: true };
   return updatedField;
 }
 
@@ -209,36 +206,30 @@ function processShotResult({
   idx,
   newArray,
   shipsStatus,
-  setShipsStatus,
-  setHuntingHistory,
-  setLastHitId,
-  setNextCpuShoot,
-  onSetIsPlayerTurn,
+  huntingHistory,
+  nextCpuShoot,
   availableCells,
 }) {
   let updatedField = getFieldWithTargetedCell(newArray, idx);
+  let newShipsStatus = shipsStatus;
+  let newHuntingHistory = huntingHistory;
+
   const shipId = updatedField[idx].shipId;
 
   if (shipId) {
-    const isDestroyed = updateShipStatus(
-      shipId,
-      updatedField,
-      shipsStatus,
-      setShipsStatus
-    );
+    const isDestroyed = isShipDestroyed(shipsStatus[shipId], updatedField);
+    newShipsStatus = updateShipStatus(shipId, updatedField, shipsStatus);
 
     if (!isDestroyed) {
-      setHuntingHistory((prev) =>
-        prev
-          ? {
-              ...prev,
-              targetedShipParts: [...prev.targetedShipParts, idx],
-              availableCells,
-            }
-          : { targetedShipParts: [idx], availableCells }
-      );
+      newHuntingHistory = huntingHistory
+        ? {
+            ...huntingHistory,
+            targetedShipParts: [...huntingHistory.targetedShipParts, idx],
+            availableCells,
+          }
+        : { targetedShipParts: [idx], availableCells };
     } else {
-      setHuntingHistory(null);
+      newHuntingHistory = null;
       updatedField = getFieldWithShipBuffer(
         updatedField,
         shipsStatus[shipId].cells,
@@ -247,11 +238,16 @@ function processShotResult({
     }
   }
 
-  setLastHitId(idx);
-  setNextCpuShoot((prev) => (shipId ? prev + 1 : 0));
-  onSetIsPlayerTurn(!shipId);
-
-  return updatedField;
+  return {
+    [PLAYER]: {
+      battleField: updatedField,
+      shipsStatus: newShipsStatus,
+      lastHitId: idx,
+    },
+    huntingHistory: newHuntingHistory,
+    nextCpuShoot: shipId ? nextCpuShoot + 1 : 0,
+    isPlayerTurn: !shipId,
+  };
 }
 
 const moveHorizontal = (lastHitIdx, step, firstHitIdx, field) => {
@@ -334,17 +330,13 @@ function getRandomAvailableCell(field) {
   return availableCells[Math.floor(Math.random() * availableCells.length)];
 }
 
-function cpuShoot({
-  array,
-  shipsStatus,
-  huntingHistory,
-  setHuntingHistory,
-  setNextCpuShoot,
-  onSetIsPlayerTurn,
-  setShipsStatus,
-  setLastHitId,
-}) {
-  const newArray = cloneArrayShallow(array);
+function cpuShoot(gameState) {
+  const {
+    [PLAYER]: { battleField, shipsStatus },
+    huntingHistory,
+    nextCpuShoot,
+  } = gameState;
+  const newArray = cloneArrayShallow(battleField);
   let availableCells = huntingHistory?.availableCells || [];
   let nextShotIdx;
 
@@ -366,17 +358,47 @@ function cpuShoot({
     nextShotIdx = getRandomAvailableCell(newArray);
   }
 
-  return processShotResult({
+  const shotUpdatedData = processShotResult({
     idx: nextShotIdx,
     newArray,
     shipsStatus,
-    setShipsStatus,
-    setHuntingHistory,
-    setLastHitId,
-    setNextCpuShoot,
-    onSetIsPlayerTurn,
+    huntingHistory,
+    nextCpuShoot,
     availableCells,
   });
+
+  return {
+    ...gameState,
+    ...shotUpdatedData,
+  };
+}
+
+function playerShoot(gameState, idx) {
+  const {
+    [ENEMY]: { battleField, shipsStatus },
+  } = gameState;
+  const updatedBattleField = getFieldWithTargetedCell(battleField, idx);
+  const shipId = updatedBattleField[idx].shipId;
+  let updatedShipsStatus = { ...shipsStatus };
+  if (shipId) {
+    const isDestroyed = isShipDestroyed(
+      shipsStatus[shipId],
+      updatedBattleField
+    );
+    updatedShipsStatus[shipId] = {
+      ...updatedShipsStatus[shipId],
+      isDestroyed,
+    };
+  }
+  return {
+    ...gameState,
+    [ENEMY]: {
+      battleField: updatedBattleField,
+      shipsStatus: updatedShipsStatus,
+      lastHitId: idx,
+    },
+    isPlayerTurn: !!shipId,
+  };
 }
 
 function groupAndSortShips(shipsStatus) {
@@ -399,8 +421,19 @@ function isGameOver(shipsStatus) {
   return Object.values(shipsStatus).every((ship) => ship.isDestroyed);
 }
 
+export function getShotCoords(lastHitId, isPlayer) {
+  const id = `${isPlayer ? PLAYER : ENEMY}-${lastHitId}`;
+  const el = document.getElementById(id);
+  if (!el) return null;
+
+  const rect = el.getBoundingClientRect();
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+}
+
 export {
-  placeShips,
   placeShipsOnField,
   generateEmptyArray,
   groupAndSortShips,
@@ -408,4 +441,6 @@ export {
   isGameOver,
   cpuShoot,
   isShipDestroyed,
+  playerShoot,
+  getShotCoords,
 };

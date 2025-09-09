@@ -1,15 +1,13 @@
 "use client";
 import React from "react";
-import { PLAYER, ENEMY } from "../../../utils/constants";
+import { getShotCoords } from "../../../utils/gameLogic";
 
 export default function HitWaveSVG({ lastHitId = null, isPlayer = false }) {
   if (lastHitId === null) return;
 
-  const id = `${isPlayer ? PLAYER : ENEMY}-${lastHitId}`;
-  const el = document.getElementById(id);
-  const rect = el.getBoundingClientRect();
-  const x = rect.left + rect.width / 2;
-  const y = rect.top + rect.height / 2;
+  const coords = getShotCoords(lastHitId, isPlayer);
+  if (!coords) return null;
+  const { x, y } = coords;
 
   return (
     <svg

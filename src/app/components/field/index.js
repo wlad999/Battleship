@@ -1,33 +1,24 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import cls from "classnames";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
 import HitWaveSVG from "../hitWave";
 import {
   placeShipsOnField,
-  getFieldWithTargetedCell,
   isGameOver,
   cpuShoot,
-  isShipDestroyed,
+  playerShoot,
 } from "../../../utils/gameLogic";
 import styles from "./styles.module.scss";
 
-function Field({
-  isPlayer = false,
-  isPlayerTurn,
-  onSetIsPlayerTurn,
-  onSetWinner,
-  winner,
-  placeShips,
-  started,
-  showShips = false,
-}) {
-  const [array, setArray] = useState([]);
-  const [shipsStatus, setShipsStatus] = useState({});
-  const [huntingHistory, setHuntingHistory] = useState(null);
-  const [nextCpuShoot, setNextCpuShoot] = useState(null);
-  const [lastHitId, setLastHitId] = useState(null);
+function Field({ isPlayer = false, gameState, setGameState }) {
+  const fieldKey = isPlayer ? PLAYER : ENEMY;
+  const fieldState = gameState[fieldKey];
+  const { battleField, shipsStatus, lastHitId } = fieldState;
+
+  const { nextCpuShoot, isPlayerTurn, winner, placeShips, started, showShips } =
+    gameState;
 
   useEffect(() => {
     if ((!isPlayer && placeShips !== null) || started) {
@@ -35,67 +26,54 @@ function Field({
     }
 
     const { shipsStatus, filledField } = placeShipsOnField();
-    setArray(filledField);
-    setShipsStatus(shipsStatus);
-  }, [placeShips, started]);
+    setGameState((prev) => ({
+      ...prev,
+      [fieldKey]: {
+        ...prev[fieldKey],
+        battleField: filledField,
+        shipsStatus,
+      },
+    }));
+  }, [placeShips, started, isPlayer]);
 
   useEffect(() => {
-    if (!array.length) return;
+    if (!battleField.length) return;
     const hasGameEnded = isGameOver(shipsStatus);
 
     if (hasGameEnded) {
-      onSetWinner(isPlayer ? ENEMY : PLAYER);
+      setGameState((prev) => ({
+        ...prev,
+        winner: isPlayer ? ENEMY : PLAYER,
+      }));
     }
-  }, [array]);
+  }, [battleField, shipsStatus]);
 
   useEffect(() => {
     const hasGameEnded = isGameOver(shipsStatus);
     //return from function if game is over to avoid extra shot
-    // shout on the player's field
+    // shout on the player's field only
     if (!isPlayer || winner || isPlayerTurn || hasGameEnded) {
       return;
     }
+
     const shootWithDelay = async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const updatedArray = cpuShoot({
-        array,
-        shipsStatus,
-        huntingHistory,
-        setHuntingHistory,
-        setNextCpuShoot,
-        onSetIsPlayerTurn,
-        setShipsStatus,
-        setLastHitId,
-      });
-      setArray(updatedArray);
+      const newGameState = cpuShoot(gameState);
+      setGameState(newGameState);
     };
     shootWithDelay();
   }, [isPlayerTurn, nextCpuShoot]);
 
-  const handleClick = useCallback((idx) => {
-    if (isPlayer || !isPlayerTurn || !started || winner) {
-      return;
-    }
+  const handleClick = useCallback(
+    (idx) => {
+      if (isPlayer || !isPlayerTurn || !started || winner) return;
+      if (battleField[idx].targeted) return;
 
-    if (array[idx].targeted) {
-      return;
-    }
-
-    const updatedField = getFieldWithTargetedCell(array, idx);
-    const shipId = updatedField[idx].shipId;
-
-    if (shipId) {
-      const isDestroyed = isShipDestroyed(shipsStatus[shipId], updatedField);
-
-      setShipsStatus((prev) => ({
-        ...prev,
-        [shipId]: { ...prev[shipId], isDestroyed },
-      }));
-    }
-    setLastHitId(idx);
-    setArray(updatedField);
-    onSetIsPlayerTurn(!!shipId);
-  });
+      const newGameState = playerShoot(gameState, idx);
+      setGameState(newGameState);
+    },
+    [fieldState, gameState, isPlayer, isPlayerTurn]
+  );
 
   return (
     <div className={styles.container}>
@@ -103,7 +81,7 @@ function Field({
       <Status shipsStatus={shipsStatus} isPlayer={isPlayer} started={started} />
       <h3>{isPlayer ? `${PLAYER} fleet` : `${ENEMY} fleet`}</h3>
       <div className={styles.wrapper}>
-        {array.map((item, idx) => (
+        {battleField.map((item, idx) => (
           <div
             key={idx}
             id={`${isPlayer ? PLAYER : ENEMY}-${idx}`}

@@ -4,64 +4,38 @@ import cls from "classnames";
 import Field from "./components/field";
 import Animations from "./components/animations";
 import Header from "./components/header";
+import { initialGameState } from "../utils/initialGameState";
 
 import styles from "./page.module.css";
 
 export default function Home() {
-  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-  const [winner, setWinner] = useState(null);
-  const [started, setStarted] = useState(false);
-  const [placeShips, setPlaceShips] = useState(null);
-  const [showShips, setShowShips] = useState(false);
+  const [gameState, setGameState] = useState(initialGameState);
 
   const handlePlaceShips = () => {
-    if (placeShips === null) {
-      setPlaceShips(true);
-      return;
-    }
-    setPlaceShips((prev) => !prev);
+    setGameState((prev) => ({
+      ...prev,
+      placeShips: prev.placeShips === null ? true : !prev.placeShips,
+    }));
   };
 
   const handleRestart = () => {
-    setWinner(null);
-    setStarted(false);
-    setPlaceShips(null);
-    setIsPlayerTurn(true);
-    setShowShips(false);
+    setGameState(initialGameState);
   };
 
   return (
-    <div className={cls(styles.container, { [styles.start]: started })}>
+    <div
+      className={cls(styles.container, { [styles.start]: gameState.started })}
+    >
       <Header
-        isPlayerTurn={isPlayerTurn}
-        showShips={showShips}
-        started={started}
-        winner={winner}
+        gameState={gameState}
+        setGameState={setGameState}
         onHandlePlaceShips={handlePlaceShips}
         onHandleRestart={handleRestart}
-        onSetShowShips={setShowShips}
-        onSetStarted={setStarted}
       />
-      <Animations winner={winner} />
+      <Animations winner={gameState.winner} />
       <div className={styles.page}>
-        <Field
-          isPlayerTurn={isPlayerTurn}
-          onSetIsPlayerTurn={setIsPlayerTurn}
-          onSetWinner={setWinner}
-          winner={winner}
-          placeShips={placeShips}
-          started={started}
-          showShips={showShips}
-        />
-        <Field
-          isPlayerTurn={isPlayerTurn}
-          onSetIsPlayerTurn={setIsPlayerTurn}
-          onSetWinner={setWinner}
-          winner={winner}
-          placeShips={placeShips}
-          started={started}
-          isPlayer
-        />
+        <Field gameState={gameState} setGameState={setGameState} />
+        <Field gameState={gameState} setGameState={setGameState} isPlayer />
       </div>
     </div>
   );
