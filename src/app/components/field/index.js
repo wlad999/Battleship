@@ -10,6 +10,7 @@ import {
   cpuShoot,
   playerShoot,
 } from "../../../utils/gameLogic";
+import Ship from "../ship";
 import styles from "./styles.module.scss";
 
 function Field({ isPlayer = false, gameState, setGameState }) {
@@ -86,18 +87,24 @@ function Field({ isPlayer = false, gameState, setGameState }) {
             key={idx}
             id={`${isPlayer ? PLAYER : ENEMY}-${idx}`}
             onClick={() => handleClick(idx)}
-            className={cls(styles.cell, {
-              [styles.shipPart]:
-                (item.shipId && isPlayer) ||
-                shipsStatus[item.shipId]?.isDestroyed ||
-                (item.shipId && showShips),
-              [styles.targetedEmptyCell]: item.targeted && !item.shipId,
-              [styles.targetedShipCell]:
-                item.targeted && item.shipId && !item.destroyed,
-              [styles.destroyed]:
-                shipsStatus[item.shipId]?.isDestroyed && item.shipId,
-            })}
-          />
+            className={styles.cell}
+          >
+            <div
+              className={cls(styles.imgs, {
+                [styles.destroyed]:
+                  shipsStatus[item.shipId]?.isDestroyed && item.shipId,
+                [styles.targetedShipCell]:
+                  item.targeted && item.shipId && !item.destroyed,
+                [styles.targetedEmptyCell]: item.targeted && !item.shipId,
+              })}
+            />
+            <Ship
+              shipsStatus={shipsStatus}
+              item={item}
+              isPlayer={isPlayer}
+              showShips={showShips}
+            />
+          </div>
         ))}
       </div>
     </div>
