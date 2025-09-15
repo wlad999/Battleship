@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useCallback } from "react";
-import cls from "classnames";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
 import HitWaveSVG from "../hitWave";
+import CellEvents from "../cellEvents";
 import {
   placeShipsOnField,
   isGameOver,
@@ -89,15 +89,7 @@ function Field({ isPlayer = false, gameState, setGameState }) {
             onClick={() => handleClick(idx)}
             className={styles.cell}
           >
-            <div
-              className={cls(styles.imgs, {
-                [styles.destroyed]:
-                  shipsStatus[item.shipId]?.isDestroyed && item.shipId,
-                [styles.targetedShipCell]:
-                  item.targeted && item.shipId && !item.destroyed,
-                [styles.targetedEmptyCell]: item.targeted && !item.shipId,
-              })}
-            />
+            <CellEvents item={item} shipsStatus={shipsStatus} />
             <Ship
               shipsStatus={shipsStatus}
               item={item}
