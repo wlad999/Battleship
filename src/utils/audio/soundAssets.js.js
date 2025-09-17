@@ -1,0 +1,59 @@
+export let sounds = {};
+
+if (typeof window !== "undefined") {
+  sounds = {
+    "shot-0": new Audio("/sounds/shot-0.mp3"),
+    "shot-1": new Audio("/sounds/shot-1.mp3"),
+    "shot-2": new Audio("/sounds/shot-2.mp3"),
+    "shot-3": new Audio("/sounds/shot-3.mp3"),
+    "shot-4": new Audio("/sounds/shot-4.mp3"),
+    "shot-5": new Audio("/sounds/shot-5.mp3"),
+    "shot-6": new Audio("/sounds/shot-6.mp3"),
+    "shot-7": new Audio("/sounds/shot-7.mp3"),
+    "shot-8": new Audio("/sounds/shot-8.mp3"),
+    "shot-9": new Audio("/sounds/shot-9.mp3"),
+    "shot-10": new Audio("/sounds/shot-10.mp3"),
+    "shot-11": new Audio("/sounds/shot-11.mp3"),
+    "shot-12": new Audio("/sounds/shot-12.mp3"),
+    "hit-0": new Audio("/sounds/hit-0.mp3"),
+    "hit-1": new Audio("/sounds/hit-1.mp3"),
+    "hit-2": new Audio("/sounds/hit-2.mp3"),
+    "hit-3": new Audio("/sounds/hit-3.mp3"),
+    "hit-4": new Audio("/sounds/hit-4.mp3"),
+    "miss-0": new Audio("/sounds/miss-0.mp3"),
+    "miss-1": new Audio("/sounds/miss-1.mp3"),
+    "miss-2": new Audio("/sounds/miss-2.mp3"),
+    "miss-3": new Audio("/sounds/miss-3.mp3"),
+    "miss-4": new Audio("/sounds/miss-4.mp3"),
+    "miss-5": new Audio("/sounds/miss-5.mp3"),
+    "miss-6": new Audio("/sounds/miss-6.mp3"),
+    "miss-7": new Audio("/sounds/miss-7.mp3"),
+    "destroyed-0": new Audio("/sounds/destroyed-0.mp3"),
+    "destroyed-1": new Audio("/sounds/destroyed-1.mp3"),
+    "destroyed-2": new Audio("/sounds/destroyed-2.mp3"),
+    "destroyed-3": new Audio("/sounds/destroyed-3.mp3"),
+    "destroyed-4": new Audio("/sounds/destroyed-3.mp3"),
+    "siren-0": new Audio("/sounds/siren-0.mp3"),
+    "siren-1": new Audio("/sounds/siren-1.mp3"),
+    "siren-2": new Audio("/sounds/siren-2.mp3"),
+    "siren-3": new Audio("/sounds/siren-3.mp3"),
+    "sonar-0": new Audio("/sounds/sonar-0.mp3"),
+    "turret-0": new Audio("/sounds/turret-0.mp3"),
+    "turret-1": new Audio("/sounds/turret-1.mp3"),
+    "turret-2": new Audio("/sounds/turret-2.mp3"),
+    "enemyTargeted-0": new Audio("/sounds/enemyTargeted-0.mp3"),
+    "enemyTargeted-1": new Audio("/sounds/enemyTargeted-1.mp3"),
+    "enemyTargeted-2": new Audio("/sounds/enemyTargeted-2.mp3"),
+    "ocean-0": new Audio("/sounds/ocean-0.mp3"),
+    "victory-0": new Audio("/sounds/victory-0.mp3"),
+    "loss-0": new Audio("/sounds/loss-0.mp3"),
+    "sunk-0": new Audio("/sounds/sunk-0.mp3"),
+    "sunk-1": new Audio("/sounds/sunk-1.mp3"),
+    "enemyDestroyed-0": new Audio("/sounds/enemyDestroyed-0.mp3"),
+  };
+
+  Object.values(sounds).forEach((sound) => {
+    sound.volume = 0.2;
+    sound.preload = "auto";
+  });
+}

@@ -19,11 +19,16 @@ import {
   ENEMY,
 } from "./constants";
 
+import { playSound, stopSound } from "./audio/soundManager";
 // ----------------------------
 // Utility functions
 // ----------------------------
 function cloneArrayShallow(array) {
   return [...array];
+}
+
+function getRandomInt(maxNum) {
+  return Math.floor(Math.random() * maxNum);
 }
 
 function isValidIndex(idx, array) {
@@ -221,6 +226,8 @@ function processShotResult({
     newShipsStatus = updateShipStatus(shipId, updatedField, shipsStatus);
 
     if (!isDestroyed) {
+      playSound("siren");
+      playSound("hit");
       newHuntingHistory = huntingHistory
         ? {
             ...huntingHistory,
@@ -229,6 +236,10 @@ function processShotResult({
           }
         : { targetedShipParts: [idx], availableCells };
     } else {
+      shipsStatus[shipId].cells.length === 1 && playSound("sonar");
+      stopSound("siren");
+      playSound("destroyed");
+      playSound("sunk");
       newHuntingHistory = null;
       updatedField = getFieldWithShipBuffer(
         updatedField,
@@ -237,6 +248,8 @@ function processShotResult({
       );
     }
   }
+
+  if (!shipId) playSound("miss");
 
   return {
     [PLAYER]: {
@@ -374,6 +387,7 @@ function cpuShoot(gameState) {
 }
 
 function playerShoot(gameState, idx) {
+  playSound("shot");
   const {
     [ENEMY]: { battleField, shipsStatus },
   } = gameState;
@@ -389,6 +403,11 @@ function playerShoot(gameState, idx) {
       ...updatedShipsStatus[shipId],
       isDestroyed,
     };
+
+    if (!isDestroyed) {
+      playSound("turret");
+      playSound("enemyTargeted");
+    }
   }
   return {
     ...gameState,
@@ -443,4 +462,5 @@ export {
   isShipDestroyed,
   playerShoot,
   getShotCoords,
+  getRandomInt,
 };

@@ -58,7 +58,7 @@ function Field({ isPlayer = false, gameState, setGameState }) {
     }
 
     const shootWithDelay = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const newGameState = cpuShoot(gameState);
       setGameState(newGameState);
     };
