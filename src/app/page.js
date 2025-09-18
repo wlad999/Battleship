@@ -6,6 +6,7 @@ import Animations from "./components/animations";
 import Header from "./components/header";
 import { initialGameState } from "../utils/initialGameState";
 import { PLAYER } from "../utils/constants";
+import VolumeControl from "./components/volumeControl";
 
 import { playSound, stopAllSound } from "../utils/audio/soundManager";
 
@@ -48,6 +49,7 @@ export default function Home() {
     <div
       className={cls(styles.container, { [styles.start]: gameState.started })}
     >
+      <VolumeControl />
       <Header
         gameState={gameState}
         setGameState={setGameState}

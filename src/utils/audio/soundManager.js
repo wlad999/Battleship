@@ -54,7 +54,7 @@ const SoundManager = {
     globalVolume = Math.max(0, Math.min(1, v));
     for (const [key, sound] of activeSounds.entries()) {
       const config = soundConfig[key] || {};
-      sound.volume = config.volume * globalVolume;
+      sound.volume = (config?.volume || 0.2) * globalVolume;
     }
   },
 };

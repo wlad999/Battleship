@@ -1,11 +1,12 @@
 export const soundConfig = {
   siren: { volume: 0.2, loop: true, skipIfPlaying: true },
-  ocean: { volume: 0.05, loop: true, skipIfPlaying: true },
+  ocean: { volume: 0.1, loop: true, skipIfPlaying: true },
   victory: { volume: 0.5, loop: true, skipIfPlaying: true },
   loss: { volume: 0.7, loop: true, skipIfPlaying: true },
   sonar: { volume: 0.1, loop: true, skipIfPlaying: true },
   turret: { volume: 0.1, loop: false, skipIfPlaying: false },
   hit: { volume: 0.2, loop: false, skipIfPlaying: false },
+  shot: { volume: 0.2, loop: false, skipIfPlaying: false },
   miss: { volume: 0.7, loop: false, skipIfPlaying: false },
   destroyed: { volume: 0.2, loop: false, skipIfPlaying: false },
   enemyTargeted: { volume: 1, loop: false, skipIfPlaying: false },
