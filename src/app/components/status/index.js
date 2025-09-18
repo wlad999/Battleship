@@ -19,21 +19,16 @@ function Status({ shipsStatus = {}, isPlayer, started }) {
         {groupedShips.map((group, groupIdx) => (
           <div className={styles.group} key={groupIdx}>
             {group.map((ship) => (
-              <div className={styles.ship} key={ship.id}>
+              <div
+                className={cls(
+                  styles.ship,
+                  styles[`ship-${ship.cells.length}`],
+                  { [styles.destroyed]: ship.isDestroyed }
+                )}
+                key={ship.id}
+              >
                 {ship.cells.map((cellIdx) => (
-                  <div
-                    key={cellIdx}
-                    className={cls(styles.cell, {
-                      [styles.destroyedCell]: ship.isDestroyed,
-                    })}
-                  >
-                    <div
-                      className={cls(styles.cellStatus, {
-                        [styles.shipPart]: !ship.isDestroyed,
-                        [styles.destroyed]: ship.isDestroyed,
-                      })}
-                    />
-                  </div>
+                  <div key={cellIdx} className={styles.cell} />
                 ))}
               </div>
             ))}

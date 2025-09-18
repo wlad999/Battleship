@@ -18,6 +18,7 @@ export default function HitWaveSVG({ lastHitId = null, isPlayer = false }) {
         width: "100vw",
         height: "100vh",
         pointerEvents: "none",
+        zIndex: 1,
       }}
       key={lastHitId}
     >
