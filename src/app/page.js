@@ -18,6 +18,7 @@ export default function Home() {
     if (gameState.started) {
       stopAllSound();
       playSound("ocean");
+      playSound("start");
     }
     if (gameState.winner) {
       stopAllSound();

@@ -50,6 +50,7 @@ if (typeof window !== "undefined") {
     "sunk-0": new Audio("/sounds/sunk-0.mp3"),
     "sunk-1": new Audio("/sounds/sunk-1.mp3"),
     "enemyDestroyed-0": new Audio("/sounds/enemyDestroyed-0.mp3"),
+    "start-0": new Audio("/sounds/start-0.mp3"),
   };
 
   Object.values(sounds).forEach((sound) => {

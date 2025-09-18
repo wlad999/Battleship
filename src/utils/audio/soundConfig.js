@@ -11,4 +11,5 @@ export const soundConfig = {
   enemyTargeted: { volume: 1, loop: false, skipIfPlaying: false },
   sunk: { volume: 1, loop: false, skipIfPlaying: false },
   enemyDestroyed: { volume: 1, loop: false, skipIfPlaying: false },
+  start: { volume: 1, loop: false, skipIfPlaying: false },
 };
