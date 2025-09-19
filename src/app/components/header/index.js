@@ -36,7 +36,7 @@ function Header({
               ? "Captain, you've lost! Don't give up, try again!"
               : "Boom! You sunk ’em all, Admiral! Don’t retire yet — fight another battle for your country!"}
           </h2>
-          <div>
+          <div className={styles.toBattleWrapper}>
             <button className={styles.button} onClick={onHandleRestart}>
               To battle!
             </button>

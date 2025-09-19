@@ -2,6 +2,9 @@ import { sounds } from "./soundAssets.js";
 import { getRandomSoundKey } from "./soundUtils";
 import { soundConfig } from "./soundConfig";
 
+const isAppleDevice =
+  typeof navigator !== "undefined" &&
+  /Mac|iPhone|iPad/.test(navigator.userAgent);
 const activeSounds = new Map();
 let globalVolume = 1;
 
@@ -39,7 +42,9 @@ const SoundManager = {
 
   stopAllSound() {
     for (const [_, sound] of activeSounds.entries()) {
-      sound.pause();
+      try {
+        sound.pause();
+      } catch (_) {}
       sound.currentTime = 0;
     }
     activeSounds.clear();
@@ -50,12 +55,25 @@ const SoundManager = {
     return sound && !sound.paused;
   },
 
+  syncApplePlayback(sound, volume) {
+    if (volume === 0 && !sound.paused) {
+      sound.pause();
+    } else if (volume > 0 && sound.paused) {
+      try {
+        sound.play().catch(() => {});
+      } catch (_) {}
+    }
+  },
+
   setGlobalVolume(v) {
     globalVolume = Math.max(0, Math.min(1, v));
     for (const [key, sound] of activeSounds.entries()) {
       const config = soundConfig[key] || {};
       sound.volume = (config?.volume || 0.2) * globalVolume;
       sound.muted = globalVolume === 0;
+      if (isAppleDevice) {
+        SoundManager.syncApplePlayback(sound, globalVolume);
+      }
     }
   },
 };
