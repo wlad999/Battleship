@@ -82,6 +82,8 @@ function VolumeControl() {
               step="0.1"
               value={muted ? 0 : volume}
               onChange={handleVolumeChange}
+              onTouchStart={() => setGlobalVolume(volume)}
+              onMouseDown={() => setGlobalVolume(volume)}
               className={styles.slider}
             />
           </div>
