@@ -120,7 +120,7 @@ function VolumeControl({ onSetGameState }) {
                     ? "yellow"
                     : "green";
                 return (
-                  <div className={styles.delayBlock}>
+                  <div className={styles.delayBlock} key={color}>
                     <button
                       key={val}
                       onClick={() => handleDelaySelect(val)}
