@@ -7,16 +7,19 @@
 }
 
 .startButtonContainer {
+  position: fixed;
+  top: 10px;
+  left: 10px;
   display: flex;
   flex-direction: column;
-  top: 0;
-  left: 10px;
   gap: 5px;
   margin-bottom: 10px;
   z-index: 2;
   @media screen and (min-width: 768px) {
     position: relative;
     flex-direction: row;
+    top: unset;
+    left: unset;
   }
 }
 
