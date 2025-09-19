@@ -98,11 +98,12 @@ function VolumeControl({ onSetGameState }) {
               step="0.1"
               value={muted ? 0 : volume}
               onChange={handleVolumeChange}
-              onTouchStart={() => setGlobalVolume(volume)}
-              onMouseDown={() => setGlobalVolume(volume)}
+              onTouchStart={handleVolumeChange}
+              onMouseDown={handleVolumeChange}
               className={styles.slider}
             />
           </div>
+          <div className={styles.firingIndicator} />
           <div className={styles.fireControlBlock}>
             <div className={styles.label}>CPU FIRE DELAY</div>
             <div className={styles.subLabel}>
