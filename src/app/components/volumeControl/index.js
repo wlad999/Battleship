@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { setGlobalVolume } from "../../../utils/audio/soundManager";
 import cls from "classnames";
 import styles from "./styles.module.scss";
+const labels = ["Instant", "Quick", "Engage", "Hold"];
 
-function VolumeControl() {
+function VolumeControl({ onSetGameState }) {
   const [panelOpen, setPanelOpen] = useState(false);
+  const [shootDelay, setShootDelay] = useState(0.7);
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
 
@@ -16,6 +18,14 @@ function VolumeControl() {
       setVolume(savedVolume);
       setMuted(savedMuted);
       setGlobalVolume(savedMuted ? 0 : savedVolume);
+
+      const saved = parseFloat(localStorage.getItem("shootDelay"));
+      if (isFinite(saved)) {
+        setShootDelay(saved);
+        onSetGameState((prev) => ({ ...prev, shootDelay: saved }));
+      } else {
+        setShootDelay(700);
+      }
     }
   }, []);
 
@@ -38,6 +48,12 @@ function VolumeControl() {
   };
 
   const togglePanel = () => setPanelOpen((prev) => !prev);
+
+  const handleDelaySelect = (value) => {
+    setShootDelay(value);
+    onSetGameState((prev) => ({ ...prev, shootDelay: value }));
+    localStorage.setItem("shootDelay", value.toString());
+  };
 
   return (
     <div className={cls(styles.wrapper, { [styles.topBarClosed]: !panelOpen })}>
@@ -86,6 +102,38 @@ function VolumeControl() {
               onMouseDown={() => setGlobalVolume(volume)}
               className={styles.slider}
             />
+          </div>
+          <div className={styles.fireControlBlock}>
+            <div className={styles.label}>CPU FIRE DELAY</div>
+            <div className={styles.subLabel}>
+              Response time between enemy shots
+            </div>
+            <div className={styles.delayButtons}>
+              {[0, 700, 1400, 2000].map((val, idx) => {
+                const active = shootDelay === val;
+                const color =
+                  val === 0
+                    ? "red"
+                    : val === 700
+                    ? "orange"
+                    : val === 1400
+                    ? "yellow"
+                    : "green";
+                return (
+                  <div className={styles.delayBlock}>
+                    <button
+                      key={val}
+                      onClick={() => handleDelaySelect(val)}
+                      className={cls(styles.delayButton, styles[color], {
+                        [styles.active]: active,
+                      })}
+                      title={`CPU fires delay ${val / 1000}s`}
+                    />
+                    <span className={styles.delayLabel}>{labels[idx]}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

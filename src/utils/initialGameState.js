@@ -9,4 +9,5 @@ export const initialGameState = {
   [ENEMY]: { battleField: [], shipsStatus: {}, lastHitId: null },
   huntingHistory: null,
   nextCpuShoot: null,
+  shootDelay: 700,
 };

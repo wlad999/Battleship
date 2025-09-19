@@ -49,7 +49,7 @@ export default function Home() {
     <div
       className={cls(styles.container, { [styles.start]: gameState.started })}
     >
-      <VolumeControl />
+      <VolumeControl onSetGameState={setGameState} />
       <Header
         gameState={gameState}
         setGameState={setGameState}

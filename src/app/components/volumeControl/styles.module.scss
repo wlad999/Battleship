@@ -25,12 +25,13 @@
 
 .wrapper {
   background-color: #484848;
-  border: 2px solid #555;
   padding: 12px;
-  width: 220px;
+  width: 250px;
   font-family: "Courier New", monospace;
   color: #c2bfa3;
-  box-shadow: inset 0 0 10px #000, 0 4px 12px rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 0 4px #000, inset 0 0 8px #666,
+    0 4px 12px rgba(0, 0, 0, 0.6);
+  background-image: radial-gradient(circle at center, #555 0%, #484848 100%);
   position: fixed;
   top: 0;
   right: 0;
@@ -42,6 +43,7 @@
   background-color: unset;
   border: none;
   box-shadow: none;
+  background-image: unset;
 }
 
 .label {
@@ -155,4 +157,89 @@
 
 .mb0 {
   margin-bottom: 0;
+}
+
+.delayButtons {
+  display: flex;
+  gap: 15px;
+  margin-top: 6px;
+  justify-content: center;
+}
+
+.delayButton {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  background-color: #222;
+  box-shadow: 0 0 2px #000;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.delayButton:active {
+  transform: scale(0.9);
+  box-shadow: 0 0 8px #fff;
+}
+
+.red {
+  background-color: #400;
+}
+.orange {
+  background-color: #663300;
+}
+.yellow {
+  background-color: #666600;
+}
+.green {
+  background-color: #003300;
+}
+
+.active.red {
+  background-color: #f00;
+  box-shadow: 0 0 6px #f00;
+}
+.active.orange {
+  background-color: #ff8000;
+  box-shadow: 0 0 6px #ff8000;
+}
+.active.yellow {
+  background-color: #ff0;
+  box-shadow: 0 0 6px #ff0;
+}
+.active.green {
+  background-color: #0f0;
+  box-shadow: 0 0 6px #0f0;
+}
+
+.subLabel {
+  font-size: 10px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.fireControlBlock {
+  border: 1px solid #444;
+  padding: 8px;
+  margin-top: 12px;
+  background-color: #525252;
+  box-shadow: inset 0 0 2px #000, inset 0 0 6px #666;
+  background-image: radial-gradient(circle at center, #666 0%, #525252 100%);
+}
+
+.delayLabel {
+  font-size: 9px;
+  color: #aaa;
+  margin-top: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.delayBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32px;
 }
