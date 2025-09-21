@@ -4,9 +4,8 @@ import cls from "classnames";
 import styles from "./styles.module.scss";
 const labels = ["Instant", "Quick", "Engage", "Hold"];
 
-function VolumeControl({ onSetGameState }) {
+function VolumeControl({ onSetGameState, shootDelay, started }) {
   const [panelOpen, setPanelOpen] = useState(false);
-  const [shootDelay, setShootDelay] = useState(0.7);
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
 
@@ -19,15 +18,12 @@ function VolumeControl({ onSetGameState }) {
       setMuted(savedMuted);
       setGlobalVolume(savedMuted ? 0 : savedVolume);
 
-      const saved = parseFloat(localStorage.getItem("shootDelay"));
-      if (isFinite(saved)) {
-        setShootDelay(saved);
-        onSetGameState((prev) => ({ ...prev, shootDelay: saved }));
-      } else {
-        setShootDelay(700);
+      const savedDelay = parseFloat(localStorage.getItem("shootDelay"));
+      if (isFinite(savedDelay)) {
+        onSetGameState((prev) => ({ ...prev, shootDelay: savedDelay }));
       }
     }
-  }, []);
+  }, [started]);
 
   const handleVolumeChange = (e) => {
     const vol = parseFloat(e.target.value);
@@ -40,17 +36,22 @@ function VolumeControl({ onSetGameState }) {
     localStorage.setItem("muted", vol === 0 ? "true" : "false");
   };
 
+  const handleVolumePreview = (e) => {
+    const vol = parseFloat(e.target.value);
+    if (!isFinite(vol)) return;
+    setGlobalVolume(vol);
+  };
+
   const toggleMute = () => {
     const newMuted = !muted;
     setMuted(newMuted);
-    setGlobalVolume(newMuted ? 0 : volume || 1);
+    setGlobalVolume(newMuted ? 0 : volume);
     localStorage.setItem("muted", newMuted.toString());
   };
 
   const togglePanel = () => setPanelOpen((prev) => !prev);
 
   const handleDelaySelect = (value) => {
-    setShootDelay(value);
     onSetGameState((prev) => ({ ...prev, shootDelay: value }));
     localStorage.setItem("shootDelay", value.toString());
   };
@@ -98,8 +99,7 @@ function VolumeControl({ onSetGameState }) {
               step="0.1"
               value={muted ? 0 : volume}
               onChange={handleVolumeChange}
-              onTouchStart={handleVolumeChange}
-              onMouseDown={handleVolumeChange}
+              onInput={handleVolumePreview}
               className={styles.slider}
             />
           </div>
@@ -121,9 +121,8 @@ function VolumeControl({ onSetGameState }) {
                     ? "yellow"
                     : "green";
                 return (
-                  <div className={styles.delayBlock} key={color}>
+                  <div className={styles.delayBlock} key={val}>
                     <button
-                      key={val}
                       onClick={() => handleDelaySelect(val)}
                       className={cls(styles.delayButton, styles[color], {
                         [styles.active]: active,

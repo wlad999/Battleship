@@ -1,9 +1,10 @@
 import { audioContext, sounds, soundNodes } from "./audioCore";
-export function initSounds() {
+
+export async function initSoundsAsync() {
   if (!audioContext || typeof window === "undefined") return;
 
   if (audioContext.state === "suspended") {
-    audioContext.resume().catch(() => {});
+    await audioContext.resume().catch(() => {});
   }
 
   const soundList = {
@@ -58,16 +59,27 @@ export function initSounds() {
     "start-0": "/sounds/start-0.mp3",
   };
 
-  for (const [key, path] of Object.entries(soundList)) {
-    const audio = new Audio(path);
-    audio.preload = "auto";
+  const promises = Object.entries(soundList).map(([key, path]) => {
+    return new Promise((resolve) => {
+      const audio = new Audio(path);
+      audio.preload = "auto";
 
-    const source = audioContext.createMediaElementSource(audio);
-    const gain = audioContext.createGain();
-    gain.gain.value = 0.2;
-    source.connect(gain).connect(audioContext.destination);
+      audio.addEventListener(
+        "canplaythrough",
+        () => {
+          const source = audioContext.createMediaElementSource(audio);
+          const gain = audioContext.createGain();
+          gain.gain.value = 0.2;
+          source.connect(gain).connect(audioContext.destination);
 
-    sounds[key] = audio;
-    soundNodes[key] = { audio, source, gain };
-  }
+          sounds[key] = audio;
+          soundNodes[key] = { audio, source, gain };
+          resolve();
+        },
+        { once: true }
+      );
+    });
+  });
+
+  await Promise.all(promises);
 }

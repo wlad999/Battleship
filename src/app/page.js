@@ -9,7 +9,7 @@ import { PLAYER } from "../utils/constants";
 import VolumeControl from "./components/volumeControl";
 
 import { playSound, stopAllSound } from "../utils/audio/soundManager";
-import { initSounds } from "../utils/audio/soundAssets.js";
+import { initSoundsAsync } from "../utils/audio/soundAssets.js";
 import { audioContext } from "../utils/audio/audioCore";
 import styles from "./page.module.css";
 
@@ -27,7 +27,7 @@ export default function Home() {
           await audioContext.resume();
         }
 
-        initSounds();
+        initSoundsAsync();
         unlocked = true;
         window.removeEventListener("click", unlockAudio);
       } catch (err) {
@@ -73,7 +73,11 @@ export default function Home() {
     <div
       className={cls(styles.container, { [styles.start]: gameState.started })}
     >
-      <VolumeControl onSetGameState={setGameState} />
+      <VolumeControl
+        onSetGameState={setGameState}
+        shootDelay={gameState.shootDelay}
+        started={gameState.started}
+      />
       <Header
         gameState={gameState}
         setGameState={setGameState}

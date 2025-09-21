@@ -45,9 +45,7 @@ const SoundManager = {
       try {
         audio.pause();
       } catch (_) {}
-      audio.currentTime = 0;
     }
-    activeSounds.clear();
   },
 
   isSoundPlaying(key) {
