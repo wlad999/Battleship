@@ -58,8 +58,10 @@ const SoundManager = {
   syncApplePlayback(sound, volume) {
     if (volume === 0 && !sound.paused) {
       sound.pause();
-    } else if (volume > 0 && sound.paused) {
+    } else if (volume > 0) {
       try {
+        sound.pause();
+        sound.volume = volume;
         sound.play().catch(() => {});
       } catch (_) {}
     }
