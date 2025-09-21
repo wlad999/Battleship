@@ -2,9 +2,6 @@ import { soundNodes } from "./audioCore";
 import { getRandomSoundKey } from "./soundUtils";
 import { soundConfig } from "./soundConfig";
 
-const isAppleDevice =
-  typeof navigator !== "undefined" &&
-  /Mac|iPhone|iPad/.test(navigator.userAgent);
 const activeSounds = new Map();
 let globalVolume = 1;
 
@@ -58,18 +55,6 @@ const SoundManager = {
     return audio && !audio.paused;
   },
 
-  syncApplePlayback(audio, volume) {
-    if (volume === 0 && !audio.paused) {
-      audio.pause();
-    } else if (volume > 0) {
-      try {
-        if (!audio.paused) audio.pause();
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
-      } catch (_) {}
-    }
-  },
-
   setGlobalVolume(volume) {
     globalVolume = Math.max(0, Math.min(1, volume));
     for (const [key, audio] of activeSounds.entries()) {
@@ -80,10 +65,6 @@ const SoundManager = {
       const { gain } = node;
       const finalVolume = (config?.volume || 0.2) * globalVolume;
       gain.gain.value = finalVolume;
-
-      if (isAppleDevice) {
-        SoundManager.syncApplePlayback(audio, globalVolume);
-      }
     }
   },
 };
