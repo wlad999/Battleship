@@ -9,11 +9,35 @@ import { PLAYER } from "../utils/constants";
 import VolumeControl from "./components/volumeControl";
 
 import { playSound, stopAllSound } from "../utils/audio/soundManager";
-
+import { initSounds } from "../utils/audio/soundAssets.js";
+import { audioContext } from "../utils/audio/audioCore";
 import styles from "./page.module.css";
 
 export default function Home() {
   const [gameState, setGameState] = useState(initialGameState);
+
+  useEffect(() => {
+    let unlocked = false;
+
+    const unlockAudio = async () => {
+      if (unlocked) return;
+
+      try {
+        if (audioContext.state === "suspended") {
+          await audioContext.resume();
+        }
+
+        initSounds();
+        unlocked = true;
+        window.removeEventListener("click", unlockAudio);
+      } catch (err) {
+        console.warn("Audio unlock failed:", err);
+      }
+    };
+
+    window.addEventListener("click", unlockAudio);
+    return () => window.removeEventListener("click", unlockAudio);
+  }, []);
 
   useEffect(() => {
     if (gameState.started) {

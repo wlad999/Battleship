@@ -1,4 +1,4 @@
-import { sounds } from "./soundAssets.js";
+import { soundNodes } from "./audioCore";
 import { getRandomSoundKey } from "./soundUtils";
 import { soundConfig } from "./soundConfig";
 
@@ -10,25 +10,28 @@ let globalVolume = 1;
 
 const SoundManager = {
   playSound(key, customConfig = {}) {
-    const soundKey = getRandomSoundKey(sounds, key);
+    const soundKey = getRandomSoundKey(soundNodes, key);
+    const node = soundNodes[soundKey];
+    if (!node) return;
 
-    const sound = sounds[soundKey];
-    if (!sound) return;
+    const { audio, gain } = node;
+
     const baseConfig = soundConfig[key] || {};
     const currentConfig = { ...baseConfig, ...customConfig };
     const { volume = 0.2, loop = false, skipIfPlaying = false } = currentConfig;
 
-    const current = activeSounds.get(key);
+    const current = activeSounds.get(soundKey);
     if (skipIfPlaying && current && !current.paused) return;
     if (!skipIfPlaying && current && !current.paused) {
       current.pause();
     }
-    sound.volume = volume * globalVolume;
-    sound.loop = loop;
-    sound.currentTime = 0;
-    sound.play();
 
-    activeSounds.set(key, sound);
+    gain.gain.value = volume * globalVolume;
+    audio.loop = loop;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+
+    activeSounds.set(soundKey, audio);
   },
 
   stopSound(key) {
@@ -41,40 +44,45 @@ const SoundManager = {
   },
 
   stopAllSound() {
-    for (const [_, sound] of activeSounds.entries()) {
+    for (const [_, audio] of activeSounds.entries()) {
       try {
-        sound.pause();
+        audio.pause();
       } catch (_) {}
-      sound.currentTime = 0;
+      audio.currentTime = 0;
     }
     activeSounds.clear();
   },
 
   isSoundPlaying(key) {
-    const sound = activeSounds.get(key);
-    return sound && !sound.paused;
+    const audio = activeSounds.get(key);
+    return audio && !audio.paused;
   },
 
-  syncApplePlayback(sound, volume) {
-    if (volume === 0 && !sound.paused) {
-      sound.pause();
+  syncApplePlayback(audio, volume) {
+    if (volume === 0 && !audio.paused) {
+      audio.pause();
     } else if (volume > 0) {
       try {
-        sound.pause();
-        sound.volume = volume;
-        sound.play().catch(() => {});
+        if (!audio.paused) audio.pause();
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
       } catch (_) {}
     }
   },
 
-  setGlobalVolume(v) {
-    globalVolume = Math.max(0, Math.min(1, v));
-    for (const [key, sound] of activeSounds.entries()) {
+  setGlobalVolume(volume) {
+    globalVolume = Math.max(0, Math.min(1, volume));
+    for (const [key, audio] of activeSounds.entries()) {
       const config = soundConfig[key] || {};
-      sound.volume = (config?.volume || 0.2) * globalVolume;
-      sound.muted = globalVolume === 0;
+      const node = soundNodes[key];
+      if (!node) continue;
+
+      const { gain } = node;
+      const finalVolume = (config?.volume || 0.2) * globalVolume;
+      gain.gain.value = finalVolume;
+
       if (isAppleDevice) {
-        SoundManager.syncApplePlayback(sound, globalVolume);
+        SoundManager.syncApplePlayback(audio, globalVolume);
       }
     }
   },

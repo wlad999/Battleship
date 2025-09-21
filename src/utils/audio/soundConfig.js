@@ -7,7 +7,7 @@ export const soundConfig = {
   turret: { volume: 0.1, loop: false, skipIfPlaying: false },
   hit: { volume: 0.2, loop: false, skipIfPlaying: false },
   shot: { volume: 0.2, loop: false, skipIfPlaying: false },
-  miss: { volume: 0.7, loop: false, skipIfPlaying: false },
+  miss: { volume: 0.5, loop: false, skipIfPlaying: false },
   destroyed: { volume: 0.2, loop: false, skipIfPlaying: false },
   enemyTargeted: { volume: 1, loop: false, skipIfPlaying: false },
   sunk: { volume: 1, loop: false, skipIfPlaying: false },
