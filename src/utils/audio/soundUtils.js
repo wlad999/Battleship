@@ -1,6 +1,8 @@
 import { getRandomInt } from "../gameLogic";
 
 export function getRandomSoundKey(sounds, keyPrefix) {
+  if (sounds[keyPrefix]) return keyPrefix;
+
   const availableKeys = Object.keys(sounds).filter((soundKey) =>
     soundKey.startsWith(keyPrefix)
   );

@@ -57,6 +57,7 @@ export default function Home() {
   }, [gameState.started, gameState.winner]);
 
   const handlePlaceShips = () => {
+    playSound("button");
     setGameState((prev) => ({
       ...prev,
       placeShips: prev.placeShips === null ? true : !prev.placeShips,
@@ -64,6 +65,7 @@ export default function Home() {
   };
 
   const handleRestart = () => {
+    playSound("button");
     stopAllSound();
     playSound("ocean");
     setGameState(initialGameState);

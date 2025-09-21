@@ -2,6 +2,7 @@
 import React from "react";
 import cls from "classnames";
 import { PLAYER, ENEMY } from "../../../utils/constants";
+import { playSound } from "../../../utils/audio/soundManager";
 import styles from "./styles.module.scss";
 
 function Header({
@@ -11,6 +12,14 @@ function Header({
   onHandleRestart,
 }) {
   const { isPlayerTurn, showShips, started, winner } = gameState;
+  const handleStart = () => {
+    playSound("button");
+    setGameState((prev) => ({ ...prev, started: true }));
+  };
+  const handleShowShips = () => {
+    playSound("button");
+    setGameState((prev) => ({ ...prev, showShips: true }));
+  };
   return (
     <>
       {!winner && started && (
@@ -20,7 +29,7 @@ function Header({
         <div className={styles.startButtonContainer}>
           <button
             className={cls(styles.button, styles.startButton)}
-            onClick={() => setGameState((prev) => ({ ...prev, started: true }))}
+            onClick={handleStart}
           >
             start a battle
           </button>
@@ -43,9 +52,7 @@ function Header({
             {winner === ENEMY && !showShips && (
               <button
                 className={cls(styles.button, styles.showShipsButton)}
-                onClick={() =>
-                  setGameState((prev) => ({ ...prev, showShips: true }))
-                }
+                onClick={handleShowShips}
               >
                 Show all ships
               </button>

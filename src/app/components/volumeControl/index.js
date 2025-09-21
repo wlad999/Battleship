@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { setGlobalVolume } from "../../../utils/audio/soundManager";
 import cls from "classnames";
+import { setGlobalVolume } from "../../../utils/audio/soundManager";
+import { playSound } from "../../../utils/audio/soundManager";
 import styles from "./styles.module.scss";
+
 const labels = ["Instant", "Quick", "Engage", "Hold"];
 
 function VolumeControl({ onSetGameState, shootDelay, started }) {
@@ -43,15 +45,20 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
   };
 
   const toggleMute = () => {
+    playSound("muteButton-0");
     const newMuted = !muted;
     setMuted(newMuted);
     setGlobalVolume(newMuted ? 0 : volume);
     localStorage.setItem("muted", newMuted.toString());
   };
 
-  const togglePanel = () => setPanelOpen((prev) => !prev);
+  const togglePanel = () => {
+    playSound("menuButton-0");
+    setPanelOpen((prev) => !prev);
+  };
 
   const handleDelaySelect = (value) => {
+    playSound("delayButton-0");
     onSetGameState((prev) => ({ ...prev, shootDelay: value }));
     localStorage.setItem("shootDelay", value.toString());
   };

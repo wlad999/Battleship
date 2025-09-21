@@ -57,6 +57,10 @@ export async function initSoundsAsync() {
     "sunk-1": "/sounds/sunk-1.mp3",
     "enemyDestroyed-0": "/sounds/enemyDestroyed-0.mp3",
     "start-0": "/sounds/start-0.mp3",
+    "button-0": "/sounds/button-0.mp3",
+    "delayButton-0": "/sounds/delayButton-0.mp3",
+    "muteButton-0": "/sounds/muteButton-0.mp3",
+    "menuButton-0": "/sounds/menuButton-0.mp3",
   };
 
   const promises = Object.entries(soundList).map(([key, path]) => {
