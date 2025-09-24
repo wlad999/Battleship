@@ -32,18 +32,21 @@ const SoundManager = {
   },
 
   stopSound(key) {
-    const sound = activeSounds.get(key);
-    if (!sound) return;
-
-    sound.pause();
-    sound.currentTime = 0;
-    activeSounds.delete(key);
+    for (const [k, audio] of activeSounds.entries()) {
+      if (k.startsWith(key)) {
+        audio.pause();
+        audio.currentTime = 0;
+        activeSounds.delete(k);
+      }
+    }
   },
 
   stopAllSound() {
-    for (const [_, audio] of activeSounds.entries()) {
+    for (const [key, audio] of activeSounds.entries()) {
       try {
         audio.pause();
+        audio.currentTime = 0;
+        activeSounds.delete(key);
       } catch (_) {}
     }
   },
@@ -55,7 +58,7 @@ const SoundManager = {
 
   setGlobalVolume(volume) {
     globalVolume = Math.max(0, Math.min(1, volume));
-    for (const [key, audio] of activeSounds.entries()) {
+    for (const [key, _] of activeSounds.entries()) {
       const config = soundConfig[key] || {};
       const node = soundNodes[key];
       if (!node) continue;
