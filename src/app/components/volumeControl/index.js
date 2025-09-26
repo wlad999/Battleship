@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import cls from "classnames";
+import ContactPanel from "../communication";
 import { setGlobalVolume } from "../../../utils/audio/soundManager";
 import { playSound } from "../../../utils/audio/soundManager";
 import styles from "./styles.module.scss";
@@ -94,7 +95,6 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
               title="MUTED"
             />
           </div>
-
           <div className={styles.controls}>
             <button onClick={toggleMute} className={styles.toggleButton}>
               {muted ? "🔇" : "🔊"}
@@ -110,7 +110,6 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
               className={styles.slider}
             />
           </div>
-          <div className={styles.firingIndicator} />
           <div className={styles.fireControlBlock}>
             <div className={styles.label}>CPU FIRE DELAY</div>
             <div className={styles.subLabel}>
@@ -142,6 +141,7 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
               })}
             </div>
           </div>
+          <ContactPanel />
         </div>
       )}
     </div>
