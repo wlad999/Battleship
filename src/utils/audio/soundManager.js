@@ -44,9 +44,10 @@ const SoundManager = {
   stopAllSound() {
     for (const [key, audio] of activeSounds.entries()) {
       try {
-        audio.pause();
-        audio.currentTime = 0;
-        activeSounds.delete(key);
+        if (!audio.paused && audio.currentTime > 0) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
       } catch (_) {}
     }
   },
