@@ -12,6 +12,7 @@
 }
 
 .container {
+  position: relative;
   padding: 110px 10px 10px;
   width: 100%;
   display: flex;
