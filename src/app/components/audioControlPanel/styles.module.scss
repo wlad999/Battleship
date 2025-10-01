@@ -1,0 +1,86 @@
+.label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #c2bfa3;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.indicatorLights {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #300;
+  box-shadow: 0 0 4px #000;
+}
+
+.on {
+  background-color: #3a4d3d;
+  box-shadow: 0 0 6px #0f0;
+}
+
+.off {
+  background-color: #500;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggleButton {
+  background-color: #444;
+  border: 1px solid #888;
+  padding: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #c2bfa3;
+  box-shadow: 0 0 4px #000;
+  &:hover {
+    background-color: #666;
+  }
+}
+
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #666;
+  background: linear-gradient(to right, #666 0%, #8cff64cc 100%);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  accent-color: #3a4d3d;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background-color: #525252;
+    border: 2px solid #666;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background-color: #525252;
+    border: 2px solid #666;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
