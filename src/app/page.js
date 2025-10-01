@@ -1,15 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import cls from "classnames";
-import Field from "./components/field";
 import Animations from "./components/animations";
+import Field from "./components/field";
 import Header from "./components/header";
-import { initialGameState } from "../utils/initialGameState";
 import VolumeControl from "./components/volumeControl";
-
-import { playSound, stopAllSound } from "../utils/audio/soundManager";
+import { initialGameState } from "../utils/initialGameState";
 import { useAudioUnlock } from "../hooks/useAudioUnlock";
 import { useGameAudio } from "../hooks/useGameAudio";
+
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -19,21 +18,6 @@ export default function Home() {
   useAudioUnlock();
   useGameAudio(started, winner);
 
-  const handlePlaceShips = () => {
-    playSound("button");
-    setGameState((prev) => ({
-      ...prev,
-      placeShips: prev.placeShips === null ? true : !prev.placeShips,
-    }));
-  };
-
-  const handleRestart = () => {
-    playSound("button");
-    stopAllSound();
-    playSound("ocean");
-    setGameState(initialGameState);
-  };
-
   return (
     <div className={cls(styles.container, { [styles.start]: started })}>
       <VolumeControl
@@ -41,12 +25,7 @@ export default function Home() {
         shootDelay={shootDelay}
         started={started}
       />
-      <Header
-        gameState={gameState}
-        setGameState={setGameState}
-        onHandlePlaceShips={handlePlaceShips}
-        onHandleRestart={handleRestart}
-      />
+      <Header gameState={gameState} setGameState={setGameState} />
       <Animations
         winner={winner}
         started={started}

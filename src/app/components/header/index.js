@@ -2,24 +2,39 @@
 import React from "react";
 import cls from "classnames";
 import { PLAYER, ENEMY } from "../../../utils/constants";
-import { playSound } from "../../../utils/audio/soundManager";
+import { initialGameState } from "../../../utils/initialGameState";
+import { playSound, stopAllSound } from "../../../utils/audio/soundManager";
+
 import styles from "./styles.module.scss";
 
-function Header({
-  gameState,
-  setGameState,
-  onHandlePlaceShips,
-  onHandleRestart,
-}) {
+function Header({ gameState, setGameState }) {
   const { isPlayerTurn, showShips, started, winner } = gameState;
+
   const handleStart = () => {
     playSound("button");
     setGameState((prev) => ({ ...prev, started: true }));
   };
+
   const handleShowShips = () => {
     playSound("button");
     setGameState((prev) => ({ ...prev, showShips: true }));
   };
+
+  const handlePlaceShips = () => {
+    playSound("button");
+    setGameState((prev) => ({
+      ...prev,
+      placeShips: prev.placeShips === null ? true : !prev.placeShips,
+    }));
+  };
+
+  const handleRestart = () => {
+    playSound("button");
+    stopAllSound();
+    playSound("ocean");
+    setGameState(initialGameState);
+  };
+
   return (
     <>
       {!winner && started && (
@@ -33,7 +48,7 @@ function Header({
           >
             start a battle
           </button>
-          <button className={styles.button} onClick={onHandlePlaceShips}>
+          <button className={styles.button} onClick={handlePlaceShips}>
             change placement
           </button>
         </div>
@@ -46,7 +61,7 @@ function Header({
               : "Boom! You sunk ’em all, Admiral! Don’t retire yet — fight another battle for your country!"}
           </h2>
           <div className={styles.toBattleWrapper}>
-            <button className={styles.button} onClick={onHandleRestart}>
+            <button className={styles.button} onClick={handleRestart}>
               To battle!
             </button>
             {winner === ENEMY && !showShips && (
