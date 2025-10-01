@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import cls from "classnames";
 import ContactPanel from "../communication";
-import { setGlobalVolume } from "../../../utils/audio/soundManager";
+import FireDelayPanel from "../fireDelayPanel";
 import { playSound } from "../../../utils/audio/soundManager";
+import { setGlobalVolume } from "../../../utils/audio/soundManager";
+
 import styles from "./styles.module.scss";
 
-const labels = ["Instant", "Quick", "Engage", "Hold"];
-
-function VolumeControl({ onSetGameState, shootDelay, started }) {
+function ControlPanel({ onSetGameState, shootDelay, started }) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
@@ -20,11 +20,6 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
       setVolume(savedVolume);
       setMuted(savedMuted);
       setGlobalVolume(savedMuted ? 0 : savedVolume);
-
-      const savedDelay = parseFloat(localStorage.getItem("shootDelay"));
-      if (isFinite(savedDelay)) {
-        onSetGameState((prev) => ({ ...prev, shootDelay: savedDelay }));
-      }
     }
   }, [started]);
 
@@ -56,12 +51,6 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
   const togglePanel = () => {
     playSound("menuButton-0");
     setPanelOpen((prev) => !prev);
-  };
-
-  const handleDelaySelect = (value) => {
-    playSound("delayButton-0");
-    onSetGameState((prev) => ({ ...prev, shootDelay: value }));
-    localStorage.setItem("shootDelay", value.toString());
   };
 
   return (
@@ -110,37 +99,11 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
               className={styles.slider}
             />
           </div>
-          <div className={styles.fireControlBlock}>
-            <div className={styles.label}>CPU FIRE DELAY</div>
-            <div className={styles.subLabel}>
-              Response time between enemy shots
-            </div>
-            <div className={styles.delayButtons}>
-              {[0, 700, 1400, 2000].map((val, idx) => {
-                const active = shootDelay === val;
-                const color =
-                  val === 0
-                    ? "red"
-                    : val === 700
-                    ? "orange"
-                    : val === 1400
-                    ? "yellow"
-                    : "green";
-                return (
-                  <div className={styles.delayBlock} key={val}>
-                    <button
-                      onClick={() => handleDelaySelect(val)}
-                      className={cls(styles.delayButton, styles[color], {
-                        [styles.active]: active,
-                      })}
-                      title={`CPU fires delay ${val / 1000}s`}
-                    />
-                    <span className={styles.delayLabel}>{labels[idx]}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <FireDelayPanel
+            onSetGameState={onSetGameState}
+            shootDelay={shootDelay}
+            started={started}
+          />
           <ContactPanel />
         </div>
       )}
@@ -148,4 +111,4 @@ function VolumeControl({ onSetGameState, shootDelay, started }) {
   );
 }
 
-export default VolumeControl;
+export default ControlPanel;

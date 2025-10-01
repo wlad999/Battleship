@@ -4,7 +4,7 @@ import cls from "classnames";
 import Animations from "./components/animations";
 import Field from "./components/field";
 import Header from "./components/header";
-import VolumeControl from "./components/volumeControl";
+import ControlPanel from "./components/сontrolPanel";
 import { initialGameState } from "../utils/initialGameState";
 import { useAudioUnlock } from "../hooks/useAudioUnlock";
 import { useGameAudio } from "../hooks/useGameAudio";
@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <div className={cls(styles.container, { [styles.start]: started })}>
-      <VolumeControl
+      <ControlPanel
         onSetGameState={setGameState}
         shootDelay={shootDelay}
         started={started}
