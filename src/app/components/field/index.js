@@ -1,62 +1,23 @@
 "use client";
-import { useCallback } from "react";
 import cls from "classnames";
 import CellEvents from "../cellEvents";
 import HitWaveSVG from "../hitWave";
 import Ship from "../ship";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
-import { playerShoot } from "../../../utils/gameLogic";
-import { useAutoPlaceShips } from "../../../hooks/useAutoPlaceShips";
-import { useCpuAutoShoot } from "../../../hooks/useCpuAutoShoot";
-import { useGameOverCheck } from "../../../hooks/useGameOverCheck";
+import { useFieldLogic } from "../../../hooks/useFieldLogic";
 import styles from "./styles.module.scss";
 
 function Field({ isPlayer = false, gameState, setGameState }) {
-  const fieldKey = isPlayer ? PLAYER : ENEMY;
-  const fieldState = gameState[fieldKey];
-  const { battleField, shipsStatus, lastHitId } = fieldState;
-
   const {
-    nextCpuShoot,
-    isPlayerTurn,
-    winner,
-    placeShips,
-    started,
-    showShips,
-    shootDelay,
-  } = gameState;
-
-  useAutoPlaceShips({ isPlayer, placeShips, started, fieldKey, setGameState });
-
-  useGameOverCheck({
     battleField,
     shipsStatus,
-    isPlayer,
-    setGameState,
-  });
-
-  useCpuAutoShoot({
-    isPlayer,
-    winner,
+    lastHitId,
+    started,
     isPlayerTurn,
-    shipsStatus,
-    shootDelay,
-    gameState,
-    setGameState,
-    nextCpuShoot,
-  });
-
-  const handleClick = useCallback(
-    (idx) => {
-      if (isPlayer || !isPlayerTurn || !started || winner) return;
-      if (battleField[idx].targeted) return;
-
-      const newGameState = playerShoot(gameState, idx);
-      setGameState(newGameState);
-    },
-    [fieldState, gameState, isPlayer, isPlayerTurn]
-  );
+    showShips,
+    handleClick,
+  } = useFieldLogic({ isPlayer, gameState, setGameState });
 
   return (
     <div className={styles.container}>
