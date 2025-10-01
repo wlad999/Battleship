@@ -31,23 +31,25 @@ function ControlPanel({ onSetGameState, shootDelay, started }) {
           <span>{panelOpen ? "✖" : "≡"}</span>
         </button>
       </div>
-      {panelOpen && (
-        <div className={styles.panelBody}>
-          <AudioControlPanel
-            muted={muted}
-            volume={volume}
-            onToggleMute={toggleMute}
-            onVolumeChange={handleVolumeChange}
-            onVolumePreview={handleVolumePreview}
-          />
-          <FireDelayPanel
-            onSetGameState={onSetGameState}
-            shootDelay={shootDelay}
-            started={started}
-          />
-          <ContactPanel />
-        </div>
-      )}
+      <div
+        className={cls(styles.panelBody, {
+          [styles.hidden]: !panelOpen,
+        })}
+      >
+        <AudioControlPanel
+          muted={muted}
+          volume={volume}
+          onToggleMute={toggleMute}
+          onVolumeChange={handleVolumeChange}
+          onVolumePreview={handleVolumePreview}
+        />
+        <FireDelayPanel
+          onSetGameState={onSetGameState}
+          shootDelay={shootDelay}
+          started={started}
+        />
+        <ContactPanel />
+      </div>
     </div>
   );
 }
