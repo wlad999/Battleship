@@ -1,14 +1,15 @@
 "use client";
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import cls from "classnames";
 import CellEvents from "../cellEvents";
 import HitWaveSVG from "../hitWave";
+import Ship from "../ship";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
+import { playerShoot } from "../../../utils/gameLogic";
 import { useAutoPlaceShips } from "../../../hooks/useAutoPlaceShips";
+import { useCpuAutoShoot } from "../../../hooks/useCpuAutoShoot";
 import { useGameOverCheck } from "../../../hooks/useGameOverCheck";
-import { isGameOver, cpuShoot, playerShoot } from "../../../utils/gameLogic";
-import Ship from "../ship";
 import styles from "./styles.module.scss";
 
 function Field({ isPlayer = false, gameState, setGameState }) {
@@ -16,8 +17,15 @@ function Field({ isPlayer = false, gameState, setGameState }) {
   const fieldState = gameState[fieldKey];
   const { battleField, shipsStatus, lastHitId } = fieldState;
 
-  const { nextCpuShoot, isPlayerTurn, winner, placeShips, started, showShips } =
-    gameState;
+  const {
+    nextCpuShoot,
+    isPlayerTurn,
+    winner,
+    placeShips,
+    started,
+    showShips,
+    shootDelay,
+  } = gameState;
 
   useAutoPlaceShips({ isPlayer, placeShips, started, fieldKey, setGameState });
 
@@ -28,21 +36,16 @@ function Field({ isPlayer = false, gameState, setGameState }) {
     setGameState,
   });
 
-  useEffect(() => {
-    const hasGameEnded = isGameOver(shipsStatus);
-    //return from function if game is over to avoid extra shot
-    // shout on the player's field only
-    if (!isPlayer || winner || isPlayerTurn || hasGameEnded) {
-      return;
-    }
-
-    const shootWithDelay = async () => {
-      await new Promise((resolve) => setTimeout(resolve, gameState.shootDelay));
-      const newGameState = cpuShoot(gameState);
-      setGameState(newGameState);
-    };
-    shootWithDelay();
-  }, [isPlayerTurn, nextCpuShoot]);
+  useCpuAutoShoot({
+    isPlayer,
+    winner,
+    isPlayerTurn,
+    shipsStatus,
+    shootDelay,
+    gameState,
+    setGameState,
+    nextCpuShoot,
+  });
 
   const handleClick = useCallback(
     (idx) => {
