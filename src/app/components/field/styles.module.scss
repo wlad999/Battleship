@@ -57,6 +57,14 @@
   justify-content: center;
   height: 100%;
   width: 100%;
-  cursor: pointer;
+  cursor: none;
   color: #fff;
+}
+
+.enemyField {
+  cursor: pointer;
+}
+
+.enemyTurn {
+  cursor: progress;
 }

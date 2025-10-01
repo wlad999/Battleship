@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useCallback } from "react";
+import cls from "classnames";
+import CellEvents from "../cellEvents";
+import HitWaveSVG from "../hitWave";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
-import HitWaveSVG from "../hitWave";
-import CellEvents from "../cellEvents";
 import {
   placeShipsOnField,
   isGameOver,
@@ -87,7 +88,10 @@ function Field({ isPlayer = false, gameState, setGameState }) {
             key={idx}
             id={`${isPlayer ? PLAYER : ENEMY}-${idx}`}
             onClick={() => handleClick(idx)}
-            className={styles.cell}
+            className={cls(styles.cell, {
+              [styles.enemyField]: !isPlayer,
+              [styles.enemyTurn]: !isPlayer && !isPlayerTurn,
+            })}
           >
             <CellEvents item={item} shipsStatus={shipsStatus} />
             <Ship
