@@ -86,7 +86,12 @@ export default function Home() {
         onHandlePlaceShips={handlePlaceShips}
         onHandleRestart={handleRestart}
       />
-      <Animations winner={gameState.winner} />
+      <Animations
+        winner={gameState.winner}
+        started={gameState.started}
+        isPlayerTurn={gameState.isPlayerTurn}
+        shootDelay={gameState.shootDelay}
+      />
       <div className={styles.page}>
         <Field gameState={gameState} setGameState={setGameState} />
         <Field gameState={gameState} setGameState={setGameState} isPlayer />
