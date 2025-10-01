@@ -1,7 +1,6 @@
 import FieldCell from "../fieldCell";
+import FieldHeader from "../fieldHeader";
 import HitWaveSVG from "../hitWave";
-import Status from "../status";
-import { PLAYER, ENEMY } from "../../../utils/constants";
 
 import styles from "./styles.module.scss";
 
@@ -18,8 +17,11 @@ function FieldView({
   return (
     <div className={styles.container}>
       <HitWaveSVG lastHitId={lastHitId} isPlayer={isPlayer} active />
-      <Status shipsStatus={shipsStatus} isPlayer={isPlayer} started={started} />
-      <h3>{isPlayer ? `${PLAYER} fleet` : `${ENEMY} fleet`}</h3>
+      <FieldHeader
+        shipsStatus={shipsStatus}
+        isPlayer={isPlayer}
+        started={started}
+      />
       <div className={styles.wrapper}>
         {battleField.map((item, idx) => (
           <FieldCell
