@@ -13,6 +13,7 @@ function FieldView({
   isPlayerTurn,
   showShips,
   handleClick,
+  winner,
 }) {
   return (
     <div className={styles.container}>
@@ -33,6 +34,7 @@ function FieldView({
             isPlayerTurn={isPlayerTurn}
             showShips={showShips}
             handleClick={handleClick}
+            winner={winner}
           />
         ))}
       </div>

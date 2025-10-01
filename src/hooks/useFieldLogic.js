@@ -60,5 +60,6 @@ export function useFieldLogic({ isPlayer = false, gameState, setGameState }) {
     isPlayerTurn,
     showShips,
     handleClick,
+    winner,
   };
 }

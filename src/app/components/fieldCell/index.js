@@ -13,6 +13,7 @@ function FieldCell({
   isPlayerTurn,
   showShips,
   handleClick,
+  winner,
 }) {
   return (
     <div
@@ -21,7 +22,7 @@ function FieldCell({
       onClick={() => handleClick(idx)}
       className={cls(styles.cell, {
         [styles.enemyField]: !isPlayer,
-        [styles.enemyTurn]: !isPlayer && !isPlayerTurn,
+        [styles.enemyTurn]: !isPlayer && !isPlayerTurn && !winner,
       })}
     >
       <CellEvents item={item} shipsStatus={shipsStatus} />
