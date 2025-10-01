@@ -6,6 +6,7 @@ import Ship from "../ship";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
 import { useFieldLogic } from "../../../hooks/useFieldLogic";
+
 import styles from "./styles.module.scss";
 
 function Field({ isPlayer = false, gameState, setGameState }) {
