@@ -52,6 +52,7 @@ export function useFieldLogic({ isPlayer = false, gameState, setGameState }) {
   );
 
   return {
+    isPlayer,
     battleField,
     shipsStatus,
     lastHitId,
