@@ -15,6 +15,7 @@ import styles from "./page.module.css";
 
 export default function Home() {
   const [gameState, setGameState] = useState(initialGameState);
+  const { started, winner, shootDelay, isPlayerTurn } = gameState;
 
   useEffect(() => {
     let unlocked = false;
@@ -40,21 +41,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (gameState.started && !gameState.winner) {
+    if (started && !winner) {
       stopAllSound();
       playSound("ocean");
       playSound("start");
     }
-    if (gameState.winner) {
+    if (winner) {
       stopAllSound();
-      if (gameState.winner === PLAYER) {
+      if (winner === PLAYER) {
         playSound("enemyDestroyed");
         playSound("victory");
       } else {
         playSound("loss");
       }
     }
-  }, [gameState.started, gameState.winner]);
+  }, [started, winner]);
 
   const handlePlaceShips = () => {
     playSound("button");
@@ -72,13 +73,11 @@ export default function Home() {
   };
 
   return (
-    <div
-      className={cls(styles.container, { [styles.start]: gameState.started })}
-    >
+    <div className={cls(styles.container, { [styles.start]: started })}>
       <VolumeControl
         onSetGameState={setGameState}
-        shootDelay={gameState.shootDelay}
-        started={gameState.started}
+        shootDelay={shootDelay}
+        started={started}
       />
       <Header
         gameState={gameState}
@@ -87,10 +86,10 @@ export default function Home() {
         onHandleRestart={handleRestart}
       />
       <Animations
-        winner={gameState.winner}
-        started={gameState.started}
-        isPlayerTurn={gameState.isPlayerTurn}
-        shootDelay={gameState.shootDelay}
+        winner={winner}
+        started={started}
+        isPlayerTurn={isPlayerTurn}
+        shootDelay={shootDelay}
       />
       <div className={styles.page}>
         <Field gameState={gameState} setGameState={setGameState} />
