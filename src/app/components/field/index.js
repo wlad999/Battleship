@@ -6,6 +6,7 @@ import HitWaveSVG from "../hitWave";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
 import { useAutoPlaceShips } from "../../../hooks/useAutoPlaceShips";
+import { useGameOverCheck } from "../../../hooks/useGameOverCheck";
 import { isGameOver, cpuShoot, playerShoot } from "../../../utils/gameLogic";
 import Ship from "../ship";
 import styles from "./styles.module.scss";
@@ -20,17 +21,12 @@ function Field({ isPlayer = false, gameState, setGameState }) {
 
   useAutoPlaceShips({ isPlayer, placeShips, started, fieldKey, setGameState });
 
-  useEffect(() => {
-    if (!battleField.length) return;
-    const hasGameEnded = isGameOver(shipsStatus);
-
-    if (hasGameEnded) {
-      setGameState((prev) => ({
-        ...prev,
-        winner: isPlayer ? ENEMY : PLAYER,
-      }));
-    }
-  }, [battleField, shipsStatus]);
+  useGameOverCheck({
+    battleField,
+    shipsStatus,
+    isPlayer,
+    setGameState,
+  });
 
   useEffect(() => {
     const hasGameEnded = isGameOver(shipsStatus);
