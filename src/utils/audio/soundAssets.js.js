@@ -1,5 +1,7 @@
 import { audioContext, sounds, soundNodes } from "./audioCore";
 
+let audioUnlocked = false;
+
 export async function initSoundsAsync() {
   if (!audioContext || typeof window === "undefined") return;
 
@@ -86,4 +88,18 @@ export async function initSoundsAsync() {
   });
 
   await Promise.all(promises);
+}
+
+export async function unlockAudio() {
+  if (audioUnlocked || typeof window === "undefined") return;
+
+  try {
+    if (audioContext.state === "suspended") {
+      await audioContext.resume();
+    }
+    await initSoundsAsync();
+    audioUnlocked = true;
+  } catch (err) {
+    console.warn("Audio unlock failed:", err);
+  }
 }
