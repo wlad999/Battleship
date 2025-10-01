@@ -36,7 +36,6 @@ const SoundManager = {
       if (k.startsWith(key)) {
         audio.pause();
         audio.currentTime = 0;
-        activeSounds.delete(k);
       }
     }
   },
@@ -45,6 +44,7 @@ const SoundManager = {
     for (const [key, audio] of activeSounds.entries()) {
       try {
         if (!audio.paused && audio.currentTime > 0) {
+          audio.loop = false;
           audio.pause();
           audio.currentTime = 0;
         }

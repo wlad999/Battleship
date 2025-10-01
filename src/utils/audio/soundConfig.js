@@ -1,6 +1,6 @@
 export const soundConfig = {
   siren: { volume: 0.2, loop: true, skipIfPlaying: true },
-  ocean: { volume: 0.2, loop: true, skipIfPlaying: true },
+  ocean: { volume: 0.1, loop: true, skipIfPlaying: true },
   victory: { volume: 0.5, loop: true, skipIfPlaying: true },
   loss: { volume: 0.8, loop: true, skipIfPlaying: true },
   sonar: { volume: 0.1, loop: false, skipIfPlaying: true },

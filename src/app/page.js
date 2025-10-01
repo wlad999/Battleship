@@ -40,7 +40,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (gameState.started) {
+    if (gameState.started && !gameState.winner) {
       stopAllSound();
       playSound("ocean");
       playSound("start");
