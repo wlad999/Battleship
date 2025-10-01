@@ -5,12 +5,8 @@ import CellEvents from "../cellEvents";
 import HitWaveSVG from "../hitWave";
 import Status from "../status";
 import { PLAYER, ENEMY } from "../../../utils/constants";
-import {
-  placeShipsOnField,
-  isGameOver,
-  cpuShoot,
-  playerShoot,
-} from "../../../utils/gameLogic";
+import { useAutoPlaceShips } from "../../../hooks/useAutoPlaceShips";
+import { isGameOver, cpuShoot, playerShoot } from "../../../utils/gameLogic";
 import Ship from "../ship";
 import styles from "./styles.module.scss";
 
@@ -22,21 +18,7 @@ function Field({ isPlayer = false, gameState, setGameState }) {
   const { nextCpuShoot, isPlayerTurn, winner, placeShips, started, showShips } =
     gameState;
 
-  useEffect(() => {
-    if ((!isPlayer && placeShips !== null) || started) {
-      return;
-    }
-
-    const { shipsStatus, filledField } = placeShipsOnField();
-    setGameState((prev) => ({
-      ...prev,
-      [fieldKey]: {
-        ...prev[fieldKey],
-        battleField: filledField,
-        shipsStatus,
-      },
-    }));
-  }, [placeShips, started, isPlayer]);
+  useAutoPlaceShips({ isPlayer, placeShips, started, fieldKey, setGameState });
 
   useEffect(() => {
     if (!battleField.length) return;
