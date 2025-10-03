@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles.module.scss";
 import Image from "next/image";
-import { playSound } from "../../../utils/audio/soundManager";
+import { playSound } from "@/audio/soundManager";
 
 const ContactPanel = () => {
   return (

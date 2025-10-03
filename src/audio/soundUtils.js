@@ -1,4 +1,4 @@
-import { getRandomInt } from "../gameLogic";
+import { getRandomInt } from "@/utils";
 
 export function getRandomSoundKey(sounds, keyPrefix) {
   if (sounds[keyPrefix]) return keyPrefix;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { playSound, setGlobalVolume } from "../utils/audio/soundManager.js";
+import { playSound, setGlobalVolume } from "@/audio/soundManager.js";
 
 export function useAudioState(started) {
   const [volume, setVolume] = useState(1);

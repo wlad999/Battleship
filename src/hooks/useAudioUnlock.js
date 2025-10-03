@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { audioContext } from "../utils/audio/audioCore.js";
-import { initSoundsAsync } from "../utils/audio/soundAssets.js";
+import { audioContext } from "@/audio/audioCore.js";
+import { initSoundsAsync } from "@/audio/soundAssets.js";
 
 export function useAudioUnlock() {
   useEffect(() => {

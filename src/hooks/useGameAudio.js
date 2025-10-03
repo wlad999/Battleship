@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { playSound, stopAllSound } from "../utils/audio/soundManager";
-import { PLAYER } from "../utils/constants";
+import { playSound, stopAllSound } from "@/audio/soundManager";
+import { PLAYER } from "@/constants";
 
 export function useGameAudio(started, winner) {
   useEffect(() => {

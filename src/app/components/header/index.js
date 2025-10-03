@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import cls from "classnames";
-import { PLAYER, ENEMY } from "../../../utils/constants";
-import { initialGameState } from "../../../utils/initialGameState";
-import { playSound, stopAllSound } from "../../../utils/audio/soundManager";
+import { PLAYER, ENEMY } from "@/constants";
+import { initialGameState } from "@/state";
+import { playSound, stopAllSound } from "@/audio/soundManager";
 
 import styles from "./styles.module.scss";
 

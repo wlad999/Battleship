@@ -1,7 +1,7 @@
 import cls from "classnames";
 import CellEvents from "../cellEvents";
 import Ship from "../ship";
-import { PLAYER, ENEMY } from "../../../utils/constants";
+import { PLAYER, ENEMY } from "@/constants";
 
 import styles from "./styles.module.scss";
 

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { getShotCoords } from "../../../utils/gameLogic";
+import { getShotCoords } from "@/gameLogic";
 
 export default function HitWaveSVG({ lastHitId = null, isPlayer = false }) {
   if (lastHitId === null) return;

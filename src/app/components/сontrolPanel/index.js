@@ -3,8 +3,8 @@ import cls from "classnames";
 import AudioControlPanel from "../audioControlPanel";
 import ContactPanel from "../communication";
 import FireDelayPanel from "../fireDelayPanel";
-import { playSound } from "../../../utils/audio/soundManager";
-import { useAudioState } from "../../../hooks/useAudioState";
+import { playSound } from "@/audio/soundManager";
+import { useAudioState } from "@/hooks/useAudioState";
 
 import styles from "./styles.module.scss";
 

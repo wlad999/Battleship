@@ -5,9 +5,9 @@ import Animations from "./components/animations";
 import Field from "./components/field";
 import Header from "./components/header";
 import ControlPanel from "./components/сontrolPanel";
-import { initialGameState } from "../utils/initialGameState";
-import { useAudioUnlock } from "../hooks/useAudioUnlock";
-import { useGameAudio } from "../hooks/useGameAudio";
+import { initialGameState } from "@/state";
+import { useAudioUnlock } from "@/hooks/useAudioUnlock";
+import { useGameAudio } from "@/hooks/useGameAudio";
 
 import styles from "./page.module.css";
 
