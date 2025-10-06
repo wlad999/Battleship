@@ -18,29 +18,12 @@
   }
 }
 
-.targetedShipCell {
-  cursor: none;
-  background-image: url("/explosion.webp");
-  background-size: 0 0;
-  background-position: center;
-  background-repeat: no-repeat;
-  animation: grow-bg-targeted 1s forwards;
-}
-
-@keyframes grow-bg-targeted {
-  from {
-    background-size: 0 0;
-  }
-  to {
-    background-size: 70% 70%;
-  }
-}
-
 .destroyed {
   background-image: url("/destroyedShip.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-size: 90%;
 }
 
 .cell {
