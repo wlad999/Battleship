@@ -1,10 +1,10 @@
-import { getRandomInt } from "@/utils";
+import { getRandomInt } from '@/utils';
 
 export function getRandomSoundKey(sounds, keyPrefix) {
   if (sounds[keyPrefix]) return keyPrefix;
 
   const availableKeys = Object.keys(sounds).filter((soundKey) =>
-    soundKey.startsWith(keyPrefix)
+    soundKey.startsWith(keyPrefix),
   );
 
   if (availableKeys.length === 0) return null;

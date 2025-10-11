@@ -1,7 +1,7 @@
-import cls from "classnames";
-import Explosion from "../explosion";
+import cls from 'classnames';
+import Explosion from '../explosion';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 function CellEvents({ item, shipsStatus }) {
   const { shipId, targeted } = item;

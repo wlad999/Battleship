@@ -1,1 +1,1 @@
-export * from "./initialGameState";
+export * from './initialGameState';

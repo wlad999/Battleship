@@ -1,5 +1,5 @@
-const horizon = "horizontal";
-const vertical = "vertical";
+const horizon = 'horizontal';
+const vertical = 'vertical';
 const shipsConfig = [
   { size: 4, count: 1 },
   { size: 3, count: 2 },
@@ -7,10 +7,10 @@ const shipsConfig = [
   { size: 1, count: 4 },
 ];
 
-const PLAYER = "Player";
-const ENEMY = "Enemy";
-const NEXT_TO_SHIP_CELL = "nextToShipCell";
-const NEXT_TO_DESTROYED_SHIP = "nextToDestroyedShip";
+const PLAYER = 'Player';
+const ENEMY = 'Enemy';
+const NEXT_TO_SHIP_CELL = 'nextToShipCell';
+const NEXT_TO_DESTROYED_SHIP = 'nextToDestroyedShip';
 
 const FIELD_WIDTH = 10;
 const FIELD_SIZE = FIELD_WIDTH * FIELD_WIDTH;

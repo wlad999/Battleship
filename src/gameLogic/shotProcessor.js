@@ -1,7 +1,7 @@
-import { getFieldWithShipBuffer } from "./shipPlacement.js";
-import { cloneArrayShallow } from "@/utils";
-import { playSound, stopSound } from "@/audio/soundManager.js";
-import { PLAYER } from "@/constants";
+import { getFieldWithShipBuffer } from './shipPlacement.js';
+import { cloneArrayShallow } from '@/utils';
+import { playSound, stopSound } from '@/audio/soundManager.js';
+import { PLAYER } from '@/constants';
 
 // mark cell as targeted
 function getFieldWithTargetedCell(field, cellIndex) {
@@ -44,8 +44,8 @@ function processShotResult({
     newShipsStatus = updateShipStatus(shipId, updatedField, shipsStatus);
 
     if (!isDestroyed) {
-      playSound("siren");
-      playSound("hit");
+      playSound('siren');
+      playSound('hit');
       newHuntingHistory = huntingHistory
         ? {
             ...huntingHistory,
@@ -54,20 +54,20 @@ function processShotResult({
           }
         : { targetedShipParts: [idx], availableCells };
     } else {
-      shipsStatus[shipId].cells.length === 1 && playSound("sonar");
-      stopSound("siren");
-      playSound("destroyed");
-      playSound("sunk");
+      shipsStatus[shipId].cells.length === 1 && playSound('sonar');
+      stopSound('siren');
+      playSound('destroyed');
+      playSound('sunk');
       newHuntingHistory = null;
       updatedField = getFieldWithShipBuffer(
         updatedField,
         shipsStatus[shipId].cells,
-        true
+        true,
       );
     }
   }
 
-  if (!shipId) playSound("miss");
+  if (!shipId) playSound('miss');
 
   return {
     [PLAYER]: {

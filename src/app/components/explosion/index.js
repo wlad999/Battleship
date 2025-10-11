@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import cls from "classnames";
-import styles from "./styles.module.scss";
+import { useEffect, useRef, useState } from 'react';
+import cls from 'classnames';
+import styles from './styles.module.scss';
 
 export default function Explosion() {
   const ref = useRef(null);

@@ -1,4 +1,4 @@
-import { PLAYER, ENEMY } from "@/constants";
+import { PLAYER, ENEMY } from '@/constants';
 
 function isGameOver(shipsStatus) {
   return Object.values(shipsStatus).every((ship) => ship.isDestroyed);
@@ -9,14 +9,14 @@ function groupAndSortShips(shipsStatus) {
 
   // Collecting unique ship sizes
   const uniqueSizes = [...new Set(ships.map((ship) => ship.cells.length))].sort(
-    (a, b) => b - a // first big, then small
+    (a, b) => b - a, // first big, then small
   );
   //sort by isDestroyed, alive ships first, destroyed ships last
   const sortByStatus = (a, b) => Number(a.isDestroyed) - Number(b.isDestroyed);
 
   // Group ships by size and sort each group by isDestroyed status (alive first, destroyed last)
   return uniqueSizes.map((size) =>
-    ships.filter((ship) => ship.cells.length === size).sort(sortByStatus)
+    ships.filter((ship) => ship.cells.length === size).sort(sortByStatus),
   );
 }
 

@@ -1,9 +1,9 @@
-import { useCallback } from "react";
-import { PLAYER, ENEMY } from "@/constants";
-import { playerShoot } from "@/gameLogic";
-import { useAutoPlaceShips } from "./useAutoPlaceShips";
-import { useCpuAutoShoot } from "./useCpuAutoShoot";
-import { useGameOverCheck } from "./useGameOverCheck";
+import { useCallback } from 'react';
+import { PLAYER, ENEMY } from '@/constants';
+import { playerShoot } from '@/gameLogic';
+import { useAutoPlaceShips } from './useAutoPlaceShips';
+import { useCpuAutoShoot } from './useCpuAutoShoot';
+import { useGameOverCheck } from './useGameOverCheck';
 
 export function useFieldLogic({ isPlayer = false, gameState, setGameState }) {
   const fieldKey = isPlayer ? PLAYER : ENEMY;
@@ -48,7 +48,7 @@ export function useFieldLogic({ isPlayer = false, gameState, setGameState }) {
       const newGameState = playerShoot(gameState, idx);
       setGameState(newGameState);
     },
-    [fieldState, gameState, isPlayer, isPlayerTurn]
+    [fieldState, gameState, isPlayer, isPlayerTurn],
   );
 
   return {

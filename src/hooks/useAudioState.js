@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
-import { playSound, setGlobalVolume } from "@/audio/soundManager.js";
+import { useState, useEffect } from 'react';
+import { playSound, setGlobalVolume } from '@/audio/soundManager.js';
 
 export function useAudioState(started) {
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedVolume = parseFloat(localStorage.getItem("volume")) || 0.5;
-      const savedMuted = localStorage.getItem("muted") === "true";
+    if (typeof window !== 'undefined') {
+      const savedVolume = parseFloat(localStorage.getItem('volume')) || 0.5;
+      const savedMuted = localStorage.getItem('muted') === 'true';
 
       setVolume(savedVolume);
       setMuted(savedMuted);
@@ -23,8 +23,8 @@ export function useAudioState(started) {
     setMuted(vol === 0);
     setGlobalVolume(vol);
 
-    localStorage.setItem("volume", vol.toString());
-    localStorage.setItem("muted", vol === 0 ? "true" : "false");
+    localStorage.setItem('volume', vol.toString());
+    localStorage.setItem('muted', vol === 0 ? 'true' : 'false');
   };
 
   const handleVolumePreview = (e) => {
@@ -34,11 +34,11 @@ export function useAudioState(started) {
   };
 
   const toggleMute = () => {
-    playSound("muteButton-0");
+    playSound('muteButton-0');
     const newMuted = !muted;
     setMuted(newMuted);
     setGlobalVolume(newMuted ? 0 : volume);
-    localStorage.setItem("muted", newMuted.toString());
+    localStorage.setItem('muted', newMuted.toString());
   };
 
   return {

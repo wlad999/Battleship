@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 function Firework() {
   const explosions = [
-    { cx: 100, cy: 100, delay: "0s", colors: ["red", "yellow", "orange"] },
-    { cx: 60, cy: 80, delay: "0.8s", colors: ["cyan", "blue", "violet"] },
-    { cx: 140, cy: 60, delay: "1.6s", colors: ["lime", "pink", "gold"] },
+    { cx: 100, cy: 100, delay: '0s', colors: ['red', 'yellow', 'orange'] },
+    { cx: 60, cy: 80, delay: '0.8s', colors: ['cyan', 'blue', 'violet'] },
+    { cx: 140, cy: 60, delay: '1.6s', colors: ['lime', 'pink', 'gold'] },
   ];
 
   return (

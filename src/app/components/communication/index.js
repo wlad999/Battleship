@@ -1,7 +1,8 @@
-import React from "react";
-import styles from "./styles.module.scss";
-import Image from "next/image";
-import { playSound } from "@/audio/soundManager";
+'use client';
+import Image from 'next/image';
+import { playSound } from '@/audio/soundManager';
+
+import styles from './styles.module.scss';
 
 const ContactPanel = () => {
   return (
@@ -19,13 +20,13 @@ const ContactPanel = () => {
           className={styles.contactButton}
           aria-label="Send mission report via email"
           onClick={() => {
-            playSound("delayButton-0");
+            playSound('delayButton-0');
             try {
               window.location.href =
-                "mailto:wlad25888@gmail.com?subject=BattleshipMission%20Report&body=Status%20update%20required";
+                'mailto:wlad25888@gmail.com?subject=BattleshipMission%20Report&body=Status%20update%20required';
             } catch (e) {
               alert(
-                "Mail client not found. Please send your message manually to wlad25888@gmail.com."
+                'Mail client not found. Please send your message manually to wlad25888@gmail.com.',
               );
             }
           }}
@@ -46,11 +47,11 @@ const ContactPanel = () => {
           className={styles.contactButton}
           aria-label="Open Telegram channel"
           onClick={() => {
-            playSound("delayButton-0");
+            playSound('delayButton-0');
             window.open(
-              "https://t.me/Wlad9999",
-              "_blank",
-              "noopener,noreferrer"
+              'https://t.me/Wlad9999',
+              '_blank',
+              'noopener,noreferrer',
             );
           }}
         >

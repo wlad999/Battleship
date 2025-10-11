@@ -11,13 +11,13 @@ import {
   LAST_ROW_NUM,
   FIRST_COL_NUM,
   MAX_PLACEMENT_ATTEMPTS,
-} from "@/constants";
+} from '@/constants';
 import {
   cloneArrayShallow,
   getCoordsFromIndex,
   generateEmptyArray,
   getRandomInt,
-} from "@/utils";
+} from '@/utils';
 
 function getRandomDirection() {
   return Math.random() < 0.5 ? horizon : vertical;
@@ -52,7 +52,7 @@ function getRandomStartPosition(field, shipSize, direction) {
 function getFieldWithShipBuffer(
   field = [],
   shipCells = [],
-  isDestroyed = false
+  isDestroyed = false,
 ) {
   if (!shipCells.length) return cloneArrayShallow(field);
 
@@ -130,7 +130,7 @@ function placeShip(array, shipSize, count) {
 }
 
 function placeShipsOnField() {
-  let shipsStatus = {};
+  const shipsStatus = {};
   let filledField = generateEmptyArray();
   shipsConfig.forEach(({ size, count }) => {
     for (let i = 0; i < count; i++) {

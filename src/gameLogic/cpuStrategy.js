@@ -8,9 +8,9 @@ import {
   PLAYER,
   NEXT_TO_DESTROYED_SHIP,
   FIRST_IDX,
-} from "@/constants";
-import { getCoordsFromIndex, cloneArrayShallow, getRandomInt } from "@/utils";
-import { processShotResult } from "./shotProcessor.js";
+} from '@/constants';
+import { getCoordsFromIndex, cloneArrayShallow, getRandomInt } from '@/utils';
+import { processShotResult } from './shotProcessor.js';
 
 function isValidIndex(idx, array) {
   if (idx === undefined) {

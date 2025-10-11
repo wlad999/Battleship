@@ -1,6 +1,6 @@
-import { soundNodes } from "./audioCore";
-import { getRandomSoundKey } from "./soundUtils";
-import { soundConfig } from "./soundConfig";
+import { soundNodes } from './audioCore';
+import { getRandomSoundKey } from './soundUtils';
+import { soundConfig } from './soundConfig';
 
 const activeSounds = new Map();
 let globalVolume = 1;
@@ -41,7 +41,7 @@ const SoundManager = {
   },
 
   stopAllSound() {
-    for (const [key, audio] of activeSounds.entries()) {
+    for (const [_, audio] of activeSounds.entries()) {
       try {
         if (!audio.paused && audio.currentTime > 0) {
           audio.loop = false;

@@ -1,6 +1,5 @@
-"use client";
-import React from "react";
-import styles from "./styles.module.scss";
+'use client';
+import styles from './styles.module.scss';
 
 function LossAnimation() {
   return (

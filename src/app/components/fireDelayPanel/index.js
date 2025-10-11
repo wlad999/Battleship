@@ -1,14 +1,14 @@
-import { useEffect } from "react";
-import cls from "classnames";
-import { playSound } from "@/audio/soundManager";
-import styles from "./styles.module.scss";
+import { useEffect } from 'react';
+import cls from 'classnames';
+import { playSound } from '@/audio/soundManager';
+import styles from './styles.module.scss';
 
-const labels = ["Instant", "Quick", "Engage", "Hold"];
+const labels = ['Instant', 'Quick', 'Engage', 'Hold'];
 
 function FireDelayPanel({ onSetGameState, shootDelay, started }) {
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedDelay = parseFloat(localStorage.getItem("shootDelay"));
+    if (typeof window !== 'undefined') {
+      const savedDelay = parseFloat(localStorage.getItem('shootDelay'));
       if (isFinite(savedDelay)) {
         onSetGameState((prev) => ({ ...prev, shootDelay: savedDelay }));
       }
@@ -16,9 +16,9 @@ function FireDelayPanel({ onSetGameState, shootDelay, started }) {
   }, [started]);
 
   const handleDelaySelect = (value) => {
-    playSound("delayButton-0");
+    playSound('delayButton-0');
     onSetGameState((prev) => ({ ...prev, shootDelay: value }));
-    localStorage.setItem("shootDelay", value.toString());
+    localStorage.setItem('shootDelay', value.toString());
   };
 
   return (
@@ -30,12 +30,12 @@ function FireDelayPanel({ onSetGameState, shootDelay, started }) {
           const active = shootDelay === val;
           const color =
             val === 0
-              ? "red"
+              ? 'red'
               : val === 700
-              ? "orange"
-              : val === 1400
-              ? "yellow"
-              : "green";
+                ? 'orange'
+                : val === 1400
+                  ? 'yellow'
+                  : 'green';
           return (
             <div className={styles.delayBlock} key={val}>
               <button

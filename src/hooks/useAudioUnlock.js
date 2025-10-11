@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { audioContext } from "@/audio/audioCore.js";
-import { initSoundsAsync } from "@/audio/soundAssets.js";
+import { useEffect } from 'react';
+import { audioContext } from '@/audio/audioCore.js';
+import { initSoundsAsync } from '@/audio/soundAssets.js';
 
 export function useAudioUnlock() {
   useEffect(() => {
@@ -10,19 +10,19 @@ export function useAudioUnlock() {
       if (unlocked) return;
 
       try {
-        if (audioContext.state === "suspended") {
+        if (audioContext.state === 'suspended') {
           await audioContext.resume();
         }
 
         initSoundsAsync();
         unlocked = true;
-        window.removeEventListener("click", unlockAudio);
+        window.removeEventListener('click', unlockAudio);
       } catch (err) {
-        console.warn("Audio unlock failed:", err);
+        console.warn('Audio unlock failed:', err);
       }
     };
 
-    window.addEventListener("click", unlockAudio);
-    return () => window.removeEventListener("click", unlockAudio);
+    window.addEventListener('click', unlockAudio);
+    return () => window.removeEventListener('click', unlockAudio);
   }, []);
 }

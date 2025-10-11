@@ -1,9 +1,9 @@
-"use client";
-import cls from "classnames";
-import { groupAndSortShips } from "@/gameLogic";
-import { PLAYER, ENEMY } from "@/constants";
+'use client';
+import cls from 'classnames';
+import { groupAndSortShips } from '@/gameLogic';
+import { PLAYER, ENEMY } from '@/constants';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 function Status({ shipsStatus = {}, isPlayer, started }) {
   if (!Object.values(shipsStatus).length || !started) {
@@ -23,7 +23,9 @@ function Status({ shipsStatus = {}, isPlayer, started }) {
                 className={cls(
                   styles.ship,
                   styles[`ship-${ship.cells.length}`],
-                  { [styles.destroyed]: ship.isDestroyed }
+                  {
+                    [styles.destroyed]: ship.isDestroyed,
+                  },
                 )}
                 key={ship.id}
               >

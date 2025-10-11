@@ -1,4 +1,4 @@
-import { PLAYER, ENEMY } from "@/constants";
+import { PLAYER, ENEMY } from '@/constants';
 export const initialGameState = {
   isPlayerTurn: true,
   winner: null,

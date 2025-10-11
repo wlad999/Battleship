@@ -1,5 +1,5 @@
-import cls from "classnames";
-import styles from "./styles.module.scss";
+import cls from 'classnames';
+import styles from './styles.module.scss';
 
 export default function AudioControlPanel({
   muted,
@@ -13,17 +13,17 @@ export default function AudioControlPanel({
       <div className={styles.label}>AUDIO CONTROL</div>
       <div className={styles.indicatorLights}>
         <div
-          className={cls(styles.light, styles[muted ? "off" : "on"])}
+          className={cls(styles.light, styles[muted ? 'off' : 'on'])}
           title="READY"
         />
         <div
-          className={cls(styles.light, styles[muted ? "on" : "off"])}
+          className={cls(styles.light, styles[muted ? 'on' : 'off'])}
           title="MUTED"
         />
       </div>
       <div className={styles.controls}>
         <button onClick={onToggleMute} className={styles.toggleButton}>
-          {muted ? "🔇" : "🔊"}
+          {muted ? '🔇' : '🔊'}
         </button>
         <input
           type="range"

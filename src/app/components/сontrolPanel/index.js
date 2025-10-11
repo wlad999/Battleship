@@ -1,12 +1,12 @@
-import { useState } from "react";
-import cls from "classnames";
-import AudioControlPanel from "../audioControlPanel";
-import ContactPanel from "../communication";
-import FireDelayPanel from "../fireDelayPanel";
-import { playSound } from "@/audio/soundManager";
-import { useAudioState } from "@/hooks/useAudioState";
+import { useState } from 'react';
+import cls from 'classnames';
+import AudioControlPanel from '../audioControlPanel';
+import ContactPanel from '../communication';
+import FireDelayPanel from '../fireDelayPanel';
+import { playSound } from '@/audio/soundManager';
+import { useAudioState } from '@/hooks/useAudioState';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 function ControlPanel({ onSetGameState, shootDelay, started }) {
   const [panelOpen, setPanelOpen] = useState(false);
@@ -14,7 +14,7 @@ function ControlPanel({ onSetGameState, shootDelay, started }) {
     useAudioState(started);
 
   const togglePanel = () => {
-    playSound("menuButton-0");
+    playSound('menuButton-0');
     setPanelOpen((prev) => !prev);
   };
 
@@ -23,12 +23,12 @@ function ControlPanel({ onSetGameState, shootDelay, started }) {
       <div className={cls(styles.topBar, { [styles.mb0]: !panelOpen })}>
         {!panelOpen && (
           <button onClick={toggleMute} className={styles.muteButton}>
-            {muted ? "🔇" : "🔊"}
+            {muted ? '🔇' : '🔊'}
           </button>
         )}
 
         <button onClick={togglePanel} className={styles.statusButton}>
-          <span>{panelOpen ? "✖" : "≡"}</span>
+          <span>{panelOpen ? '✖' : '≡'}</span>
         </button>
       </div>
       <div

@@ -1,8 +1,8 @@
-import FieldCell from "../fieldCell";
-import FieldHeader from "../fieldHeader";
-import HitWaveSVG from "../hitWave";
+import FieldCell from '../fieldCell';
+import FieldHeader from '../fieldHeader';
+import HitWaveSVG from '../hitWave';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 function FieldView({
   isPlayer,

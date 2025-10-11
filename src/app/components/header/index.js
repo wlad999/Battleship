@@ -1,27 +1,25 @@
-"use client";
-import React from "react";
-import cls from "classnames";
-import { PLAYER, ENEMY } from "@/constants";
-import { initialGameState } from "@/state";
-import { playSound, stopAllSound } from "@/audio/soundManager";
+import cls from 'classnames';
+import { PLAYER, ENEMY } from '@/constants';
+import { initialGameState } from '@/state';
+import { playSound, stopAllSound } from '@/audio/soundManager';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 function Header({ gameState, setGameState }) {
   const { isPlayerTurn, showShips, started, winner } = gameState;
 
   const handleStart = () => {
-    playSound("button");
+    playSound('button');
     setGameState((prev) => ({ ...prev, started: true }));
   };
 
   const handleShowShips = () => {
-    playSound("button");
+    playSound('button');
     setGameState((prev) => ({ ...prev, showShips: true }));
   };
 
   const handlePlaceShips = () => {
-    playSound("button");
+    playSound('button');
     setGameState((prev) => ({
       ...prev,
       placeShips: prev.placeShips === null ? true : !prev.placeShips,
@@ -29,9 +27,9 @@ function Header({ gameState, setGameState }) {
   };
 
   const handleRestart = () => {
-    playSound("button");
+    playSound('button');
     stopAllSound();
-    playSound("ocean");
+    playSound('ocean');
     setGameState(initialGameState);
   };
 
@@ -58,7 +56,7 @@ function Header({ gameState, setGameState }) {
           <h2 className={styles.title}>
             {winner === ENEMY
               ? "Captain, you've lost! Don't give up, try again!"
-              : "Boom! You sunk ’em all, Admiral! Don’t retire yet — fight another battle for your country!"}
+              : 'Boom! You sunk ’em all, Admiral! Don’t retire yet — fight another battle for your country!'}
           </h2>
           <div className={styles.toBattleWrapper}>
             <button className={styles.button} onClick={handleRestart}>

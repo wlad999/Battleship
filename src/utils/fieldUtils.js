@@ -1,4 +1,4 @@
-import { FIELD_SIZE } from "@/constants";
+import { FIELD_SIZE } from '@/constants';
 
 function generateEmptyArray() {
   return Array(FIELD_SIZE)

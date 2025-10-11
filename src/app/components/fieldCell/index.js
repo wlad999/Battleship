@@ -1,9 +1,9 @@
-import cls from "classnames";
-import CellEvents from "../cellEvents";
-import Ship from "../ship";
-import { PLAYER, ENEMY } from "@/constants";
+import cls from 'classnames';
+import CellEvents from '../cellEvents';
+import Ship from '../ship';
+import { PLAYER, ENEMY } from '@/constants';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 function FieldCell({
   idx,
