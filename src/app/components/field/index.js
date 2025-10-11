@@ -1,6 +1,7 @@
 'use client';
 
-import { useFieldLogic } from '../../../hooks/useFieldLogic';
+import { useFieldLogic } from '@/hooks/useFieldLogic';
+
 import FieldView from '../fieldView';
 
 function Field({ isPlayer = false, gameState, setGameState }) {
