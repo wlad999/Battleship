@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { placeShipsOnField } from '@/gameLogic';
 
 export function useAutoPlaceShips({

@@ -1,5 +1,6 @@
+import { ENEMY, PLAYER } from '@/constants';
+
 import Status from '../status';
-import { PLAYER, ENEMY } from '@/constants';
 
 function FieldHeader({ isPlayer, shipsStatus, started }) {
   return (

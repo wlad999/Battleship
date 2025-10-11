@@ -1,4 +1,4 @@
-import { audioContext, sounds, soundNodes } from './audioCore';
+import { audioContext, soundNodes, sounds } from './audioCore';
 
 let audioUnlocked = false;
 

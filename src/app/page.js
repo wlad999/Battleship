@@ -1,13 +1,17 @@
 'use client';
+
 import { useState } from 'react';
+
 import cls from 'classnames';
-import Animations from './components/animations';
-import ControlPanel from './components/сontrolPanel';
-import Field from './components/field';
-import Header from './components/header';
-import { initialGameState } from '@/state';
+
 import { useAudioUnlock } from '@/hooks/useAudioUnlock';
 import { useGameAudio } from '@/hooks/useGameAudio';
+import { initialGameState } from '@/state';
+
+import Animations from './components/animations';
+import Field from './components/field';
+import Header from './components/header';
+import ControlPanel from './components/сontrolPanel';
 
 import styles from './page.module.css';
 

@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
-import { PLAYER, ENEMY } from '@/constants';
+
+import { ENEMY, PLAYER } from '@/constants';
 import { playerShoot } from '@/gameLogic';
+
 import { useAutoPlaceShips } from './useAutoPlaceShips';
 import { useCpuAutoShoot } from './useCpuAutoShoot';
 import { useGameOverCheck } from './useGameOverCheck';

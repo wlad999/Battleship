@@ -1,6 +1,8 @@
-import styles from './styles.module.scss';
 import Image from 'next/image';
+
 import cls from 'classnames';
+
+import styles from './styles.module.scss';
 
 function Ship({ shipsStatus, item, isPlayer, showShips }) {
   if (!item.shipId) return null;

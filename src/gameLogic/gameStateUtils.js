@@ -1,4 +1,4 @@
-import { PLAYER, ENEMY } from '@/constants';
+import { ENEMY, PLAYER } from '@/constants';
 
 function isGameOver(shipsStatus) {
   return Object.values(shipsStatus).every((ship) => ship.isDestroyed);

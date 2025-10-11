@@ -1,7 +1,8 @@
 import cls from 'classnames';
-import { PLAYER, ENEMY } from '@/constants';
-import { initialGameState } from '@/state';
+
 import { playSound, stopAllSound } from '@/audio/soundManager';
+import { ENEMY, PLAYER } from '@/constants';
+import { initialGameState } from '@/state';
 
 import styles from './styles.module.scss';
 

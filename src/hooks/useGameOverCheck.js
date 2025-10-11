@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
+
+import { ENEMY, PLAYER } from '@/constants';
 import { isGameOver } from '@/gameLogic';
-import { PLAYER, ENEMY } from '@/constants';
 
 export function useGameOverCheck({
   battleField,

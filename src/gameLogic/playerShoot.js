@@ -1,6 +1,7 @@
-import { getFieldWithTargetedCell, isShipDestroyed } from './shotProcessor.js';
 import { playSound } from '@/audio/soundManager.js';
 import { ENEMY } from '@/constants';
+
+import { getFieldWithTargetedCell, isShipDestroyed } from './shotProcessor.js';
 
 function playerShoot(gameState, idx) {
   playSound('shot');

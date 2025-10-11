@@ -1,7 +1,8 @@
-import { getFieldWithShipBuffer } from './shipPlacement.js';
-import { cloneArrayShallow } from '@/utils';
 import { playSound, stopSound } from '@/audio/soundManager.js';
 import { PLAYER } from '@/constants';
+import { cloneArrayShallow } from '@/utils';
+
+import { getFieldWithShipBuffer } from './shipPlacement.js';
 
 // mark cell as targeted
 function getFieldWithTargetedCell(field, cellIndex) {

@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
+
 import cls from 'classnames';
+
 import { playSound } from '@/audio/soundManager';
+
 import styles from './styles.module.scss';
 
 const labels = ['Instant', 'Quick', 'Engage', 'Hold'];

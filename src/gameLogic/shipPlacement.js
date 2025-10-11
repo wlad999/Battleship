@@ -1,21 +1,21 @@
 import {
-  horizon,
-  vertical,
-  shipsConfig,
-  NEXT_TO_SHIP_CELL,
-  NEXT_TO_DESTROYED_SHIP,
   FIELD_WIDTH,
-  LAST_IDX,
-  LAST_COL_NUM,
-  FIRST_ROW_NUM,
-  LAST_ROW_NUM,
   FIRST_COL_NUM,
+  FIRST_ROW_NUM,
+  LAST_COL_NUM,
+  LAST_IDX,
+  LAST_ROW_NUM,
   MAX_PLACEMENT_ATTEMPTS,
+  NEXT_TO_DESTROYED_SHIP,
+  NEXT_TO_SHIP_CELL,
+  horizon,
+  shipsConfig,
+  vertical,
 } from '@/constants';
 import {
   cloneArrayShallow,
-  getCoordsFromIndex,
   generateEmptyArray,
+  getCoordsFromIndex,
   getRandomInt,
 } from '@/utils';
 

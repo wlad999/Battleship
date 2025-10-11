@@ -1,4 +1,5 @@
 import cls from 'classnames';
+
 import Explosion from '../explosion';
 
 import styles from './styles.module.scss';

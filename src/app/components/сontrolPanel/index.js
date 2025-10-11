@@ -1,10 +1,13 @@
 import { useState } from 'react';
+
 import cls from 'classnames';
+
+import { playSound } from '@/audio/soundManager';
+import { useAudioState } from '@/hooks/useAudioState';
+
 import AudioControlPanel from '../audioControlPanel';
 import ContactPanel from '../communication';
 import FireDelayPanel from '../fireDelayPanel';
-import { playSound } from '@/audio/soundManager';
-import { useAudioState } from '@/hooks/useAudioState';
 
 import styles from './styles.module.scss';
 

@@ -1,4 +1,5 @@
 import cls from 'classnames';
+
 import styles from './styles.module.scss';
 
 export default function AudioControlPanel({

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { isGameOver, cpuShoot } from '@/gameLogic';
+
+import { cpuShoot, isGameOver } from '@/gameLogic';
 
 export function useCpuAutoShoot({
   isPlayer,

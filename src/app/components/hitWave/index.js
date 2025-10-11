@@ -1,4 +1,5 @@
 'use client';
+
 import { getShotCoords } from '@/gameLogic';
 
 export default function HitWaveSVG({ lastHitId = null, isPlayer = false }) {

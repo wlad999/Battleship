@@ -1,7 +1,9 @@
 'use client';
+
 import cls from 'classnames';
+
+import { ENEMY, PLAYER } from '@/constants';
 import { groupAndSortShips } from '@/gameLogic';
-import { PLAYER, ENEMY } from '@/constants';
 
 import styles from './styles.module.scss';
 

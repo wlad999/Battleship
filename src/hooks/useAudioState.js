@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 import { playSound, setGlobalVolume } from '@/audio/soundManager.js';
 
 export function useAudioState(started) {

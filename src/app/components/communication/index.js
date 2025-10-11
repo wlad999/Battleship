@@ -1,5 +1,7 @@
 'use client';
+
 import Image from 'next/image';
+
 import { playSound } from '@/audio/soundManager';
 
 import styles from './styles.module.scss';

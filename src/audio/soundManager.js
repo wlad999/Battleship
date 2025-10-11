@@ -1,6 +1,6 @@
 import { soundNodes } from './audioCore';
-import { getRandomSoundKey } from './soundUtils';
 import { soundConfig } from './soundConfig';
+import { getRandomSoundKey } from './soundUtils';
 
 const activeSounds = new Map();
 let globalVolume = 1;

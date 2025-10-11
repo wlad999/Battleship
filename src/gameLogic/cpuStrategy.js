@@ -1,15 +1,16 @@
 import {
   FIELD_WIDTH,
-  LAST_COL_NUM,
   FIRST_COL_NUM,
-  LAST_ROW_NUM,
-  FIRST_ROW_NUM,
-  LAST_IDX,
-  PLAYER,
-  NEXT_TO_DESTROYED_SHIP,
   FIRST_IDX,
+  FIRST_ROW_NUM,
+  LAST_COL_NUM,
+  LAST_IDX,
+  LAST_ROW_NUM,
+  NEXT_TO_DESTROYED_SHIP,
+  PLAYER,
 } from '@/constants';
-import { getCoordsFromIndex, cloneArrayShallow, getRandomInt } from '@/utils';
+import { cloneArrayShallow, getCoordsFromIndex, getRandomInt } from '@/utils';
+
 import { processShotResult } from './shotProcessor.js';
 
 function isValidIndex(idx, array) {
