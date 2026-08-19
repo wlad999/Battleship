@@ -12,7 +12,6 @@ function FieldView({
   started,
   showShips,
   handleClick,
-  winner,
 }) {
   return (
     <div className={styles.container}>
@@ -32,7 +31,6 @@ function FieldView({
             ship={item.shipId ? shipsStatus[item.shipId] : undefined}
             showShips={showShips}
             handleClick={handleClick}
-            winner={winner}
           />
         ))}
       </div>
