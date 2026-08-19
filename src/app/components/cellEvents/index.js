@@ -4,9 +4,9 @@ import Explosion from '../explosion';
 
 import styles from './styles.module.scss';
 
-function CellEvents({ item, shipsStatus }) {
+function CellEvents({ item, ship }) {
   const { shipId, targeted } = item;
-  const isDestroyed = shipsStatus[shipId]?.isDestroyed;
+  const isDestroyed = ship?.isDestroyed;
 
   return (
     <>

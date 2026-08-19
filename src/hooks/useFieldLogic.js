@@ -44,13 +44,23 @@ export function useFieldLogic({ isPlayer = false, gameState, setGameState }) {
 
   const handleClick = useCallback(
     (idx) => {
-      if (isPlayer || !isPlayerTurn || !started || winner) return;
-      if (battleField[idx].targeted) return;
+      if (isPlayer) return;
 
-      const newGameState = playerShoot(gameState, idx);
-      setGameState(newGameState);
+      setGameState((prevGameState) => {
+        const { battleField: prevBattleField } = prevGameState[fieldKey];
+
+        if (
+          !prevGameState.isPlayerTurn ||
+          !prevGameState.started ||
+          prevGameState.winner ||
+          prevBattleField[idx].targeted
+        ) {
+          return prevGameState;
+        }
+        return playerShoot(prevGameState, idx);
+      });
     },
-    [fieldState, gameState, isPlayer, isPlayerTurn],
+    [isPlayer, fieldKey, setGameState],
   );
 
   return {

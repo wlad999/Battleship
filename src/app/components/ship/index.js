@@ -4,13 +4,11 @@ import cls from 'classnames';
 
 import styles from './styles.module.scss';
 
-function Ship({ shipsStatus, item, isPlayer, showShips }) {
-  if (!item.shipId) return null;
-  const ship = shipsStatus[item.shipId];
-  if (!ship) return null;
+function Ship({ ship, item, isPlayer, showShips }) {
+  if (!item.shipId || !ship) return null;
 
   const { isDestroyed, cells } = ship;
-  if (!item.shipId || (!isDestroyed && !isPlayer && !showShips)) return null;
+  if (!isDestroyed && !isPlayer && !showShips) return null;
 
   const size = cells.length;
   let isHorizontal = false;

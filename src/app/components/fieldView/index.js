@@ -10,7 +10,6 @@ function FieldView({
   shipsStatus,
   lastHitId,
   started,
-  isPlayerTurn,
   showShips,
   handleClick,
   winner,
@@ -30,8 +29,7 @@ function FieldView({
             key={idx}
             item={item}
             isPlayer={isPlayer}
-            shipsStatus={shipsStatus}
-            isPlayerTurn={isPlayerTurn}
+            ship={item.shipId ? shipsStatus[item.shipId] : undefined}
             showShips={showShips}
             handleClick={handleClick}
             winner={winner}
