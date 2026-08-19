@@ -1,7 +1,6 @@
 import {
   FIELD_WIDTH,
   FIRST_COL_NUM,
-  FIRST_IDX,
   FIRST_ROW_NUM,
   LAST_COL_NUM,
   LAST_IDX,
