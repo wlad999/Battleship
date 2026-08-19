@@ -9,21 +9,14 @@ import {
   NEXT_TO_DESTROYED_SHIP,
   PLAYER,
 } from '@/constants';
-import { cloneArrayShallow, getCoordsFromIndex, getRandomInt } from '@/utils';
+import {
+  cloneArrayShallow,
+  getCoordsFromIndex,
+  getRandomInt,
+  isValidIndex,
+} from '@/utils';
 
 import { processShotResult } from './shotProcessor.js';
-
-function isValidIndex(idx, array) {
-  if (idx === undefined) {
-    return false;
-  }
-  return (
-    idx >= FIRST_IDX &&
-    idx <= LAST_IDX &&
-    !array[idx].targeted &&
-    !array[idx][NEXT_TO_DESTROYED_SHIP]
-  );
-}
 
 const moveHorizontal = (lastHitIdx, step, firstHitIdx, field) => {
   const col = getCoordsFromIndex(lastHitIdx)[1];
