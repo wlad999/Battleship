@@ -14,7 +14,6 @@ function FieldCell({ idx, item, isPlayer, ship, showShips, handleClick }) {
 
   return (
     <div
-      key={idx}
       id={`${isPlayer ? PLAYER : ENEMY}-${idx}`}
       onClick={onClick}
       className={cls(styles.cell, {
